@@ -9,8 +9,8 @@ import {
   TextInputChangeEventData,
 } from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
-import { handleSignUp } from "../store/user";
-import { AppDispatch } from "../store/index";
+import { handleSignUp } from "../stores/user";
+import { AppDispatch } from "../stores/index";
 import { useDispatch } from "react-redux";
 
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";

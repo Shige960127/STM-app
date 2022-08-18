@@ -10,8 +10,8 @@ import { useTailwind } from "tailwind-rn/dist";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 import { useDispatch } from "react-redux";
-import { handleSignIn } from "../store/user";
-import { AppDispatch } from "../store/index";
+import { handleSignIn } from "../stores/user";
+import { AppDispatch } from "../stores/index";
 
 type Props = NativeStackScreenProps<RootStackParamList, "SignIn">;
 

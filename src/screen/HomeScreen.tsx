@@ -3,8 +3,8 @@ import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 import { useDispatch, useSelector } from "react-redux";
-import { handleSignOut } from "../store/user";
-import { AppDispatch } from "../store/index";
+import { handleSignOut } from "../stores/user";
+import { AppDispatch } from "../stores/index";
 import { RootReducer } from "../../App";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
