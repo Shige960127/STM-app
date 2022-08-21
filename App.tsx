@@ -1,10 +1,10 @@
 import { TailwindProvider } from "tailwind-rn";
 import utilities from "./tailwind.json";
-import SignUpScreen from "./src/screen/SignUpScreen";
-import SignInScreen from "./src/screen/SignInScreen";
-import HomeScreen from "./src/screen/HomeScreen";
-import WaveformScreen from "./src/screen/WaveformScreen";
-import TimerScreen from "./src/screen/TimerScreen";
+import SignUpScreen from "screens/SignUpScreen";
+import SignInScreen from "./src/screens/SignInScreen";
+import HomeScreen from "./src/screens/HomeScreen";
+import WaveformScreen from "./src/screens/WaveformScreen";
+import TimerScreen from "./src/screens/TimerScreen";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
