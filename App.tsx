@@ -1,17 +1,17 @@
 import { TailwindProvider } from "tailwind-rn";
 import utilities from "./tailwind.json";
-import SignUpScreen from "./src/screen/SignUpScreen";
-import SignInScreen from "./src/screen/SignInScreen";
-import HomeScreen from "./src/screen/HomeScreen";
-import WaveformScreen from "./src/screen/WaveformScreen";
-import TimerScreen from "./src/screen/TimerScreen";
+import SignUpScreen from "@screens/SignUpScreen";
+import SignInScreen from "@screens/SignInScreen";
+import HomeScreen from "@screens/HomeScreen";
+import WaveformScreen from "@screens/WaveformScreen";
+import TimerScreen from "@screens/TimerScreen";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useSelector, Provider, useDispatch } from "react-redux";
-import { UserState, getUser } from "./src/store/user";
-import store from "./src/store";
+import { UserState, checkLogin } from "@stores/user";
+import store, { AppDispatch } from "@stores/index";
 
 export type RootStackParamList = {
   Main: undefined;
@@ -78,7 +78,7 @@ const MainScreen = () => (
 );
 
 const InitialScreen = () => (
-  <Stack.Navigator>
+  <Stack.Navigator initialRouteName="SignIn">
     <Stack.Screen
       options={{ headerShown: false }}
       name="SignUp"
@@ -94,9 +94,9 @@ const InitialScreen = () => (
 
 const RootScreen = () => {
   const { status, isLogined } = useSelector(({ user }: RootReducer) => user);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   if (status === "initial") {
-    dispatch(getUser());
+    dispatch(checkLogin());
   }
   return (
     <Stack.Navigator initialRouteName="Initial">
