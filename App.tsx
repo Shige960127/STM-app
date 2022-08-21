@@ -1,17 +1,17 @@
 import { TailwindProvider } from "tailwind-rn";
 import utilities from "./tailwind.json";
-import SignUpScreen from "screens/SignUpScreen";
-import SignInScreen from "./src/screens/SignInScreen";
-import HomeScreen from "./src/screens/HomeScreen";
-import WaveformScreen from "./src/screens/WaveformScreen";
-import TimerScreen from "./src/screens/TimerScreen";
+import SignUpScreen from "@screens/SignUpScreen";
+import SignInScreen from "@screens/SignInScreen";
+import HomeScreen from "@screens/HomeScreen";
+import WaveformScreen from "@screens/WaveformScreen";
+import TimerScreen from "@screens/TimerScreen";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useSelector, Provider, useDispatch } from "react-redux";
-import { UserState, checkLogin } from "./src/stores/user";
-import store, { AppDispatch } from "./src/stores/index";
+import { UserState, checkLogin } from "@stores/user";
+import store, { AppDispatch } from "@stores/index";
 
 export type RootStackParamList = {
   Main: undefined;

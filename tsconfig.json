@@ -4,8 +4,8 @@
     "strict": true,
     "baseUrl": "./src/",
     "paths": {
-      "screens": ["screens/*"],
-      "stores": ["stores/*"]
+      "@screens/*": ["screens/*"],
+      "@stores/*": ["stores/*"]
     }
   }
 }

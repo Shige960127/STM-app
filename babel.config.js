@@ -6,10 +6,9 @@ module.exports = function (api) {
       [
         "module-resolver",
         {
-          root: ["."],
           alias: {
-            screens: "./src/screens",
-            stores: "./src/stores",
+            "@screens": "./src/screens",
+            "@stores": "./src/stores",
           },
         },
       ],
