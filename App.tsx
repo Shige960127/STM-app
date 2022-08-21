@@ -3,7 +3,7 @@ import utilities from "./tailwind.json";
 import SignUpScreen from "@screens/SignUpScreen";
 import SignInScreen from "@screens/SignInScreen";
 import HomeScreen from "@screens/HomeScreen";
-import WaveformScreen from "@screens/WaveformScreen";
+import GraphScreen from "@screens/GraphScreen";
 import TimerScreen from "@screens/TimerScreen";
 
 import { NavigationContainer } from "@react-navigation/native";
@@ -12,6 +12,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useSelector, Provider, useDispatch } from "react-redux";
 import { UserState, checkLogin } from "@stores/user";
 import store, { AppDispatch } from "@stores/index";
+import { AntDesign } from "@expo/vector-icons";
 
 export type RootStackParamList = {
   Main: undefined;
@@ -20,7 +21,7 @@ export type RootStackParamList = {
   SignUp: undefined;
   SignIn: undefined;
   Account: undefined;
-  Waveform: undefined;
+  Graph: undefined;
   Timer: undefined;
 };
 
@@ -40,12 +41,12 @@ function HomeStackScreen() {
   );
 }
 
-const WaveformStack = createNativeStackNavigator();
-function WaveformStackScreen() {
+const GraphStack = createNativeStackNavigator();
+function GraphStackScreen() {
   return (
-    <WaveformStack.Navigator>
-      <WaveformStack.Screen name="Waveform" component={WaveformScreen} />
-    </WaveformStack.Navigator>
+    <GraphStack.Navigator>
+      <GraphStack.Screen name="Graph" component={GraphScreen} />
+    </GraphStack.Navigator>
   );
 }
 const TimerStack = createNativeStackNavigator();
@@ -58,15 +59,29 @@ function TimerStackScreen() {
 }
 
 const MainScreen = () => (
-  <Tab.Navigator initialRouteName="Home">
+  <Tab.Navigator
+    initialRouteName="Home"
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ fourced }) => {
+        let iconName;
+        switch (route.name) {
+          case "HomeStack":
+            iconName = "home";
+            break;
+          case "GraphStack":
+            iconName = "waveform";
+        }
+      },
+    })}
+  >
     <Tab.Screen
       name="HomeStack"
       component={HomeStackScreen}
       options={{ headerShown: false }}
     />
     <Tab.Screen
-      name="WaveformStack"
-      component={WaveformStackScreen}
+      name="GraphStack"
+      component={GraphStackScreen}
       options={{ headerShown: false }}
     />
     <Tab.Screen
