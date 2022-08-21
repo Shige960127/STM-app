@@ -3,9 +3,9 @@ import { View, Text, SafeAreaView } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Waveform">;
+type Props = NativeStackScreenProps<RootStackParamList, "Graph">;
 
-const WaveformScreen = ({ navigation }: Props) => {
+const GraphScreen = ({ navigation }: Props) => {
   const tailwind = useTailwind();
   return (
     <SafeAreaView style={tailwind("flex-1")}>
@@ -15,4 +15,4 @@ const WaveformScreen = ({ navigation }: Props) => {
     </SafeAreaView>
   );
 };
-export default WaveformScreen;
+export default GraphScreen;
