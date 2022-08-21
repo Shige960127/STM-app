@@ -62,16 +62,29 @@ const MainScreen = () => (
   <Tab.Navigator
     initialRouteName="Home"
     screenOptions={({ route }) => ({
-      tabBarIcon: ({ fourced }) => {
+      tabBarIcon: ({ focused }) => {
         let iconName;
         switch (route.name) {
           case "HomeStack":
             iconName = "home";
             break;
           case "GraphStack":
-            iconName = "waveform";
+            iconName = "linechart";
+            break;
+          case "TimerStack":
+            iconName = "clockcircleo";
+            break;
         }
+        return (
+          <AntDesign
+            name={iconName}
+            size={24}
+            color={focused ? "red" : "brack"}
+          />
+        );
       },
+      tabBarActiveTintColor: "tomato",
+      tabBarInactiveTintColor: "gray",
     })}
   >
     <Tab.Screen
