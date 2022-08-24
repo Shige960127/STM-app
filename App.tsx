@@ -129,11 +129,7 @@ const RootScreen = () => {
   return (
     <Stack.Navigator initialRouteName="Initial">
       {isLogined ? (
-        <Stack.Screen
-          name="Main"
-          component={MainScreen}
-          options={{ headerShown: false }}
-        />
+        <Stack.Screen name="Main" component={MainScreen} />
       ) : (
         <Stack.Screen
           name="Initial"
