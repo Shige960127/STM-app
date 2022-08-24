@@ -1,5 +1,18 @@
+.bottom-4 {
+  bottom: 1rem
+}
+
+.bottom-1 {
+  bottom: 0.25rem
+}
+
 .m-4 {
   margin: 1rem
+}
+
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem
 }
 
 .mt-20 {
@@ -10,12 +23,44 @@
   margin-left: 3rem
 }
 
+.ml-1 {
+  margin-left: 0.25rem
+}
+
+.mt-4 {
+  margin-top: 1rem
+}
+
+.mr-1 {
+  margin-right: 0.25rem
+}
+
+.inline-block {
+  display: inline-block
+}
+
 .flex {
   display: flex
 }
 
 .h-2\/4 {
   height: 50%
+}
+
+.h-full {
+  height: 100%
+}
+
+.h-8 {
+  height: 2rem
+}
+
+.h-10 {
+  height: 2.5rem
+}
+
+.h-2 {
+  height: 0.5rem
 }
 
 .w-3\/4 {
@@ -26,8 +71,40 @@
   width: 10rem
 }
 
+.w-80 {
+  width: 20rem
+}
+
+.w-60 {
+  width: 15rem
+}
+
+.w-full {
+  width: 100%
+}
+
+.w-2 {
+  width: 0.5rem
+}
+
+.min-w-0 {
+  min-width: 0px
+}
+
+.max-w-sm {
+  max-width: 24rem
+}
+
 .flex-1 {
   flex: 1 1 0%
+}
+
+.shrink {
+  flex-shrink: 1
+}
+
+.shrink-0 {
+  flex-shrink: 0
 }
 
 .flex-col {
@@ -46,6 +123,15 @@
   border-radius: 0.25rem
 }
 
+.rounded-2xl {
+  border-radius: 1rem
+}
+
+.rounded-t-3xl {
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem
+}
+
 .border {
   border-width: 1px
 }
@@ -60,8 +146,27 @@
   background-color: rgb(255 255 255 / var(--tw-bg-opacity))
 }
 
+.bg-violet-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(91 33 182 / var(--tw-bg-opacity))
+}
+
+.bg-sky-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(56 189 248 / var(--tw-bg-opacity))
+}
+
 .p-4 {
   padding: 1rem
+}
+
+.p-1 {
+  padding: 0.25rem
+}
+
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem
 }
 
 .pt-2 {
@@ -72,9 +177,22 @@
   padding-left: 0.5rem
 }
 
+.pl-1 {
+  padding-left: 0.25rem
+}
+
+.pt-4 {
+  padding-top: 1rem
+}
+
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem
 }
 
 .font-bold {
@@ -84,4 +202,9 @@
 .text-blue-900 {
   --tw-text-opacity: 1;
   color: rgb(30 58 138 / var(--tw-text-opacity))
+}
+
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity))
 }
