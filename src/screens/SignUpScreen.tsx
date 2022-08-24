@@ -72,18 +72,6 @@ const SignUpScreen = ({ navigation }: Props) => {
               secureTextEntry
             />
           </View>
-          <View>
-            <FontAwesome />
-            <Text style={tailwind("text-lg font-bold")}>Confirm Password</Text>
-            <TextInput
-              style={tailwind("w-full h-8 border rounded p-2")}
-              onChange={update("password")}
-              value={user?.password}
-              autoCapitalize={"none"}
-              placeholder="Password"
-              secureTextEntry
-            />
-          </View>
         </View>
 
         <View style={tailwind("flex items-center justify-center mt-8")}>

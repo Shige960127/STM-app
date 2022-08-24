@@ -122,7 +122,7 @@ const RootScreen = () => {
   }
   return (
     <Stack.Navigator initialRouteName="Initial">
-      {!isLogined ? (
+      {isLogined ? (
         <Stack.Screen
           name="Main"
           component={MainScreen}
