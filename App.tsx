@@ -58,31 +58,25 @@ function TimerStackScreen() {
   );
 }
 
+type tabScreenIcon = "home" | "linechart" | "clockcircleo";
+
+const screenNameIcon: { [key: string]: tabScreenIcon } = {
+  HomeStack: "home",
+  GraphStack: "linechart",
+  TimerStack: "clockcircleo",
+};
+
 const MainScreen = () => (
   <Tab.Navigator
     initialRouteName="Home"
     screenOptions={({ route }) => ({
-      tabBarIcon: ({ focused }) => {
-        let iconName;
-        switch (route.name) {
-          case "HomeStack":
-            iconName = "home";
-            break;
-          case "GraphStack":
-            iconName = "linechart";
-            break;
-          case "TimerStack":
-            iconName = "clockcircleo";
-            break;
-        }
-        return (
-          <AntDesign
-            name={iconName}
-            size={24}
-            color={focused ? "red" : "brack"}
-          />
-        );
-      },
+      tabBarIcon: ({ focused }) => (
+        <AntDesign
+          name={screenNameIcon[route.name]}
+          size={24}
+          color={focused ? "red" : "brack"}
+        />
+      ),
       tabBarActiveTintColor: "tomato",
       tabBarInactiveTintColor: "gray",
     })}
@@ -128,7 +122,7 @@ const RootScreen = () => {
   }
   return (
     <Stack.Navigator initialRouteName="Initial">
-      {isLogined ? (
+      {!isLogined ? (
         <Stack.Screen
           name="Main"
           component={MainScreen}
