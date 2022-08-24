@@ -106,7 +106,7 @@ const MainScreen = () => (
 );
 
 const InitialScreen = () => (
-  <Stack.Navigator initialRouteName="SignIn">
+  <Stack.Navigator initialRouteName="SignUp">
     <Stack.Screen
       options={{ headerShown: false }}
       name="SignUp"

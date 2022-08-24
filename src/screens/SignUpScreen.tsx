@@ -39,17 +39,19 @@ const SignUpScreen = ({ navigation }: Props) => {
           Create an Account!
         </Text>
       </View>
-      <View style={tailwind("flex bg-white my-4 py-4 h-full rounded-t-3xl")}>
-        <View style={tailwind("ml-1 pl-1")}>
-          <View style={tailwind("mt-4 ml-1 pt-4 pl-1")}>
+      <View
+        style={tailwind("flex bg-white my-4 py-4 h-full rounded-t-3xl px-6")}
+      >
+        <View>
+          <View>
             <Text style={tailwind("text-lg font-bold")}>Email</Text>
-            <View style={tailwind("flex")}>
-              <View>
+            <View style={tailwind("flex flex-row items-center")}>
+              <View style={tailwind("mr-4")}>
                 <FontAwesome name="user-circle-o" size={24} color="black" />
               </View>
-              <View>
+              <View style={tailwind("flex-1")}>
                 <TextInput
-                  style={tailwind("w-40 h-8 border rounded")}
+                  style={tailwind("w-full h-8 border rounded p-2")}
                   onChange={update("email")}
                   value={user?.email}
                   autoCapitalize={"none"}
@@ -58,11 +60,23 @@ const SignUpScreen = ({ navigation }: Props) => {
               </View>
             </View>
           </View>
-          <View style={tailwind("flex ml-1 pl-1")}>
+          <View>
             <FontAwesome />
             <Text style={tailwind("text-lg font-bold")}>Password</Text>
             <TextInput
-              style={tailwind("w-80 h-8 border rounded")}
+              style={tailwind("w-full h-8 border rounded p-2")}
+              onChange={update("password")}
+              value={user?.password}
+              autoCapitalize={"none"}
+              placeholder="Password"
+              secureTextEntry
+            />
+          </View>
+          <View>
+            <FontAwesome />
+            <Text style={tailwind("text-lg font-bold")}>Confirm Password</Text>
+            <TextInput
+              style={tailwind("w-full h-8 border rounded p-2")}
               onChange={update("password")}
               value={user?.password}
               autoCapitalize={"none"}
@@ -71,22 +85,25 @@ const SignUpScreen = ({ navigation }: Props) => {
             />
           </View>
         </View>
-        <View style={tailwind("items-center mt-4 pt-4")}>
-          <View
-            style={tailwind("items-center w-60 h-10 rounded-2xl bg-sky-400")}
+
+        <View style={tailwind("flex items-center justify-center mt-8")}>
+          <TouchableOpacity
+            onPress={() => dispatch(handleSignUp({ ...user }))}
+            style={tailwind(
+              "w-80 flex flex-row justify-center items-center p-4 rounded-2xl bg-sky-400"
+            )}
           >
-            <TouchableOpacity
-              onPress={() => dispatch(handleSignUp({ ...user }))}
-            >
-              <Text style={tailwind("text-white font-bold")}>
-                サインアップする
-              </Text>
-            </TouchableOpacity>
-          </View>
+            <Text style={tailwind("text-white font-bold")}>
+              サインアップする
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("SignIn")}
+            style={tailwind("mt-2")}
+          >
+            <Text>すでにアカウントをお持ちの方はこちらをクリック</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
-          <Text>すでにアカウントをお持ちの方はこちらをクリック</Text>
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
