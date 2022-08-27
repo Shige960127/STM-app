@@ -1,11 +1,3 @@
-.bottom-4 {
-  bottom: 1rem
-}
-
-.bottom-1 {
-  bottom: 0.25rem
-}
-
 .m-4 {
   margin: 1rem
 }
@@ -31,12 +23,12 @@
   margin-top: 1rem
 }
 
-.mr-1 {
-  margin-right: 0.25rem
+.mr-4 {
+  margin-right: 1rem
 }
 
-.inline-block {
-  display: inline-block
+.mt-8 {
+  margin-top: 2rem
 }
 
 .flex {
@@ -59,10 +51,6 @@
   height: 2.5rem
 }
 
-.h-2 {
-  height: 0.5rem
-}
-
 .w-3\/4 {
   width: 75%
 }
@@ -83,28 +71,12 @@
   width: 100%
 }
 
-.w-2 {
-  width: 0.5rem
-}
-
-.min-w-0 {
-  min-width: 0px
-}
-
-.max-w-sm {
-  max-width: 24rem
-}
-
 .flex-1 {
   flex: 1 1 0%
 }
 
-.shrink {
-  flex-shrink: 1
-}
-
-.shrink-0 {
-  flex-shrink: 0
+.flex-row {
+  flex-direction: row
 }
 
 .flex-col {
@@ -117,6 +89,10 @@
 
 .items-center {
   align-items: center
+}
+
+.justify-center {
+  justify-content: center
 }
 
 .rounded {
@@ -160,8 +136,8 @@
   padding: 1rem
 }
 
-.p-1 {
-  padding: 0.25rem
+.p-2 {
+  padding: 0.5rem
 }
 
 .py-4 {
