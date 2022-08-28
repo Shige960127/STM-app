@@ -12,7 +12,7 @@ import { useTailwind } from "tailwind-rn/dist";
 import { handleSignUp } from "../stores/user";
 import { AppDispatch } from "../stores/index";
 import { useDispatch } from "react-redux";
-import { FontAwesome } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
@@ -21,12 +21,13 @@ type Props = NativeStackScreenProps<RootStackParamList, "SignUp">;
 type user = {
   email: string;
   password: string;
+  age: string;
 };
 
 const SignUpScreen = ({ navigation }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const tailwind = useTailwind();
-  const [user, setUser] = useState<user>({ email: "", password: "" });
+  const [user, setUser] = useState<user>({ email: "", password: "", age: "" });
   const update =
     (field: keyof user) =>
     (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
@@ -40,13 +41,16 @@ const SignUpScreen = ({ navigation }: Props) => {
         </Text>
       </View>
       <View style={tailwind("flex bg-white my-4 py-4 h-full rounded-t-3xl")}>
-        <View>
+        <View style={tailwind("m-4")}>
           <View>
             <Text style={tailwind("text-lg font-bold")}>Email</Text>
             <View style={tailwind("flex flex-row items-center")}>
-              <View style={tailwind("mr-4")}>
-                <FontAwesome name="user-circle-o" size={24} color="black" />
-              </View>
+              <AntDesign
+                name="mail"
+                size={24}
+                color="black"
+                style={tailwind("mr-4")}
+              />
               <View style={tailwind("flex-1")}>
                 <TextInput
                   style={tailwind("w-full h-8 border rounded p-2")}
@@ -60,14 +64,44 @@ const SignUpScreen = ({ navigation }: Props) => {
           </View>
           <View>
             <Text style={tailwind("text-lg font-bold")}>Password</Text>
-            <TextInput
-              style={tailwind("w-full h-8 border rounded p-2")}
-              onChange={update("password")}
-              value={user?.password}
-              autoCapitalize={"none"}
-              placeholder="Password"
-              secureTextEntry
-            />
+            <View style={tailwind("flex flex-row items-center")}>
+              <AntDesign
+                name="lock"
+                size={24}
+                color="black"
+                style={tailwind("mr-4")}
+              />
+              <View style={tailwind("flex-1")}>
+                <TextInput
+                  style={tailwind("w-full h-8 border rounded p-2")}
+                  onChange={update("password")}
+                  value={user?.password}
+                  autoCapitalize={"none"}
+                  placeholder="Password"
+                  secureTextEntry
+                />
+              </View>
+            </View>
+          </View>
+          <View>
+            <Text style={tailwind("text-lg font-bold")}>Age</Text>
+            <View style={tailwind("flex flex-row items-center")}>
+              <AntDesign
+                name="user"
+                size={24}
+                color="black"
+                style={tailwind("mr-4")}
+              />
+              <View style={tailwind("flex-1")}>
+                <TextInput
+                  style={tailwind("w-full h-8 border rounded p-2")}
+                  onChange={update("age")}
+                  value={user?.age}
+                  autoCapitalize={"none"}
+                  placeholder="西暦で年齢を入力してください"
+                />
+              </View>
+            </View>
           </View>
         </View>
         <View style={tailwind("flex items-center justify-center mt-8")}>
@@ -84,7 +118,7 @@ const SignUpScreen = ({ navigation }: Props) => {
           <TouchableOpacity
             onPress={() => navigation.navigate("SignIn")}
             style={tailwind(
-              "w-80 flex flex-row justify-center items-center p-4 rounded-2xl bg-sky-400"
+              "w-80 flex flex-row justify-center items-center m-4 p-4 rounded-2xl bg-sky-400"
             )}
           >
             <Text style={tailwind("text-white font-bold")}>
