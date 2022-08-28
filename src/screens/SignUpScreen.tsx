@@ -40,6 +40,7 @@ const SignUpScreen = ({ navigation }: Props) => {
           Create an Account!
         </Text>
       </View>
+<<<<<<< HEAD
       <View style={tailwind("flex bg-white my-4 py-4 h-full rounded-t-3xl")}>
         <View style={tailwind("m-4")}>
           <View>
@@ -51,6 +52,18 @@ const SignUpScreen = ({ navigation }: Props) => {
                 color="black"
                 style={tailwind("mr-4")}
               />
+=======
+      <View
+        style={tailwind("flex bg-white my-4 py-4 h-full rounded-t-3xl px-6")}
+      >
+        <View>
+          <View>
+            <Text style={tailwind("text-lg font-bold")}>Email</Text>
+            <View style={tailwind("flex flex-row items-center")}>
+              <View style={tailwind("mr-4")}>
+                <FontAwesome name="user-circle-o" size={24} color="black" />
+              </View>
+>>>>>>> fde29f48c8f027f4603e31bc3bb348feec17632c
               <View style={tailwind("flex-1")}>
                 <TextInput
                   style={tailwind("w-full h-8 border rounded p-2")}
@@ -63,6 +76,7 @@ const SignUpScreen = ({ navigation }: Props) => {
             </View>
           </View>
           <View>
+<<<<<<< HEAD
             <Text style={tailwind("text-lg font-bold")}>Password</Text>
             <View style={tailwind("flex flex-row items-center")}>
               <AntDesign
@@ -104,6 +118,21 @@ const SignUpScreen = ({ navigation }: Props) => {
             </View>
           </View>
         </View>
+=======
+            <FontAwesome />
+            <Text style={tailwind("text-lg font-bold")}>Password</Text>
+            <TextInput
+              style={tailwind("w-full h-8 border rounded p-2")}
+              onChange={update("password")}
+              value={user?.password}
+              autoCapitalize={"none"}
+              placeholder="Password"
+              secureTextEntry
+            />
+          </View>
+        </View>
+
+>>>>>>> fde29f48c8f027f4603e31bc3bb348feec17632c
         <View style={tailwind("flex items-center justify-center mt-8")}>
           <TouchableOpacity
             onPress={() => dispatch(handleSignUp({ ...user }))}
@@ -117,6 +146,7 @@ const SignUpScreen = ({ navigation }: Props) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate("SignIn")}
+<<<<<<< HEAD
             style={tailwind(
               "w-80 flex flex-row justify-center items-center m-4 p-4 rounded-2xl bg-sky-400"
             )}
@@ -124,6 +154,11 @@ const SignUpScreen = ({ navigation }: Props) => {
             <Text style={tailwind("text-white font-bold")}>
               サインイン画面へ
             </Text>
+=======
+            style={tailwind("mt-2")}
+          >
+            <Text>すでにアカウントをお持ちの方はこちらをクリック</Text>
+>>>>>>> fde29f48c8f027f4603e31bc3bb348feec17632c
           </TouchableOpacity>
         </View>
       </View>

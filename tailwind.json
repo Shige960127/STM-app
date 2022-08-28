@@ -23,16 +23,6 @@
 			"marginLeft": 48
 		}
 	},
-	"ml-1": {
-		"style": {
-			"marginLeft": 4
-		}
-	},
-	"mt-4": {
-		"style": {
-			"marginTop": 16
-		}
-	},
 	"mr-4": {
 		"style": {
 			"marginRight": 16
@@ -43,9 +33,30 @@
 			"marginTop": 32
 		}
 	},
+<<<<<<< HEAD
+	"mr-4": {
+		"style": {
+			"marginRight": 16
+		}
+	},
+	"mt-8": {
+		"style": {
+			"marginTop": 32
+=======
+	"mt-2": {
+		"style": {
+			"marginTop": 8
+		}
+	},
 	"flex": {
 		"style": {
 			"display": "flex"
+>>>>>>> fde29f48c8f027f4603e31bc3bb348feec17632c
+		}
+	},
+	"h-8": {
+		"style": {
+			"height": 32
 		}
 	},
 	"h-2/4": {
@@ -58,6 +69,7 @@
 			"height": "100%"
 		}
 	},
+<<<<<<< HEAD
 	"h-8": {
 		"style": {
 			"height": 32
@@ -66,6 +78,11 @@
 	"h-10": {
 		"style": {
 			"height": 40
+=======
+	"w-full": {
+		"style": {
+			"width": "100%"
+>>>>>>> fde29f48c8f027f4603e31bc3bb348feec17632c
 		}
 	},
 	"w-3/4": {
@@ -83,6 +100,7 @@
 			"width": 320
 		}
 	},
+<<<<<<< HEAD
 	"w-60": {
 		"style": {
 			"width": 240
@@ -93,6 +111,8 @@
 			"width": "100%"
 		}
 	},
+=======
+>>>>>>> fde29f48c8f027f4603e31bc3bb348feec17632c
 	"flex-1": {
 		"style": {
 			"flexGrow": 1,
@@ -179,14 +199,6 @@
 			"backgroundColor": "rgb(56 189 248 / var(--tw-bg-opacity))"
 		}
 	},
-	"p-4": {
-		"style": {
-			"paddingTop": 16,
-			"paddingRight": 16,
-			"paddingBottom": 16,
-			"paddingLeft": 16
-		}
-	},
 	"p-2": {
 		"style": {
 			"paddingTop": 8,
@@ -195,10 +207,35 @@
 			"paddingLeft": 8
 		}
 	},
+	"p-4": {
+		"style": {
+			"paddingTop": 16,
+			"paddingRight": 16,
+			"paddingBottom": 16,
+			"paddingLeft": 16
+		}
+	},
+<<<<<<< HEAD
+	"p-2": {
+		"style": {
+			"paddingTop": 8,
+			"paddingRight": 8,
+			"paddingBottom": 8,
+			"paddingLeft": 8
+		}
+	},
+=======
+>>>>>>> fde29f48c8f027f4603e31bc3bb348feec17632c
 	"py-4": {
 		"style": {
 			"paddingTop": 16,
 			"paddingBottom": 16
+		}
+	},
+	"px-6": {
+		"style": {
+			"paddingLeft": 24,
+			"paddingRight": 24
 		}
 	},
 	"pt-2": {
@@ -209,16 +246,6 @@
 	"pl-2": {
 		"style": {
 			"paddingLeft": 8
-		}
-	},
-	"pl-1": {
-		"style": {
-			"paddingLeft": 4
-		}
-	},
-	"pt-4": {
-		"style": {
-			"paddingTop": 16
 		}
 	},
 	"text-2xl": {

@@ -59,11 +59,19 @@ function TimerStackScreen() {
 }
 
 type tabScreenIcon = "home" | "linechart" | "clockcircleo";
+<<<<<<< HEAD
+=======
+
+>>>>>>> fde29f48c8f027f4603e31bc3bb348feec17632c
 const screenNameIcon: { [key: string]: tabScreenIcon } = {
   HomeStack: "home",
   GraphStack: "linechart",
   TimerStack: "clockcircleo",
 };
+<<<<<<< HEAD
+=======
+
+>>>>>>> fde29f48c8f027f4603e31bc3bb348feec17632c
 const MainScreen = () => (
   <Tab.Navigator
     initialRouteName="Home"
