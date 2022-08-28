@@ -35,7 +35,7 @@ const usersRef = collection(db, "users");
 export const handleSignUp = createAsyncThunk(
   "handleSignUp",
   async (
-    { email, password }: { email: string; password: string },
+    { email, password, age }: { email: string; password: string; age: string },
     { rejectWithValue }
   ) => {
     try {
@@ -51,6 +51,7 @@ export const handleSignUp = createAsyncThunk(
         id: user.uid,
         email: email,
         password: password,
+        age: age,
       });
       alert("Document written with ID:" + user.uid);
     } catch (error) {
