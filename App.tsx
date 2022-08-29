@@ -36,7 +36,11 @@ const HomeStack = createNativeStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator>
-      <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
     </HomeStack.Navigator>
   );
 }
@@ -45,7 +49,11 @@ const GraphStack = createNativeStackNavigator();
 function GraphStackScreen() {
   return (
     <GraphStack.Navigator>
-      <GraphStack.Screen name="Graph" component={GraphScreen} />
+      <GraphStack.Screen
+        name="Graph"
+        component={GraphScreen}
+        options={{ headerShown: false }}
+      />
     </GraphStack.Navigator>
   );
 }
@@ -53,7 +61,11 @@ const TimerStack = createNativeStackNavigator();
 function TimerStackScreen() {
   return (
     <TimerStack.Navigator>
-      <TimerStack.Screen name="Timer" component={TimerScreen} />
+      <TimerStack.Screen
+        name="Timer"
+        component={TimerScreen}
+        options={{ headerShown: false }}
+      />
     </TimerStack.Navigator>
   );
 }
@@ -121,7 +133,11 @@ const RootScreen = () => {
   return (
     <Stack.Navigator initialRouteName="Initial">
       {isLogined ? (
-        <Stack.Screen name="Main" component={MainScreen} />
+        <Stack.Screen
+          name="Main"
+          component={MainScreen}
+          options={{ headerShown: false }}
+        />
       ) : (
         <Stack.Screen
           name="Initial"
