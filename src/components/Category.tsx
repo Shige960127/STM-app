@@ -1,5 +1,13 @@
 import React from "react";
-import { View, FlatList, StyleSheet, Text, StatusBar } from "react-native";
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  Text,
+  StatusBar,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 
 const DATA = [
   {
@@ -22,9 +30,10 @@ type Item = {
 };
 
 const Item = ({ item }: { item: Item }) => (
-  <View style={styles.item}>
+  // ここのonPressのロジックを変えれば各カテゴリーの詳細スクリーンに遷移できるようになるかも？
+  <TouchableOpacity style={styles.item} onPress={() => Alert.alert(item.title)}>
     <Text style={styles.title}>{item.title}</Text>
-  </View>
+  </TouchableOpacity>
 );
 
 const Category = () => {
