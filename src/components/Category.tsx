@@ -16,20 +16,25 @@ const DATA = [
   },
 ];
 
-const Item = ({ title }) => (
+type Item = {
+  title: string;
+  subTitle: string;
+};
+
+const Item = ({ item }: { item: Item }) => (
   <View style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
+    <Text style={styles.title}>{item.title}</Text>
   </View>
 );
 
 const Category = () => {
-  const renderItem = ({ item }) => <Item title={item.title} />;
+  const renderItem = ({ item }: { item: Item }) => <Item item={item} />;
 
   return (
     <FlatList
       data={DATA}
       renderItem={renderItem}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(_, key) => key.toString()}
     />
   );
 };

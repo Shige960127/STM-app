@@ -7,7 +7,6 @@ import {
   Dimensions,
   StyleSheet,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
 
 const screen = Dimensions.get("window");
 const formatNumber = (number: number) => `0${number}`.slice(-2);
@@ -17,6 +16,7 @@ const getRemaining = (time: number) => {
   const secs = time - mins * 60;
   return { mins: formatNumber(mins), secs: formatNumber(secs) };
 };
+
 const Timer = () => {
   const tailwind = useTailwind();
   const [remainingSecs, setRemainingSecs] = useState(0);
@@ -28,19 +28,19 @@ const Timer = () => {
   };
 
   useEffect(() => {
-    let interval: null | Timer = null;
+    let interval: null | NodeJS.Timer = null;
     if (isActive) {
       interval = setInterval(() => {
-        setRemainingSecs((remainingSecs) => remainingSecs + 1);
+        setRemainingSecs(remainingSecs + 1);
       }, 1000);
-    } else if (!isActive && remainingSecs !== 0) {
-      clearInterval(interval);
+    } else {
+      clearInterval(Number(interval));
     }
-    return () => clearInterval(interval);
+    return () => clearInterval(Number(interval));
   }, [isActive, remainingSecs]);
+
   return (
     <View style={tailwind("flex-1 bg-black items-center justify-center")}>
-      <StatusBar style="light-content" />
       <Text style={styles.timerText}>{`${mins}:${secs}`}</Text>
       <TouchableOpacity onPress={toggle} style={styles.button}>
         <Text style={styles.buttonText}>{isActive ? "Pause" : "Start"}</Text>
