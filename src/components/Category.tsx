@@ -9,30 +9,38 @@ import {
   Alert,
 } from "react-native";
 
-const DATA = [
+const DATA: Item[] = [
   {
     title: "PrimaryCategory",
     subTitle: "Fruits",
+    isVisble: true,
   },
   {
     title: "SecondaryCategory",
     subTitle: "Vegetables",
+    isVisble: true,
   },
   {
     title: "ThirdryCategory",
     subTitle: "drink",
+    isVisble: false,
   },
 ];
 
 type Item = {
   title: string;
   subTitle: string;
+  isVisble: boolean;
 };
 
 const Item = ({ item }: { item: Item }) => (
   // ここのonPressのロジックを変えれば各カテゴリーの詳細スクリーンに遷移できるようになるかも？
-  <TouchableOpacity style={styles.item} onPress={() => Alert.alert(item.title)}>
-    <Text style={styles.title}>{item.title}</Text>
+  <TouchableOpacity
+    style={styles.item}
+    onPress={() => Alert.alert(item.title)}
+    disabled={!item.isVisble}
+  >
+    {item.isVisble && <Text style={styles.title}>{item.title}</Text>}
   </TouchableOpacity>
 );
 
