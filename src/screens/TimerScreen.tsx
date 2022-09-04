@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import Timer from "@components/Timer";
-import Category from "@components/Category";
+import Category from "@components/SerCategory";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 

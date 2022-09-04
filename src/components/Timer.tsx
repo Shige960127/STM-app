@@ -7,7 +7,6 @@ import {
   Dimensions,
   StyleSheet,
 } from "react-native";
-import { StatusBar } from "expo-status-bar";
 
 const screen = Dimensions.get("window");
 const formatNumber = (number: number) => `0${number}`.slice(-2);
@@ -28,45 +27,32 @@ const Timer = () => {
   };
 
   useEffect(() => {
-    let interval: null | Timer = null;
+    let interval: null | NodeJS.Timer = null;
     if (isActive) {
       interval = setInterval(() => {
-        setRemainingSecs((remainingSecs) => remainingSecs + 1);
+        setRemainingSecs(remainingSecs + 1);
       }, 1000);
-    } else if (!isActive && remainingSecs !== 0) {
-      clearInterval(interval);
+    } else {
+      clearInterval(Number(interval));
     }
-    return () => clearInterval(interval);
+    return () => clearInterval(Number(interval));
   }, [isActive, remainingSecs]);
   return (
-    <View style={tailwind("flex-1 bg-black items-center justify-center")}>
-      <StatusBar style="light-content" />
-      <Text style={styles.timerText}>{`${mins}:${secs}`}</Text>
-      <TouchableOpacity onPress={toggle} style={styles.button}>
-        <Text style={styles.buttonText}>{isActive ? "Pause" : "Start"}</Text>
+    <View style={tailwind("flex-1 items-center justify-center")}>
+      <Text
+        style={tailwind("text-violet-400 text-4xl font-bold h-20 m-8")}
+      >{`${mins}:${secs}`}</Text>
+      <TouchableOpacity
+        onPress={toggle}
+        style={tailwind(
+          "flex flex-row border-8 border-violet-400 w-48 h-48 rounded-full items-center justify-center"
+        )}
+      >
+        <Text style={tailwind("text-4xl  text-violet-400 font-bold")}>
+          {isActive ? "Pause" : "Start"}
+        </Text>
       </TouchableOpacity>
     </View>
   );
 };
 export default Timer;
-
-const styles = StyleSheet.create({
-  button: {
-    borderWidth: 10,
-    borderColor: "#B9AAFF",
-    width: screen.width / 2,
-    height: screen.width / 2,
-    borderRadius: screen.width / 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonText: {
-    fontSize: 45,
-    color: "#B9AAFF",
-  },
-  timerText: {
-    color: "#fff",
-    fontSize: 90,
-    marginBottom: 20,
-  },
-});
