@@ -1,14 +1,20 @@
-import { SafeAreaView, View, Text, FlatList } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
 import PlusButton from "@components/PlusButton";
 
-type PrimaryCategory = {
+type SecondaryCategory = {
   id: string;
   name: string;
 };
 
-const PrimaryCategories: PrimaryCategory[] = [
-  { id: "1", name: "英語" },
+const SecondaryCategories: SecondaryCategory[] = [
+  { id: "1", name: "英語2" },
   { id: "2", name: "プログラミング" },
   { id: "3", name: "野球" },
   { id: "4", name: "野球" },
@@ -23,7 +29,7 @@ const PrimaryCategories: PrimaryCategory[] = [
   { id: "13", name: "野球" },
 ];
 
-const Item = ({ item }: { item: PrimaryCategory }) => {
+const Item = ({ item }: { item: SecondaryCategory }) => {
   const tailwind = useTailwind();
   return (
     <View style={tailwind("bg-blue-900 p-4")}>
@@ -36,7 +42,7 @@ export default () => {
   return (
     <SafeAreaView style={tailwind("flex-1")}>
       <FlatList
-        data={PrimaryCategories}
+        data={SecondaryCategories}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <Item item={item} />}
       />

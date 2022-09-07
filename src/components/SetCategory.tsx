@@ -19,23 +19,21 @@ import { RootStackParamList } from "../../App";
 
 const DATA: Item[] = [
   {
+    destination: "Primary",
     title: "PrimaryCategory",
     subtitle: "Fruits",
     isVisble: true,
   },
   {
+    destination: "Secondary",
     title: "SecondaryCategory",
     subtitle: "Vegetables",
-    isVisble: true,
-  },
-  {
-    title: "ThirdryCategory",
-    subtitle: "drink",
     isVisble: true,
   },
 ];
 
 type Item = {
+  destination: "Primary" | "Secondary";
   title: string;
   subtitle: string;
   isVisble: boolean;
@@ -59,7 +57,10 @@ const Category = () => {
     <FlatList
       data={DATA}
       renderItem={({ item }: { item: Item }) => (
-        <Item item={item} onPress={() => navigation.navigate("Primary")} />
+        <Item
+          item={item}
+          onPress={() => navigation.navigate(item.destination)}
+        />
       )}
       keyExtractor={(_, key) => key.toString()}
     />

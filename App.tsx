@@ -6,7 +6,7 @@ import HomeScreen from "@screens/HomeScreen";
 import GraphScreen from "@screens/GraphScreen";
 import TimerScreen from "@screens/TimerScreen";
 import PrimaryCategoryScreen from "@screens/PrimaryCategoryScreen";
-
+import SecondaryCategoryScreen from "@screens/SecondaryCategoryScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -25,6 +25,7 @@ export type RootStackParamList = {
   Graph: undefined;
   Timer: undefined;
   Primary: undefined;
+  Secondary: undefined;
 };
 
 export type RootReducer = {
@@ -68,11 +69,8 @@ function TimerStackScreen() {
         component={TimerScreen}
         options={{ headerShown: false }}
       />
-      <TimerStack.Screen
-        name="Primary"
-        component={PrimaryCategoryScreen}
-        options={{ headerShown: false }}
-      />
+      <TimerStack.Screen name="Primary" component={PrimaryCategoryScreen} />
+      <TimerStack.Screen name="Secondary" component={SecondaryCategoryScreen} />
     </TimerStack.Navigator>
   );
 }
