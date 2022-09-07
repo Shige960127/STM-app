@@ -14,6 +14,7 @@ import { useSelector, Provider, useDispatch } from "react-redux";
 import { UserState, checkLogin } from "@stores/user";
 import store, { AppDispatch } from "@stores/index";
 import { AntDesign } from "@expo/vector-icons";
+import { CategoryState } from "@stores/categories";
 
 export type RootStackParamList = {
   Main: undefined;
@@ -30,6 +31,7 @@ export type RootStackParamList = {
 
 export type RootReducer = {
   user: UserState;
+  categories: CategoryState;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

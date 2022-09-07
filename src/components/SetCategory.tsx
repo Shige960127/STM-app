@@ -1,42 +1,20 @@
-import { useTailwind } from "tailwind-rn/dist";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { useSelector } from "react-redux";
 import {
-  SafeAreaView,
-  View,
   Text,
-  TextInput,
   FlatList,
-  Alert,
   StyleSheet,
   StatusBar,
   TouchableOpacity,
-  NativeSyntheticEvent,
-  TextInputChangeEventData,
 } from "react-native";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootStackParamList } from "../../App";
-
-const DATA: Item[] = [
-  {
-    destination: "Primary",
-    title: "PrimaryCategory",
-    subtitle: "Fruits",
-    isVisble: true,
-  },
-  {
-    destination: "Secondary",
-    title: "SecondaryCategory",
-    subtitle: "Vegetables",
-    isVisble: true,
-  },
-];
+import { RootStackParamList, RootReducer } from "../../App";
 
 type Item = {
   destination: "Primary" | "Secondary";
   title: string;
   subtitle: string;
   isVisble: boolean;
+  value?: string;
 };
 
 const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => (
@@ -52,6 +30,25 @@ const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => (
 const Category = () => {
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, "Primary">>();
+
+  const {
+    categories: { primary },
+  } = useSelector(({ categories }: RootReducer) => categories);
+
+  const DATA: Item[] = [
+    {
+      destination: "Primary",
+      title: primary ? primary : "PrimaryCategory",
+      subtitle: "Fruits",
+      isVisble: true,
+    },
+    {
+      destination: "Secondary",
+      title: "SecondaryCategory",
+      subtitle: "Vegetables",
+      isVisble: true,
+    },
+  ];
 
   return (
     <FlatList
