@@ -40,7 +40,7 @@ const Timer = () => {
   return (
     <View style={tailwind("flex-1 items-center justify-center")}>
       <Text
-        style={tailwind("text-violet-400 text-4xl font-bold h-20 m-8")}
+        style={tailwind("text-violet-400 text-4xl font-bold h-20 m-4")}
       >{`${mins}:${secs}`}</Text>
       <TouchableOpacity
         onPress={toggle}

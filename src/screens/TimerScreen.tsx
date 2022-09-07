@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from "react-native";
 import Timer from "@components/Timer";
-import Category from "@components/SerCategory";
+import Category from "@components/SetCategory";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 
@@ -25,6 +25,16 @@ const TimerScreen = () => {
         <Category />
       </View>
       <Timer />
+      <View style={tailwind("flex items-center justify-center mt-8")}>
+        <TouchableOpacity
+          // onPress={() => }
+          style={tailwind(
+            "w-80 flex flex-row justify-center items-center m-4 p-4 rounded-2xl bg-sky-400"
+          )}
+        >
+          <Text style={tailwind("text-white font-bold")}>計測時間を保存</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };

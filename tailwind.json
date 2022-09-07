@@ -7,14 +7,6 @@
 			"marginLeft": 16
 		}
 	},
-	"m-8": {
-		"style": {
-			"marginTop": 32,
-			"marginRight": 32,
-			"marginBottom": 32,
-			"marginLeft": 32
-		}
-	},
 	"my-4": {
 		"style": {
 			"marginTop": 16,

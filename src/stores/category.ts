@@ -1,4 +1,4 @@
-import {getAuth} from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import {
   collection,
   doc,
@@ -14,16 +14,14 @@ import {
 import { db } from "../firebase/firebase";
 import { useTailwind } from "tailwind-rn/dist";
 import { useState } from "react";
-import { View,Text, TextInput } from "react-native";
+import { View, Text, TextInput } from "react-native";
 
 export type category = {
   name: string;
-}
+};
 
 const auth = getAuth();
-const categoryRef = collection(db, "users", "primaryCategory");
-
+const primariesRef = collection(db, "primaries");
+const secondariesRef = collection(db, "secondaries");
 
 const tailwind = useTailwind();
-
-
