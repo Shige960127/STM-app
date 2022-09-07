@@ -14,6 +14,8 @@ import {
   NativeSyntheticEvent,
   TextInputChangeEventData,
 } from "react-native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParamList } from "../../App";
 
 const DATA: Item[] = [
   {
@@ -39,10 +41,10 @@ type Item = {
   isVisble: boolean;
 };
 
-const Item = ({ item }: { item: Item }) => (
+const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => (
   <TouchableOpacity
     style={styles.item}
-    onPress={() => Alert.alert(item.title)}
+    onPress={onPress}
     disabled={!item.isVisble}
   >
     {item.isVisble && <Text style={styles.title}>{item.title}</Text>}
@@ -50,11 +52,15 @@ const Item = ({ item }: { item: Item }) => (
 );
 
 const Category = () => {
-  const renderItem = ({ item }: { item: Item }) => <Item item={item} />;
+  const navigation =
+    useNavigation<NavigationProp<RootStackParamList, "Primary">>();
+
   return (
     <FlatList
       data={DATA}
-      renderItem={renderItem}
+      renderItem={({ item }: { item: Item }) => (
+        <Item item={item} onPress={() => navigation.navigate("Primary")} />
+      )}
       keyExtractor={(_, key) => key.toString()}
     />
   );
