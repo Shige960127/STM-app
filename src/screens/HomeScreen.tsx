@@ -8,9 +8,9 @@ import { AppDispatch } from "../stores/index";
 import { RootReducer } from "../../App";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-import Monthly from "@components/Monthly";
-import Year from "@components/Year";
-import Weekly from "@components/Weekly";
+import Monthly from "@screens/Monthly";
+import Year from "@screens/Year";
+import Weekly from "@screens/Weekly";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Home">;
 
