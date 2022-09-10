@@ -29,7 +29,7 @@ const Item = ({
 }) => {
   const tailwind = useTailwind();
   return (
-    <TouchableOpacity style={tailwind("")}>
+    <TouchableOpacity style={tailwind("bg-blue-900 p-4")} onPress={onPress}>
       <Text>{item.name}</Text>
     </TouchableOpacity>
   );

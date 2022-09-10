@@ -11,16 +11,18 @@ type Item = {
   value?: string;
 };
 
-const tailwind = useTailwind();
-const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => (
-  <TouchableOpacity
-    style={tailwind("bg-amber-500 p-5 border-red-600 mx-4")}
-    onPress={onPress}
-    disabled={!item.isVisble}
-  >
-    {item.isVisble && <Text style={tailwind("text-4xl")}>{item.title}</Text>}
-  </TouchableOpacity>
-);
+const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => {
+  const tailwind = useTailwind();
+  return (
+    <TouchableOpacity
+      style={tailwind("bg-amber-500 p-5 border-red-600 mx-4")}
+      onPress={onPress}
+      disabled={!item.isVisble}
+    >
+      {item.isVisble && <Text style={tailwind("text-4xl")}>{item.title}</Text>}
+    </TouchableOpacity>
+  );
+};
 
 const Category = () => {
   const navigation =

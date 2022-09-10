@@ -2,9 +2,9 @@ import { TouchableOpacity, Text, SafeAreaView, FlatList } from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
 import PlusButton from "@components/PlusButton";
 
-// import { useNavigation, NavigationProp } from "@react-navigation/native";
-// import { RootStackParamList, RootReducer } from "../../App";
-// import { useDispatch, useSelector } from "react-redux";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { RootStackParamList, RootReducer } from "../../App";
+import { useDispatch, useSelector } from "react-redux";
 // import {setCategory} from "@stores/categories"
 
 type SecondaryCategory = {
@@ -31,14 +31,14 @@ const Item = ({ item }: { item: SecondaryCategory }) => {
 
 export default () => {
   const tailwind = useTailwind();
-  // const navigation =
-  //   useNavigation<NavigationProp<RootStackParamList, "Secondary">>();
+  const navigation =
+    useNavigation<NavigationProp<RootStackParamList, "Secondary">>();
 
-  // const dispatch = useDispatch();
-  // const {
-  //   categories: { secondary },
-  // } = useSelector(({ categories }: RootReducer) => categories);
-  // console.log({ secondary });
+  const dispatch = useDispatch();
+  const {
+    categories: { secondary },
+  } = useSelector(({ categories }: RootReducer) => categories);
+  console.log({ secondary });
   return (
     <SafeAreaView style={tailwind("flex-1")}>
       <FlatList
