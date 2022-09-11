@@ -5,7 +5,7 @@ import PlusButton from "@components/PlusButton";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList, RootReducer } from "../../App";
 import { useDispatch, useSelector } from "react-redux";
-// import {setCategory} from "@stores/categories"
+import { setSecondary } from "@stores/categories";
 
 type SecondaryCategory = {
   id: string;
@@ -20,11 +20,17 @@ const SecondaryCategories: SecondaryCategory[] = [
   { id: "5", name: "ランニング" },
 ];
 
-const Item = ({ item }: { item: SecondaryCategory }) => {
+const Item = ({
+  item,
+  onPress,
+}: {
+  item: SecondaryCategory;
+  onPress: () => void;
+}) => {
   const tailwind = useTailwind();
   return (
-    <TouchableOpacity style={tailwind("bg-blue-900 p-4")}>
-      <Text style={tailwind("text-lg text-white")}>{item.name}</Text>
+    <TouchableOpacity style={tailwind("bg-blue-900 p-4")} onPress={onPress}>
+      <Text>{item.name}</Text>
     </TouchableOpacity>
   );
 };
@@ -47,10 +53,10 @@ export default () => {
         renderItem={({ item }) => (
           <Item
             item={item}
-            // onPress={() => {
-            //   dispatch(setSecondary(item.name));
-            //   navigation.
-            // }}
+            onPress={() => {
+              dispatch(setSecondary(item.name));
+              navigation.goBack();
+            }}
           />
         )}
       />

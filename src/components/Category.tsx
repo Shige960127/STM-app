@@ -26,9 +26,11 @@ const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => {
 
 const Category = () => {
   const navigation =
-    useNavigation<NavigationProp<RootStackParamList, "Primary">>();
+    useNavigation<
+      NavigationProp<RootStackParamList, "Primary" | "Secondary">
+    >();
   const {
-    categories: { primary },
+    categories: { primary, secondary },
   } = useSelector(({ categories }: RootReducer) => categories);
 
   const DATA: Item[] = [
@@ -39,7 +41,7 @@ const Category = () => {
     },
     {
       destination: "Secondary",
-      title: "SecondaryCategory",
+      title: secondary ? secondary : "SecondaryCategory",
       isVisble: true,
     },
   ];

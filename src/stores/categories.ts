@@ -23,10 +23,14 @@ export const categories = createSlice({
     setPrimary(state, { payload }: { payload: string }) {
       state.categories.primary = payload;
     },
+    setSecondary(state, { payload }: { payload: string }) {
+      state.categories.secondary = payload;
+    },
   },
   extraReducers: {},
 });
 
 export const { setPrimary } = categories.actions;
+export const { setSecondary } = categories.actions;
 
 export default categories.reducer;
