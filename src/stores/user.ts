@@ -20,6 +20,7 @@ import {
 } from "firebase/firestore";
 
 export type user = {
+  id: string;
   name: string;
   email: string;
 };
@@ -135,7 +136,6 @@ export const user = createSlice({
     builder.addCase(
       getUser.fulfilled,
       (state, { payload }: { payload: DocumentData | undefined }) => {
-        console.log({ payload });
         state.user = payload;
         state.isLogined = Boolean(payload);
         state.status = "success";
