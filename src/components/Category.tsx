@@ -30,7 +30,7 @@ const Category = () => {
       NavigationProp<RootStackParamList, "Primary" | "Secondary">
     >();
   const {
-    categories: { primary, secondary },
+    selectCategory: { primary, secondary },
   } = useSelector(({ categories }: RootReducer) => categories);
 
   const DATA: Item[] = [
