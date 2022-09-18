@@ -12,7 +12,12 @@ import PlusButton from "@components/PlusButton";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList, RootReducer } from "../../App";
 import { useDispatch, useSelector } from "react-redux";
-import { setPrimary, createPrimary, getPrimaries } from "@stores/categories";
+import {
+  setPrimary,
+  createPrimary,
+  getPrimaries,
+  getPrimaryID,
+} from "@stores/categories";
 import { useEffect, useState } from "react";
 import Modal from "react-native-modal";
 import { AppDispatch } from "@stores/index";
@@ -64,6 +69,7 @@ export default () => {
             item={item}
             onPress={() => {
               dispatch(setPrimary(item.name));
+              dispatch(getPrimaryID(item.id));
               navigation.goBack();
             }}
           />

@@ -1,24 +1,26 @@
-import { TouchableOpacity, Text, SafeAreaView, FlatList } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  SafeAreaView,
+  FlatList,
+  View,
+  Button,
+  TextInput,
+} from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
 import PlusButton from "@components/PlusButton";
-
+import { useState, useEffect } from "react";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList, RootReducer } from "../../App";
 import { useDispatch, useSelector } from "react-redux";
-import { setSecondary } from "@stores/categories";
-
-type SecondaryCategory = {
-  id: string;
-  name: string;
-};
-
-const SecondaryCategories: SecondaryCategory[] = [
-  { id: "1", name: "文法" },
-  { id: "2", name: "ReactNative" },
-  { id: "3", name: "素振り" },
-  { id: "4", name: "質問回答" },
-  { id: "5", name: "ランニング" },
-];
+import {
+  setSecondary,
+  createSecondary,
+  getSecondaries,
+} from "@stores/categories";
+import { SecondaryCategory } from "@stores/categories";
+import Modal from "react-native-modal";
+import Loading from "@components/Loading";
 
 const Item = ({
   item,
@@ -39,16 +41,25 @@ export default () => {
   const tailwind = useTailwind();
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, "Secondary">>();
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newSecondary, setNewSecondary] = useState("");
   const dispatch = useDispatch();
-  const {
-    categories: { secondary },
-  } = useSelector(({ categories }: RootReducer) => categories);
-  console.log({ secondary });
+  const { selectCategoryID } = useSelector(
+    ({ categories }: RootReducer) => categories
+  );
+  const { secondaryCategories, status } = useSelector(
+    ({ categories }: RootReducer) => categories
+  );
+
+  useEffect(() => {
+    setNewSecondary("");
+    dispatch(getSecondaries({ primaryID: selectCategoryID!.primaryID }));
+  }, [selectCategoryID]);
+
   return (
     <SafeAreaView style={tailwind("flex-1")}>
       <FlatList
-        data={SecondaryCategories}
+        data={secondaryCategories}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Item
@@ -60,7 +71,43 @@ export default () => {
           />
         )}
       />
-      <PlusButton />
+      <PlusButton onPress={() => setModalVisible(true)} />
+      <View>
+        <Modal isVisible={modalVisible}>
+          {status === "pending" ? (
+            <>
+              <View style={tailwind("h-40")}>
+                <Loading />
+              </View>
+            </>
+          ) : (
+            <View style={tailwind("bg-white p-12 rounded-2xl")}>
+              <TextInput
+                style={tailwind("border p-2 rounded-lg")}
+                onChangeText={(text) => setNewSecondary(text)}
+                value={newSecondary}
+              />
+              <Button
+                title="カテゴリーを追加"
+                onPress={() => {
+                  dispatch(
+                    createSecondary({
+                      secondary: newSecondary,
+                      primaryId: selectCategoryID!.primaryID,
+                    })
+                  );
+                  setModalVisible(false);
+                  setNewSecondary("");
+                  dispatch(
+                    getSecondaries({ primaryId: selectCategoryID!.primaryID })
+                  );
+                }}
+              />
+              <Button title="閉じる" onPress={() => setModalVisible(false)} />
+            </View>
+          )}
+        </Modal>
+      </View>
     </SafeAreaView>
   );
 };
