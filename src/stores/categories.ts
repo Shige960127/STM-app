@@ -19,18 +19,31 @@ type SelectCategory = {
   secondary: string;
 };
 
+type SelectCategoryID = {
+  primaryID: string;
+  secondaryID: string;
+};
+
 export type PrimaryCategory = {
+  id: string;
+  name: string;
+};
+
+export type SecondaryCategory = {
   id: string;
   name: string;
 };
 
 export type CategoryState = {
   primaryCategories: PrimaryCategory[];
+  secondaryCategories: SecondaryCategory[];
   selectCategory: SelectCategory;
+  selectCategoryID: SelectCategoryID;
   status: "initial" | "success" | "failure" | "pending";
 };
 
 const primariesRef = collection(db, "primaries");
+const secondariesRef = collection(db, "secondary");
 
 export const createPrimary = createAsyncThunk(
   "createPrimary",
@@ -41,6 +54,27 @@ export const createPrimary = createAsyncThunk(
         id: id,
         name: primary,
         user_id: userId,
+      });
+    } catch (e) {
+      alert(e);
+    }
+  }
+);
+export const createSecondary = createAsyncThunk(
+  "createSecondary",
+  async ({
+    secondary,
+    primaryId,
+  }: {
+    secondary: string;
+    primaryId: string;
+  }) => {
+    const id = uuidv4();
+    try {
+      await setDoc(doc(secondariesRef, id), {
+        id: id,
+        name: secondary,
+        primary_id: primaryId,
       });
     } catch (e) {
       alert(e);
@@ -61,13 +95,31 @@ export const getPrimaries = createAsyncThunk(
   }
 );
 
+export const getSecondaries = createAsyncThunk(
+  "getSeconadaries",
+  async ({ primaryID }: { primaryID: string }) => {
+    try {
+      const q = query(secondariesRef, where("primary_id", "==", primaryID));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => doc.data());
+    } catch (e) {
+      console.log(e);
+    }
+  }
+);
+
 export const categories = createSlice({
   name: "categories",
   initialState: <CategoryState>{
     primaryCategories: [],
+    secondaryCategories: [],
     selectCategory: {
       primary: "",
       secondary: "",
+    },
+    selectCategoryID: {
+      primaryID: "",
+      secondaryID: "",
     },
     status: "initial",
   },
@@ -77,6 +129,9 @@ export const categories = createSlice({
     },
     setSecondary(state, { payload }: { payload: string }) {
       state.selectCategory.secondary = payload;
+    },
+    getPrimaryID(state, { payload }: { payload: string }) {
+      state.selectCategoryID.primaryID = payload;
     },
   },
   extraReducers: (builder: ActionReducerMapBuilder<CategoryState>) => {
@@ -93,10 +148,24 @@ export const categories = createSlice({
         state.status = "success";
       }
     );
+    builder.addCase(createSecondary.fulfilled, (state) => {
+      state.status = "success";
+    });
+    builder.addCase(createSecondary.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(
+      getSecondaries.fulfilled,
+      (state, { payload }: { payload: any }) => {
+        state.secondaryCategories = payload;
+        state.status = "success";
+      }
+    );
   },
 });
 
 export const { setPrimary } = categories.actions;
 export const { setSecondary } = categories.actions;
+export const { getPrimaryID } = categories.actions;
 
 export default categories.reducer;
