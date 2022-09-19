@@ -54,7 +54,7 @@ export default () => {
 
   useEffect(() => {
     setNewSecondary("");
-    dispatch(getSecondaries({ primaryID: primary.id }));
+    dispatch(getSecondaries({ primaryID: primary!.id }));
   }, [primary]);
 
   return (
@@ -94,12 +94,12 @@ export default () => {
                   dispatch(
                     createSecondary({
                       secondary: newSecondary,
-                      primaryId: primary.id,
+                      primaryId: primary!.id,
                     })
                   );
                   setModalVisible(false);
                   setNewSecondary("");
-                  dispatch(getSecondaries({ primaryID: primary.id }));
+                  dispatch(getSecondaries({ primaryID: primary!.id }));
                 }}
               />
               <Button title="閉じる" onPress={() => setModalVisible(false)} />

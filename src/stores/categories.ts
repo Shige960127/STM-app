@@ -15,8 +15,8 @@ import { db } from "../firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
 
 type SelectCategory = {
-  primary: PrimaryCategory;
-  secondary: SecondaryCategory;
+  primary: PrimaryCategory | null;
+  secondary: SecondaryCategory | null;
 };
 
 export type PrimaryCategory = {
@@ -108,14 +108,15 @@ export const categories = createSlice({
     primaryCategories: [],
     secondaryCategories: [],
     selectCategory: {
-      primary: { id: "", name: "" },
-      secondary: { id: "", name: "" },
+      primary: null,
+      secondary: null,
     },
     status: "initial",
   },
   reducers: {
     setPrimary(state, { payload }: { payload: PrimaryCategory }) {
       state.selectCategory.primary = payload;
+      state.selectCategory.secondary = null;
     },
     setSecondary(state, { payload }: { payload: SecondaryCategory }) {
       state.selectCategory.secondary = payload;
