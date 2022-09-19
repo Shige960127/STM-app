@@ -64,7 +64,6 @@ export default () => {
             item={item}
             onPress={() => {
               dispatch(setPrimary(item));
-              // dispatch(getPrimaryID(item.id));
               navigation.goBack();
             }}
           />
