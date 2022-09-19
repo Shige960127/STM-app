@@ -13,7 +13,6 @@ import { useDispatch } from "react-redux";
 import { handleSignIn } from "../stores/user";
 import { AppDispatch } from "../stores/index";
 import { AntDesign } from "@expo/vector-icons";
-import GoogleSignIn from "@components/GoogleSignIn";
 
 type Props = NativeStackScreenProps<RootStackParamList, "SignIn">;
 

@@ -36,12 +36,12 @@ const Category = () => {
   const DATA: Item[] = [
     {
       destination: "Primary",
-      title: primary ? primary : "PrimaryCategory",
+      title: primary ? primary.name : "PrimaryCategory",
       isVisble: true,
     },
     {
       destination: "Secondary",
-      title: secondary ? secondary : "SecondaryCategory",
+      title: secondary ? secondary.name : "SecondaryCategory",
       isVisble: true,
     },
   ];

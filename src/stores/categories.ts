@@ -15,13 +15,8 @@ import { db } from "../firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
 
 type SelectCategory = {
-  primary: string;
-  secondary: string;
-};
-
-type SelectCategoryID = {
-  primaryID: string;
-  secondaryID: string;
+  primary: PrimaryCategory | null;
+  secondary: SecondaryCategory | null;
 };
 
 export type PrimaryCategory = {
@@ -38,12 +33,11 @@ export type CategoryState = {
   primaryCategories: PrimaryCategory[];
   secondaryCategories: SecondaryCategory[];
   selectCategory: SelectCategory;
-  selectCategoryID: SelectCategoryID;
   status: "initial" | "success" | "failure" | "pending";
 };
 
 const primariesRef = collection(db, "primaries");
-const secondariesRef = collection(db, "secondary");
+const secondariesRef = collection(db, "secondaries");
 
 export const createPrimary = createAsyncThunk(
   "createPrimary",
@@ -114,24 +108,18 @@ export const categories = createSlice({
     primaryCategories: [],
     secondaryCategories: [],
     selectCategory: {
-      primary: "",
-      secondary: "",
-    },
-    selectCategoryID: {
-      primaryID: "",
-      secondaryID: "",
+      primary: null,
+      secondary: null,
     },
     status: "initial",
   },
   reducers: {
-    setPrimary(state, { payload }: { payload: string }) {
+    setPrimary(state, { payload }: { payload: PrimaryCategory }) {
       state.selectCategory.primary = payload;
+      state.selectCategory.secondary = null;
     },
-    setSecondary(state, { payload }: { payload: string }) {
+    setSecondary(state, { payload }: { payload: SecondaryCategory }) {
       state.selectCategory.secondary = payload;
-    },
-    getPrimaryID(state, { payload }: { payload: string }) {
-      state.selectCategoryID.primaryID = payload;
     },
   },
   extraReducers: (builder: ActionReducerMapBuilder<CategoryState>) => {
@@ -164,8 +152,5 @@ export const categories = createSlice({
   },
 });
 
-export const { setPrimary } = categories.actions;
-export const { setSecondary } = categories.actions;
-export const { getPrimaryID } = categories.actions;
-
+export const { setPrimary, setSecondary } = categories.actions;
 export default categories.reducer;
