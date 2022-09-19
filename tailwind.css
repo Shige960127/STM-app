@@ -22,6 +22,14 @@
   margin: 1rem
 }
 
+.m-1 {
+  margin: 0.25rem
+}
+
+.m-2 {
+  margin: 0.5rem
+}
+
 .mx-4 {
   margin-left: 1rem;
   margin-right: 1rem
@@ -200,6 +208,10 @@
 
 .p-12 {
   padding: 3rem
+}
+
+.p-1 {
+  padding: 0.25rem
 }
 
 .py-4 {

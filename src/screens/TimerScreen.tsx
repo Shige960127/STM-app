@@ -1,14 +1,8 @@
 import { useTailwind } from "tailwind-rn/dist";
-import {
-  View,
-  Text,
-  SafeAreaView,
-  TouchableOpacity,
-  Dimensions,
-  StyleSheet,
-} from "react-native";
+import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
 import Timer from "@components/Timer";
 import Category from "@components/Category";
+import CurrentDate from "@components/CurrentDate";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 
@@ -18,8 +12,12 @@ const TimerScreen = () => {
   const tailwind = useTailwind();
   return (
     <SafeAreaView style={tailwind("flex-1")}>
-      <View style={tailwind("flex flex-col items-start")}>
-        <Text>Timerデータを表示します</Text>
+      <View
+        style={tailwind(
+          "flex flex-col items-start items-center justify-center m-2 p-1"
+        )}
+      >
+        <CurrentDate />
       </View>
       <View>
         <Category />
