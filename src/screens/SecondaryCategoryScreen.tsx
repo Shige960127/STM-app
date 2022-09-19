@@ -21,6 +21,7 @@ import {
 import { SecondaryCategory } from "@stores/categories";
 import Modal from "react-native-modal";
 import Loading from "@components/Loading";
+import { AppDispatch } from "@stores/index";
 
 const Item = ({
   item,
@@ -43,18 +44,18 @@ export default () => {
     useNavigation<NavigationProp<RootStackParamList, "Secondary">>();
   const [modalVisible, setModalVisible] = useState(false);
   const [newSecondary, setNewSecondary] = useState("");
-  const dispatch = useDispatch();
-  const { selectCategoryID } = useSelector(
-    ({ categories }: RootReducer) => categories
-  );
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    selectCategory: { primary },
+  } = useSelector(({ categories }: RootReducer) => categories);
   const { secondaryCategories, status } = useSelector(
     ({ categories }: RootReducer) => categories
   );
 
   useEffect(() => {
     setNewSecondary("");
-    dispatch(getSecondaries({ primaryID: selectCategoryID!.primaryID }));
-  }, [selectCategoryID]);
+    dispatch(getSecondaries({ primaryID: primary.id }));
+  }, [primary]);
 
   return (
     <SafeAreaView style={tailwind("flex-1")}>
@@ -65,7 +66,7 @@ export default () => {
           <Item
             item={item}
             onPress={() => {
-              dispatch(setSecondary(item.name));
+              dispatch(setSecondary(item));
               navigation.goBack();
             }}
           />
@@ -93,14 +94,12 @@ export default () => {
                   dispatch(
                     createSecondary({
                       secondary: newSecondary,
-                      primaryId: selectCategoryID!.primaryID,
+                      primaryId: primary.id,
                     })
                   );
                   setModalVisible(false);
                   setNewSecondary("");
-                  dispatch(
-                    getSecondaries({ primaryId: selectCategoryID!.primaryID })
-                  );
+                  dispatch(getSecondaries({ primaryID: primary.id }));
                 }}
               />
               <Button title="閉じる" onPress={() => setModalVisible(false)} />
