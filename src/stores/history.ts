@@ -3,11 +3,11 @@ import {
   createAsyncThunk,
   ActionReducerMapBuilder,
 } from "@reduxjs/toolkit";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { collection, doc, setDoc, query, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
 
-type History = {
+export type History = {
   id: string;
   user_id: string;
   primary_id: string;
@@ -17,7 +17,7 @@ type History = {
   created_at: Date;
 };
 
-type HistoryState = {
+export type HistoryState = {
   histories: History[];
   status: "initial" | "success" | "failure" | "pending";
   errors?: string;
@@ -50,6 +50,16 @@ export const createHistory = createAsyncThunk(
     }
   }
 );
+
+// export const getHistories = createAsyncThunk("getHistories", async () => {
+//   try {
+//     const q = query(historiesRef);
+//     const querySnapshot = await getDocs(q);
+//     return querySnapshot.docs.map((doc) => doc.data());
+//   } catch (e) {
+//     console.log(e);
+//   }
+// });
 
 export const histories = createSlice({
   name: "histories",

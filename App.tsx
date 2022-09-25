@@ -14,6 +14,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useSelector, Provider, useDispatch } from "react-redux";
 import { UserState, checkLogin } from "@stores/user";
 import { CategoryState } from "@stores/categories";
+import { HistoryState } from "@stores/history";
 import store, { AppDispatch } from "@stores/index";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -33,6 +34,7 @@ export type RootStackParamList = {
 export type RootReducer = {
   user: UserState;
   categories: CategoryState;
+  histories: HistoryState;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

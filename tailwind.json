@@ -32,14 +32,6 @@
 			"marginLeft": 16
 		}
 	},
-	"m-1": {
-		"style": {
-			"marginTop": 4,
-			"marginRight": 4,
-			"marginBottom": 4,
-			"marginLeft": 4
-		}
-	},
 	"m-2": {
 		"style": {
 			"marginTop": 8,
