@@ -3,7 +3,14 @@ import {
   createAsyncThunk,
   ActionReducerMapBuilder,
 } from "@reduxjs/toolkit";
-import { collection, doc, setDoc, query, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  setDoc,
+  query,
+  getDocs,
+  where,
+} from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import { v4 as uuidv4 } from "uuid";
 
@@ -51,15 +58,18 @@ export const createHistory = createAsyncThunk(
   }
 );
 
-// export const getHistories = createAsyncThunk("getHistories", async () => {
-//   try {
-//     const q = query(historiesRef);
-//     const querySnapshot = await getDocs(q);
-//     return querySnapshot.docs.map((doc) => doc.data());
-//   } catch (e) {
-//     console.log(e);
-//   }
-// });
+export const getHistories = createAsyncThunk(
+  "getHistories",
+  async ({ userId }: { userId: string }) => {
+    try {
+      const q = query(historiesRef, where("user_id", "==", userId));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => doc.data());
+    } catch (e) {
+      console.log(e);
+    }
+  }
+);
 
 export const histories = createSlice({
   name: "histories",
@@ -73,6 +83,12 @@ export const histories = createSlice({
     builder.addCase(createHistory.fulfilled, (state) => {
       state.status = "success";
     });
+    builder.addCase(
+      getHistories.fulfilled,
+      (state, { payload }: { payload: any }) => {
+        state.histories = payload;
+      }
+    );
   },
 });
 

@@ -1,9 +1,10 @@
-import { Text, View, FlatList, Pressable } from "react-native";
-import { useSelector } from "react-redux";
+import { Text, View, FlatList } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { RootReducer } from "../../App";
 import { useEffect } from "react";
-import { History } from "@stores/history";
+import { getHistories, History } from "@stores/history";
 import { useTailwind } from "tailwind-rn/dist";
+import { AppDispatch } from "@stores/index";
 
 // const TEST = ({ item }: { item: History }) => {
 //   const tailwind = useTailwind();
@@ -35,6 +36,12 @@ const Item = ({ title }: { title: string }) => {
 };
 
 export default () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector(({ user }: RootReducer) => user);
+  useEffect(() => {
+    dispatch(getHistories({ userId: user!.id }));
+  }, []);
+  // ↓データが取れているはずなのでこのhistoriesを使ってFlatListを表示してみてください！
   // const { histories, status } = useSelector(
   //   ({ histories }: RootReducer) => histories
   // );
