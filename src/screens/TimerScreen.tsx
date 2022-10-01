@@ -22,7 +22,9 @@ const TimerScreen = () => {
       createHistory({
         userId: user!.id,
         primaryId: primary!.id,
+        primaryName: primary!.name,
         secondaryId: secondary!.id,
+        secondaryName: secondary!.name,
         measuringTime: remainingSecs,
       })
     );

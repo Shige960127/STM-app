@@ -34,7 +34,7 @@ export type RootStackParamList = {
 export type RootReducer = {
   user: UserState;
   categories: CategoryState;
-  histories: HistoryState;
+  history: HistoryState;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

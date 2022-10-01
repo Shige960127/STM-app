@@ -18,8 +18,11 @@ export type History = {
   id: string;
   user_id: string;
   primary_id: string;
+  primary_name: string;
   secondary_id: string;
+  secondary_name: string;
   tertiary_id?: string;
+  tertiary_name?: string;
   measuring_time: string;
   created_at: Date;
 };
@@ -33,8 +36,11 @@ export type HistoryState = {
 type createHistory = {
   userId: string;
   primaryId: string;
+  primaryName: string;
   secondaryId: string;
+  secondaryName: string;
   tertiaryId?: string;
+  tertiaryName?: string;
   measuringTime: number;
 };
 
@@ -47,8 +53,11 @@ export const createHistory = createAsyncThunk(
       await setDoc(doc(historiesRef, id), {
         user_id: data.userId,
         primary_id: data.primaryId,
+        primary_name: data.primaryName,
         secondary_id: data.secondaryId,
+        secondary_name: data.secondaryName,
         tertiary_id: data.tertiaryId ? data.tertiaryId : "undefined",
+        tertiary_name: data.tertiaryName ? data.tertiaryName : "undefined",
         measuring_time: data.measuringTime,
         created_at: new Date(),
       });
@@ -60,19 +69,19 @@ export const createHistory = createAsyncThunk(
 
 export const getHistories = createAsyncThunk(
   "getHistories",
-  async ({ userId }: { userId: string }) => {
+  async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
       const q = query(historiesRef, where("user_id", "==", userId));
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
-      console.log(e);
+      return rejectWithValue(e);
     }
   }
 );
 
-export const histories = createSlice({
-  name: "histories",
+export const hiostory = createSlice({
+  name: "hiostory",
   initialState: <HistoryState>{
     histories: [],
     status: "initial",
@@ -87,9 +96,20 @@ export const histories = createSlice({
       getHistories.fulfilled,
       (state, { payload }: { payload: any }) => {
         state.histories = payload;
+        state.status = "success";
+      }
+    );
+    builder.addCase(getHistories.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(
+      getHistories.rejected,
+      (state, { payload }: { payload: any }) => {
+        state.status = "failure";
+        state.errors = payload;
       }
     );
   },
 });
 
-export default histories.reducer;
+export default hiostory.reducer;

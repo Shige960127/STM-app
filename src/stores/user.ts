@@ -145,7 +145,6 @@ export const user = createSlice({
     builder.addCase(
       checkLogin.fulfilled,
       (state, { payload }: { payload: user | null }) => {
-        console.log({ payload });
         (state.user = payload), state.isLogined, (state.status = "success");
       }
     );
