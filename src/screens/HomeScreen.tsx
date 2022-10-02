@@ -1,18 +1,13 @@
 import { useTailwind } from "tailwind-rn/dist";
 import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { handleSignOut } from "../stores/user";
 import { AppDispatch } from "../stores/index";
-import { RootReducer } from "../../App";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-import Monthly from "@screens/Monthly";
-import Year from "@screens/Year";
-import Weekly from "@screens/Weekly";
-
-type Props = NativeStackScreenProps<RootStackParamList, "Home">;
+import Monthly from "@components/Monthly";
+import Year from "@components/Year";
+import Weekly from "@components/Weekly";
 
 const Tab = createMaterialTopTabNavigator();
 const HomeTopTabs = () => {
@@ -28,8 +23,6 @@ const HomeTopTabs = () => {
 const HomeScreen = () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector(({ user }: RootReducer) => user);
-  console.log("ユーザー情報：", user);
   return (
     <SafeAreaView style={tailwind("flex-1")}>
       <View style={tailwind("m-4 p-2 w-full h-24 bg-yellow-200")}>

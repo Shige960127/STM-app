@@ -3,13 +3,32 @@ import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
 import Timer from "@components/Timer";
 import Category from "@components/Category";
 import CurrentDate from "@components/CurrentDate";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
-
-type Props = NativeStackScreenProps<RootStackParamList, "Timer">;
+import { useState } from "react";
+import { RootReducer } from "../../App";
+import { AppDispatch } from "@stores/index";
+import { createHistory } from "@stores/history";
+import { useDispatch, useSelector } from "react-redux";
 
 const TimerScreen = () => {
   const tailwind = useTailwind();
+  const dispatch = useDispatch<AppDispatch>();
+  const [remainingSecs, setRemainingSecs] = useState(0);
+  const { user } = useSelector(({ user }: RootReducer) => user);
+  const {
+    selectCategory: { primary, secondary },
+  } = useSelector(({ categories }: RootReducer) => categories);
+  const save = () => {
+    dispatch(
+      createHistory({
+        userId: user!.id,
+        primaryId: primary!.id,
+        primaryName: primary!.name,
+        secondaryId: secondary!.id,
+        secondaryName: secondary!.name,
+        measuringTime: remainingSecs,
+      })
+    );
+  };
   return (
     <SafeAreaView style={tailwind("flex-1")}>
       <View
@@ -22,13 +41,17 @@ const TimerScreen = () => {
       <View>
         <Category />
       </View>
-      <Timer />
+      <Timer
+        remainingSecs={remainingSecs}
+        setRemainingSecs={setRemainingSecs}
+      />
       <View style={tailwind("flex items-center justify-center mt-8")}>
         <TouchableOpacity
-          // onPress={() => }
+          onPress={save}
           style={tailwind(
             "w-80 flex flex-row justify-center items-center m-4 p-4 rounded-2xl bg-sky-400"
           )}
+          disabled={!primary || !secondary || remainingSecs === 0}
         >
           <Text style={tailwind("text-white font-bold")}>計測時間を保存</Text>
         </TouchableOpacity>

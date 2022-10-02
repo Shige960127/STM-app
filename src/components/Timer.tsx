@@ -1,14 +1,7 @@
 import { useTailwind } from "tailwind-rn/dist";
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
-const screen = Dimensions.get("window");
 const formatNumber = (number: number) => `0${number}`.slice(-2);
 
 const getRemaining = (time: number) => {
@@ -16,9 +9,14 @@ const getRemaining = (time: number) => {
   const secs = time - mins * 60;
   return { mins: formatNumber(mins), secs: formatNumber(secs) };
 };
-const Timer = () => {
+const Timer = ({
+  remainingSecs,
+  setRemainingSecs,
+}: {
+  remainingSecs: number;
+  setRemainingSecs: React.Dispatch<React.SetStateAction<number>>;
+}) => {
   const tailwind = useTailwind();
-  const [remainingSecs, setRemainingSecs] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const { mins, secs } = getRemaining(remainingSecs);
 
