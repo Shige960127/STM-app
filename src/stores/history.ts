@@ -28,7 +28,11 @@ export type History = {
 };
 
 export type HistoryState = {
-  histories: History[];
+  histories: {
+    weekly: History[];
+    monthly: History[];
+    yearly: History[];
+  };
   status: "initial" | "success" | "failure" | "pending";
   errors?: string;
 };
@@ -51,6 +55,7 @@ export const createHistory = createAsyncThunk(
     const id = uuidv4();
     try {
       await setDoc(doc(historiesRef, id), {
+        id: id,
         user_id: data.userId,
         primary_id: data.primaryId,
         primary_name: data.primaryName,
@@ -67,8 +72,8 @@ export const createHistory = createAsyncThunk(
   }
 );
 
-export const getHistories = createAsyncThunk(
-  "getHistories",
+export const getWeekHistories = createAsyncThunk(
+  "getWeekHistories",
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
       const q = query(historiesRef, where("user_id", "==", userId));
@@ -83,7 +88,11 @@ export const getHistories = createAsyncThunk(
 export const hiostory = createSlice({
   name: "hiostory",
   initialState: <HistoryState>{
-    histories: [],
+    histories: {
+      weekly: [],
+      monthly: [],
+      yearly: [],
+    },
     status: "initial",
     errors: undefined,
   },
@@ -100,17 +109,17 @@ export const hiostory = createSlice({
       }
     );
     builder.addCase(
-      getHistories.fulfilled,
+      getWeekHistories.fulfilled,
       (state, { payload }: { payload: any }) => {
-        state.histories = payload;
+        state.histories.weekly = payload;
         state.status = "success";
       }
     );
-    builder.addCase(getHistories.pending, (state) => {
+    builder.addCase(getWeekHistories.pending, (state) => {
       state.status = "pending";
     });
     builder.addCase(
-      getHistories.rejected,
+      getWeekHistories.rejected,
       (state, { payload }: { payload: any }) => {
         state.status = "failure";
         state.errors = payload;
