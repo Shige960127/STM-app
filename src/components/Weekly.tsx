@@ -8,6 +8,7 @@ import { AppDispatch } from "@stores/index";
 
 export default () => {
   const dispatch = useDispatch<AppDispatch>();
+  const tailwind = useTailwind();
   const { user } = useSelector(({ user }: RootReducer) => user);
   const { histories } = useSelector(({ history }: RootReducer) => history);
 
@@ -15,14 +16,11 @@ export default () => {
     dispatch(getHistories({ userId: user!.id }));
   }, []);
 
-  const rendeItem = ({ item }: { item: History }) => {
-    const tailwind = useTailwind();
-    return (
-      <View style={tailwind("m-2 p-1 w-full h-24 bg-yellow-200")}>
-        <Text style={tailwind("text-2xl font-bold")}>{item.primary_name}</Text>
-      </View>
-    );
-  };
+  const rendeItem = ({ item }: { item: History }) => (
+    <View style={tailwind("m-2 p-1 w-full h-24 bg-yellow-200")}>
+      <Text style={tailwind("text-2xl font-bold")}>{item.primary_name}</Text>
+    </View>
+  );
 
   return (
     <FlatList

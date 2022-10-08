@@ -54,7 +54,9 @@ export default () => {
 
   useEffect(() => {
     setNewSecondary("");
-    dispatch(getSecondaries({ primaryID: primary!.id }));
+    if (primary) {
+      dispatch(getSecondaries({ primaryID: primary.id }));
+    }
   }, [primary]);
 
   return (

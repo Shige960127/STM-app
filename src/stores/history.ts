@@ -46,7 +46,7 @@ type createHistory = {
 
 const historiesRef = collection(db, "histories");
 export const createHistory = createAsyncThunk(
-  "createHistories",
+  "createHistory",
   async (data: createHistory, { rejectWithValue }) => {
     const id = uuidv4();
     try {
@@ -62,7 +62,7 @@ export const createHistory = createAsyncThunk(
         created_at: new Date(),
       });
     } catch (e) {
-      alert(e);
+      return rejectWithValue(e);
     }
   }
 );
@@ -92,6 +92,13 @@ export const hiostory = createSlice({
     builder.addCase(createHistory.fulfilled, (state) => {
       state.status = "success";
     });
+    builder.addCase(
+      createHistory.rejected,
+      (state, { payload }: { payload: any }) => {
+        state.status = "failure";
+        state.errors = payload;
+      }
+    );
     builder.addCase(
       getHistories.fulfilled,
       (state, { payload }: { payload: any }) => {
