@@ -1,4 +1,4 @@
-import { Text, View, FlatList } from "react-native";
+import { Text, View, FlatList, RefreshControl } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { RootReducer } from "../../App";
 import { useEffect } from "react";
@@ -27,6 +27,12 @@ export default () => {
       data={histories}
       renderItem={rendeItem}
       keyExtractor={(item) => item.id}
+      refreshControl={
+        <RefreshControl
+          refreshing={false}
+          onRefresh={() => dispatch(getHistories({ userId: user!.id }))}
+        />
+      }
     />
   );
 };
