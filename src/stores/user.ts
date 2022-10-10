@@ -21,8 +21,9 @@ import {
 
 export type user = {
   id: string;
-  name: string;
   email: string;
+  password: string;
+  age: string;
 };
 export type UserState = {
   user: user | null;
@@ -51,7 +52,7 @@ export const handleSignUp = createAsyncThunk(
       await setDoc(doc(usersRef, user.uid), {
         id: user.uid,
         email: email,
-        password: password,
+        // password: password,
         age: age,
       });
       alert("Document written with ID:" + user.uid);
