@@ -39,7 +39,6 @@ export default () => {
   const navigation =
     useNavigation<NavigationProp<RootStackParamList, "Primary">>();
   const [modalVisible, setModalVisible] = useState(false);
-
   const [newPrimary, setNewPrimary] = useState("");
 
   const dispatch = useDispatch<AppDispatch>();
