@@ -5,6 +5,16 @@ import { useEffect } from "react";
 import { getWeekHistories, History } from "@stores/history";
 import { useTailwind } from "tailwind-rn/dist";
 import { AppDispatch } from "@stores/index";
+import { format } from "date-fns";
+import { zonedTimeToUtc } from "date-fns-tz";
+
+export function dateFormat(
+  date: string | number | Date,
+  s = "MM月dd日 HH時mm分"
+) {
+  if (!date) return "";
+  return format(zonedTimeToUtc(date, "JST"), s);
+}
 
 export default () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,47 +24,22 @@ export default () => {
     histories: { weekly },
   } = useSelector(({ history }: RootReducer) => history);
 
-  const data = Object.values(
-    weekly.reduce(
-      (
-        prev: {
-          [key: string]: { id: string; time: string; name: string };
-        },
-        cureent
-      ) => {
-        prev[cureent.primary_id] = {
-          id: cureent.primary_id,
-          time: (prev[cureent.primary_id]?.time || 0) + cureent.measuring_time,
-          name: cureent.primary_name,
-        };
-        return prev;
-      },
-      {}
-    )
-  );
-
   useEffect(() => {
     dispatch(getWeekHistories({ userId: user!.id }));
   }, []);
 
-  const rendeItem = ({
-    item,
-  }: {
-    item: {
-      id: string;
-      name: string;
-      time: string;
-    };
-  }) => (
+  const rendeItem = ({ item }: { item: History }) => (
     <View style={tailwind("m-2 p-1 w-full h-24 bg-yellow-200")}>
-      <Text style={tailwind("text-2xl font-bold")}>{item.name}</Text>
-      <Text style={tailwind("text-2xl font-bold")}>{item.time}</Text>
+      <Text style={tailwind("text-2xl font-bold")}>{item.primary_name}</Text>
+      <Text style={tailwind("text-2xl font-bold")}>
+        {dateFormat(item.created_at.toDate())}
+      </Text>
     </View>
   );
 
   return (
     <FlatList
-      data={data}
+      data={weekly}
       renderItem={rendeItem}
       keyExtractor={(item) => item.id}
       refreshControl={

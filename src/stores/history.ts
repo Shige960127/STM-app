@@ -10,6 +10,8 @@ import {
   query,
   getDocs,
   where,
+  serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import "react-native-get-random-values";
@@ -25,7 +27,7 @@ export type History = {
   tertiary_id?: string;
   tertiary_name?: string;
   measuring_time: string;
-  created_at: Date;
+  created_at: Timestamp;
 };
 
 export type HistoryState = {
@@ -65,7 +67,7 @@ export const createHistory = createAsyncThunk(
         tertiary_id: data.tertiaryId ? data.tertiaryId : "undefined",
         tertiary_name: data.tertiaryName ? data.tertiaryName : "undefined",
         measuring_time: data.measuringTime,
-        created_at: new Date(),
+        created_at: serverTimestamp(),
       });
     } catch (e) {
       return rejectWithValue(e);
