@@ -14,21 +14,23 @@ export default () => {
     histories: { weekly },
   } = useSelector(({ history }: RootReducer) => history);
 
-  const weeklyMap = weekly.reduce(
-    (
-      prev: {
-        [key: string]: { id: string; time: string; name: string };
+  const data = Object.values(
+    weekly.reduce(
+      (
+        prev: {
+          [key: string]: { id: string; time: string; name: string };
+        },
+        cureent
+      ) => {
+        prev[cureent.primary_id] = {
+          id: cureent.primary_id,
+          time: (prev[cureent.primary_id]?.time || 0) + cureent.measuring_time,
+          name: cureent.primary_name,
+        };
+        return prev;
       },
-      cureent
-    ) => {
-      prev[cureent.primary_id] = {
-        id: cureent.primary_id,
-        time: (prev[cureent.primary_id]?.time || 0) + cureent.measuring_time,
-        name: cureent.primary_name,
-      };
-      return prev;
-    },
-    {}
+      {}
+    )
   );
 
   useEffect(() => {
@@ -41,7 +43,7 @@ export default () => {
     item: {
       id: string;
       name: string;
-      time: number;
+      time: string;
     };
   }) => (
     <View style={tailwind("m-2 p-1 w-full h-24 bg-yellow-200")}>
@@ -52,7 +54,7 @@ export default () => {
 
   return (
     <FlatList
-      data={Object.values(weeklyMap)}
+      data={data}
       renderItem={rendeItem}
       keyExtractor={(item) => item.id}
       refreshControl={
