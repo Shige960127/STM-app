@@ -20,8 +20,10 @@ import {
 } from "firebase/firestore";
 
 export type user = {
-  name: string;
+  id: string;
   email: string;
+  password: string;
+  age: string;
 };
 export type UserState = {
   user: user | null;
@@ -50,7 +52,7 @@ export const handleSignUp = createAsyncThunk(
       await setDoc(doc(usersRef, user.uid), {
         id: user.uid,
         email: email,
-        password: password,
+        // password: password,
         age: age,
       });
       alert("Document written with ID:" + user.uid);
@@ -135,7 +137,6 @@ export const user = createSlice({
     builder.addCase(
       getUser.fulfilled,
       (state, { payload }: { payload: DocumentData | undefined }) => {
-        console.log({ payload });
         state.user = payload;
         state.isLogined = Boolean(payload);
         state.status = "success";
@@ -145,7 +146,6 @@ export const user = createSlice({
     builder.addCase(
       checkLogin.fulfilled,
       (state, { payload }: { payload: user | null }) => {
-        console.log({ payload });
         (state.user = payload), state.isLogined, (state.status = "success");
       }
     );

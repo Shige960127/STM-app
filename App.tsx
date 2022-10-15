@@ -5,12 +5,16 @@ import SignInScreen from "@screens/SignInScreen";
 import HomeScreen from "@screens/HomeScreen";
 import GraphScreen from "@screens/GraphScreen";
 import TimerScreen from "@screens/TimerScreen";
+import PrimaryCategoryScreen from "@screens/PrimaryCategoryScreen";
+import SecondaryCategoryScreen from "@screens/SecondaryCategoryScreen";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useSelector, Provider, useDispatch } from "react-redux";
 import { UserState, checkLogin } from "@stores/user";
+import { CategoryState } from "@stores/categories";
+import { HistoryState } from "@stores/history";
 import store, { AppDispatch } from "@stores/index";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -23,10 +27,14 @@ export type RootStackParamList = {
   Account: undefined;
   Graph: undefined;
   Timer: undefined;
+  Primary: undefined;
+  Secondary: undefined;
 };
 
 export type RootReducer = {
   user: UserState;
+  categories: CategoryState;
+  history: HistoryState;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -36,7 +44,11 @@ const HomeStack = createNativeStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator>
-      <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ headerShown: false }}
+      />
     </HomeStack.Navigator>
   );
 }
@@ -45,7 +57,11 @@ const GraphStack = createNativeStackNavigator();
 function GraphStackScreen() {
   return (
     <GraphStack.Navigator>
-      <GraphStack.Screen name="Graph" component={GraphScreen} />
+      <GraphStack.Screen
+        name="Graph"
+        component={GraphScreen}
+        options={{ headerShown: false }}
+      />
     </GraphStack.Navigator>
   );
 }
@@ -53,7 +69,13 @@ const TimerStack = createNativeStackNavigator();
 function TimerStackScreen() {
   return (
     <TimerStack.Navigator>
-      <TimerStack.Screen name="Timer" component={TimerScreen} />
+      <TimerStack.Screen
+        name="Timer"
+        component={TimerScreen}
+        options={{ headerShown: false }}
+      />
+      <TimerStack.Screen name="Primary" component={PrimaryCategoryScreen} />
+      <TimerStack.Screen name="Secondary" component={SecondaryCategoryScreen} />
     </TimerStack.Navigator>
   );
 }
@@ -98,7 +120,7 @@ const MainScreen = () => (
 );
 
 const InitialScreen = () => (
-  <Stack.Navigator initialRouteName="SignUp">
+  <Stack.Navigator initialRouteName="SignIn">
     <Stack.Screen
       options={{ headerShown: false }}
       name="SignUp"
@@ -121,7 +143,11 @@ const RootScreen = () => {
   return (
     <Stack.Navigator initialRouteName="Initial">
       {isLogined ? (
-        <Stack.Screen name="Main" component={MainScreen} />
+        <Stack.Screen
+          name="Main"
+          component={MainScreen}
+          options={{ headerShown: false }}
+        />
       ) : (
         <Stack.Screen
           name="Initial"

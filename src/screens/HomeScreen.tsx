@@ -1,27 +1,48 @@
 import { useTailwind } from "tailwind-rn/dist";
 import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { handleSignOut } from "../stores/user";
 import { AppDispatch } from "../stores/index";
-import { RootReducer } from "../../App";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import TotalTime from "@components/ TotalTime";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Home">;
+import Monthly from "@components/Monthly";
+import Year from "@components/Year";
+import Weekly from "@components/Weekly";
+import Dayly from "@components/Dayly";
+
+const Tab = createMaterialTopTabNavigator();
+const HomeTopTabs = () => {
+  return (
+    <Tab.Navigator initialRouteName="Dayly">
+      <Tab.Screen name="Dayly" component={Dayly} />
+      <Tab.Screen name="Weekly" component={Weekly} />
+      <Tab.Screen name="Monthly" component={Monthly} />
+      <Tab.Screen name="Year" component={Year} />
+    </Tab.Navigator>
+  );
+};
 
 const HomeScreen = () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector(({ user }: RootReducer) => user);
-  console.log("ユーザー情報：", user);
   return (
     <SafeAreaView style={tailwind("flex-1")}>
-      <View style={tailwind("flex flex-col items-start")}>
-        <Text>Email:{user?.email}</Text>
+      <TotalTime />
+      <View style={tailwind("items-center")}>
+        <Text style={tailwind("text-2xl font-bold")}>本日の学習時間</Text>
       </View>
-      <TouchableOpacity onPress={() => dispatch(handleSignOut())}>
-        <Text>SignOut</Text>
-      </TouchableOpacity>
+      <HomeTopTabs />
+      <View style={tailwind("flex items-center justify-center mt-8")}>
+        <TouchableOpacity
+          onPress={() => dispatch(handleSignOut())}
+          style={tailwind(
+            "w-80 flex flex-row justify-center items-center m-4 p-4 rounded-2xl bg-sky-400"
+          )}
+        >
+          <Text style={tailwind("text-white font-bold")}>SignOut</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
