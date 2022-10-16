@@ -1,12 +1,12 @@
-import { Text, View, Dimensions, StyleSheet } from "react-native";
-import React, { Component } from "react";
-import { TailwindProvider, useTailwind } from "tailwind-rn/dist";
+import { FlatList, View, Text, RefreshControl } from "react-native";
+import React from "react";
+import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
-import { LineChart } from "react-native-chart-kit";
 import { useEffect } from "react";
-import { getDaylyHistories } from "@stores/history";
+import { getWeekHistories } from "@stores/history";
+import { VictoryPie } from "victory-native";
 
 export default () => {
   const tailwind = useTailwind();
@@ -15,42 +15,76 @@ export default () => {
   const {
     histories: { weekly },
   } = useSelector(({ history }: RootReducer) => history);
-  // console.log(weekly);
+
+  const daylyMap = weekly.reduce(
+    (
+      prev: {
+        [key: string]: { id: string; y: string; x: string };
+      },
+      current
+    ) => {
+      prev[current.primary_id] = {
+        id: current.primary_id,
+        x: current.primary_name,
+        y: (prev[current.primary_id]?.y || 0) + current.measuring_time,
+      };
+      return prev;
+    },
+    {}
+  );
+  const historyMap = weekly.reduce(
+    (
+      prev: {
+        [key: string]: { id: string; time: string; name: string };
+      },
+      current
+    ) => {
+      prev[current.primary_id] = {
+        id: current.primary_id,
+        time: (prev[current.primary_id]?.time || 0) + current.measuring_time,
+        name: current.primary_name,
+      };
+      return prev;
+    },
+    {}
+  );
 
   useEffect(() => {
-    dispatch(getDaylyHistories({ userId: user!.id }));
+    dispatch(getWeekHistories({ userId: user!.id }));
   }, []);
-  // ラベルの設定
-  const labels = ["1月", "2月", "3月", "4月", "5月"];
-  // グラフにする値
-  const datasets = [101, 163, 187, 203, 235];
-  return (
-    <View>
-      <LineChart
-        data={{
-          labels: labels,
-          datasets: [
-            {
-              data: datasets,
-            },
-          ],
-        }}
-        width={Dimensions.get("window").width - 50}
-        height={181}
-        yAxisSuffix={""}
-        chartConfig={{
-          backgroundColor: "#1cc910",
-          backgroundGradientFrom: "#eff3ff",
-          backgroundGradientTo: "#efefef",
-          decimalPlaces: 2, // optional, defaults to 2dp
-          color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
-          style: {
-            borderRadius: 16,
-          },
-        }}
-        withInnerLines={false}
-        style={tailwind("ml-2 pl-px")}
-      />
+
+  const renderItem = ({
+    item,
+  }: {
+    item: { id: string; time: string; name: string };
+  }) => (
+    <View style={tailwind("m-2 p-1 w-full h-16 bg-yellow-200")}>
+      <Text style={tailwind("text-2xl font-bold")}>{item.name}</Text>
+      <Text style={tailwind("text-2xl font-bold")}>{item.time}</Text>
     </View>
+  );
+  return (
+    <>
+      <View>
+        <VictoryPie
+          data={Object.values(daylyMap)}
+          padding={{ top: 55, bottom: 45 }}
+          height={250}
+          labelRadius={80}
+          innerRadius={50}
+        />
+      </View>
+      <FlatList
+        data={Object.values(historyMap)}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => dispatch(getWeekHistories({ userId: user!.id }))}
+          />
+        }
+      />
+    </>
   );
 };

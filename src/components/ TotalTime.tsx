@@ -36,7 +36,7 @@ export default () => {
   const data = Object.values(TotalTime)[0];
 
   return (
-    <View style={tailwind("m-4 p-2 w-4/5 h-24 bg-yellow-200")}>
+    <View style={tailwind("m-4 p-2 w-4/5 h-24 bg-red-400")}>
       <Text style={tailwind("text-2xl font-bold")}>Total Time</Text>
       <Text style={tailwind("text-2xl font-bold text-right")}>{data.time}</Text>
     </View>

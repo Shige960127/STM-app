@@ -1,11 +1,12 @@
-import { Text, View, FlatList, RefreshControl } from "react-native";
+import { FlatList, View, Text, RefreshControl } from "react-native";
+import React from "react";
+import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
 import { useEffect } from "react";
-import { getWeekHistories, History } from "@stores/history";
-import { useTailwind } from "tailwind-rn/dist";
-import { AppDispatch } from "@stores/index";
-import { useState } from "react";
+import { getWeekHistories } from "@stores/history";
+import { VictoryPie } from "victory-native";
 
 export default () => {
   const tailwind = useTailwind();
@@ -15,7 +16,23 @@ export default () => {
     histories: { weekly },
   } = useSelector(({ history }: RootReducer) => history);
 
-  const weeklyMap = weekly.reduce(
+  const daylyMap = weekly.reduce(
+    (
+      prev: {
+        [key: string]: { id: string; y: string; x: string };
+      },
+      current
+    ) => {
+      prev[current.primary_id] = {
+        id: current.primary_id,
+        x: current.primary_name,
+        y: (prev[current.primary_id]?.y || 0) + current.measuring_time,
+      };
+      return prev;
+    },
+    {}
+  );
+  const historyMap = weekly.reduce(
     (
       prev: {
         [key: string]: { id: string; time: string; name: string };
@@ -41,23 +58,33 @@ export default () => {
   }: {
     item: { id: string; time: string; name: string };
   }) => (
-    <View style={tailwind("m-2 p-1 w-full h-24 bg-yellow-200")}>
+    <View style={tailwind("m-2 p-1 w-full h-16 bg-yellow-200")}>
       <Text style={tailwind("text-2xl font-bold")}>{item.name}</Text>
       <Text style={tailwind("text-2xl font-bold")}>{item.time}</Text>
     </View>
   );
-
   return (
-    <FlatList
-      data={Object.values(weeklyMap)}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id}
-      refreshControl={
-        <RefreshControl
-          refreshing={false}
-          onRefresh={() => dispatch(getWeekHistories({ userId: user!.id }))}
+    <>
+      <View>
+        <VictoryPie
+          data={Object.values(daylyMap)}
+          padding={{ top: 55, bottom: 45 }}
+          height={250}
+          labelRadius={80}
+          innerRadius={50}
         />
-      }
-    />
+      </View>
+      <FlatList
+        data={Object.values(historyMap)}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={() => dispatch(getWeekHistories({ userId: user!.id }))}
+          />
+        }
+      />
+    </>
   );
 };
