@@ -9,8 +9,9 @@ import {
   setDoc,
   query,
   getDocs,
-  getDoc,
   where,
+  Timestamp,
+  serverTimestamp,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import "react-native-get-random-values";
@@ -26,7 +27,7 @@ export type History = {
   tertiary_id?: string;
   tertiary_name?: string;
   measuring_time: string;
-  created_at: Date;
+  created_at: Timestamp;
 };
 
 export type HistoryState = {
@@ -66,18 +67,8 @@ export const createHistory = createAsyncThunk(
         tertiary_id: data.tertiaryId ? data.tertiaryId : "undefined",
         tertiary_name: data.tertiaryName ? data.tertiaryName : "undefined",
         measuring_time: data.measuringTime,
-        created_at: new Date(),
+        created_at: serverTimestamp(),
       });
-    } catch (e) {
-      return rejectWithValue(e);
-    }
-  }
-);
-export const getDaylyHistories = createAsyncThunk(
-  "getDaylyHistories",
-  async ({ userId }: { userId: string }, { rejectWithValue }) => {
-    try {
-      // const q = query(historiesRef, where("created_at", "==", new Date()));
     } catch (e) {
       return rejectWithValue(e);
     }
@@ -89,6 +80,7 @@ export const getWeekHistories = createAsyncThunk(
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
       const q = query(historiesRef, where("user_id", "==", userId));
+      // const getWeekData = query(historiesRef, where("created_at","==",created_at));
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
