@@ -8,7 +8,7 @@ import {
   TextInput,
 } from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
-import PlusButton from "@components/PlusButton";
+import PlusButton from "../components/PlusButton";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList, RootReducer } from "../../App";
 import { useDispatch, useSelector } from "react-redux";
