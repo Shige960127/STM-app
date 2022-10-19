@@ -10,6 +10,7 @@ module.exports = function (api) {
             "@screens": "./src/screens",
             "@stores": "./src/stores",
             "@components": "./src/components",
+            "@types": "./src/type.d.ts",
           },
         },
       ],

@@ -6,7 +6,8 @@
     "paths": {
       "@screens/*": ["screens/*"],
       "@stores/*": ["stores/*"],
-      "@components/*": ["components/*"]
+      "@components/*": ["components/*"],
+      "@types": ["type.d.ts"]
     }
   }
 }

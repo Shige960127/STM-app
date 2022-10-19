@@ -16,6 +16,8 @@ import {
 import { db } from "../firebase/firebase";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
+import { Thunk, OnFulfilled, OnRejected, StatefulStore } from "@types";
+import { resetStatusThunk } from "./utils";
 
 export type History = {
   id: string;
@@ -30,14 +32,13 @@ export type History = {
   created_at: Timestamp;
 };
 
-export type HistoryState = {
+export type HistoryState = StatefulStore & {
   histories: {
+    daily: History[];
     weekly: History[];
     monthly: History[];
     yearly: History[];
   };
-  status: "initial" | "success" | "failure" | "pending";
-  errors?: string;
 };
 
 type createHistory = {
@@ -75,6 +76,20 @@ export const createHistory = createAsyncThunk(
   }
 );
 
+export const getDailyHistories = createAsyncThunk(
+  "getDailyHistories",
+  async ({ userId }: { userId: string }, { rejectWithValue }) => {
+    try {
+      const q = query(historiesRef, where("user_id", "==", userId));
+      // const getWeekData = query(historiesRef, where("created_at","==",created_at));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => doc.data());
+    } catch (e) {
+      return rejectWithValue(e);
+    }
+  }
+);
+
 export const getWeekHistories = createAsyncThunk(
   "getWeekHistories",
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
@@ -89,10 +104,30 @@ export const getWeekHistories = createAsyncThunk(
   }
 );
 
+const onGetDailyHistories = (
+  state: HistoryState,
+  { payload }: { payload: History[] }
+) => {
+  state.histories.daily = payload;
+};
+
+const onGetWeeklyHistories = (
+  state: HistoryState,
+  { payload }: { payload: History[] }
+) => {
+  state.histories.weekly = payload;
+};
+
+const thunks: Array<[Thunk, OnFulfilled?, OnRejected?]> = [
+  [getDailyHistories, onGetDailyHistories],
+  [getWeekHistories, onGetWeeklyHistories],
+];
+
 export const hiostory = createSlice({
   name: "hiostory",
   initialState: <HistoryState>{
     histories: {
+      daily: [],
       weekly: [],
       monthly: [],
       yearly: [],
@@ -102,32 +137,8 @@ export const hiostory = createSlice({
   },
   reducers: {},
   extraReducers: (builder: ActionReducerMapBuilder<HistoryState>) => {
-    builder.addCase(createHistory.fulfilled, (state) => {
-      state.status = "success";
-    });
-    builder.addCase(
-      createHistory.rejected,
-      (state, { payload }: { payload: any }) => {
-        state.status = "failure";
-        state.errors = payload;
-      }
-    );
-    builder.addCase(
-      getWeekHistories.fulfilled,
-      (state, { payload }: { payload: any }) => {
-        state.histories.weekly = payload;
-        state.status = "success";
-      }
-    );
-    builder.addCase(getWeekHistories.pending, (state) => {
-      state.status = "pending";
-    });
-    builder.addCase(
-      getWeekHistories.rejected,
-      (state, { payload }: { payload: any }) => {
-        state.status = "failure";
-        state.errors = payload;
-      }
+    thunks.forEach(([thunk, onFulfilled, OnRejected]) =>
+      resetStatusThunk(builder, thunk, onFulfilled, OnRejected)
     );
   },
 });
