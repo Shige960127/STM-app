@@ -10,7 +10,7 @@ export default () => {
   } = useSelector(({ history }: RootReducer) => history);
 
   const totalTime = weekly.reduce(
-    (prev, current) => (prev = prev + Number(current.measuring_time)),
+    (prev, current) => prev + Number(current.measuring_time),
     0
   );
 
