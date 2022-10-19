@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { handleSignOut } from "../stores/user";
 import { AppDispatch } from "../stores/index";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import TotalTime from "@components/ TotalTime";
+import TotalTime from "@components/TotalTime";
 
 import Monthly from "@components/Monthly";
 import Year from "@components/Year";
