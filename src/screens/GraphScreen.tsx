@@ -1,18 +1,33 @@
-import { useTailwind } from "tailwind-rn/dist";
-import { View, Text, SafeAreaView } from "react-native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
+// import { useTailwind } from "tailwind-rn/dist";
+// import { View, Text, SafeAreaView } from "react-native";
+// import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+// import { RootStackParamList } from "../../App";
+// import { useSelector } from "react-redux";
+// import { RootReducer } from "../../App";
+// import {Picker} from '@react-native-picker/picker';
+// import { useState } from "react";
 
-type Props = NativeStackScreenProps<RootStackParamList, "Graph">;
+// // type Props = NativeStackScreenProps<RootStackParamList, "Graph">;
 
-const GraphScreen = ({ navigation }: Props) => {
-  const tailwind = useTailwind();
-  return (
-    <SafeAreaView style={tailwind("flex-1")}>
-      <View style={tailwind("flex flex-col items-start")}>
-        <Text>波形データを表示します</Text>
-      </View>
-    </SafeAreaView>
-  );
-};
-export default GraphScreen;
+// const GraphScreen = () => {
+//   const tailwind = useTailwind();
+//   const { user } = useSelector(({ user }: RootReducer) => user);
+//   const {
+//     selectCategory: { primary, secondary },
+//   } = useSelector(({ categories }: RootReducer) => categories);
+//   const [selectedLanguage, setSelectedLanguage] = useState();
+
+//   return (
+//     <SafeAreaView style={tailwind("flex-1")}>
+// <Picker
+//   selectedValue={primary?.name}
+//   onValueChange={(itemValue, itemIndex) =>
+//     setSelectedLanguage(itemValue)
+//   }>
+//   <Picker.Item label="Java" value="java" />
+//   <Picker.Item label="JavaScript" value="js" />
+// </Picker>
+//     </SafeAreaView>
+//   );
+// };
+// export default GraphScreen;
