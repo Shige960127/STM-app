@@ -8,7 +8,7 @@ import TotalTime from "@components/TotalTime";
 
 import Monthly from "@components/Monthly";
 import Year from "@components/Year";
-import Weekly from "@components/Weekly";
+import All from "@components/All";
 import Dayly from "@components/Dayly";
 
 const Tab = createMaterialTopTabNavigator();
@@ -16,9 +16,9 @@ const HomeTopTabs = () => {
   return (
     <Tab.Navigator initialRouteName="Dayly">
       <Tab.Screen name="Dayly" component={Dayly} />
-      <Tab.Screen name="Weekly" component={Weekly} />
       <Tab.Screen name="Monthly" component={Monthly} />
-      <Tab.Screen name="Year" component={Year} />
+      <Tab.Screen name="Yearly" component={Year} />
+      <Tab.Screen name="All" component={All} />
     </Tab.Navigator>
   );
 };
