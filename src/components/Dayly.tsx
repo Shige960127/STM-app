@@ -26,13 +26,37 @@ export function dateFormat(
   if (!date) return "";
   return format(zonedTimeToUtc(date, "JST"), s);
 }
+
+type item = {
+  label: string;
+  value: string;
+};
 export default () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector(({ user }: RootReducer) => user);
   const {
-    histories: { weekly },
-  } = useSelector(({ history }: RootReducer) => history);
+    user: { user },
+    categories: { primaryCategories },
+    history: {
+      histories: { weekly },
+    },
+  } = useSelector((store: RootReducer) => store);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [primaries, setPrimaries] = useState<item[]>([]);
+
+  console.log({ value });
+
+  const [open1, setOpen1] = useState(false);
+  const [value1, setValue1] = useState(null);
+  const [items1, setItems1] = useState([
+    { label: "Lemon", value: "lemon" },
+    { label: "Grape", value: "grape" },
+  ]);
+
+  // const {
+  //   histories: { weekly },
+  // } = useSelector(({ history }: RootReducer) => history);
   // const { primaryCategories } = useSelector(
   //   ({ categories }: RootReducer) => categories
   // );
@@ -61,7 +85,15 @@ export default () => {
 
   useEffect(() => {
     dispatch(getWeekHistories({ userId: user!.id }));
+    dispatch(getPrimaries({ userID: user!.id }));
   }, []);
+
+  useEffect(() => {
+    const primaryInfo = primaryCategories.map((item) => {
+      return { label: item.name, value: item.id };
+    });
+    setPrimaries(primaryInfo);
+  }, [primaryCategories]);
 
   const renderItem = ({ item }: { item: History }) => (
     <View style={tailwind("flex items-center")}>
@@ -89,29 +121,19 @@ export default () => {
       </View>
     </View>
   );
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
-  ]);
-  const [open1, setOpen1] = useState(false);
-  const [value1, setValue1] = useState(null);
-  const [items1, setItems1] = useState([
-    { label: "Lemon", value: "lemon" },
-    { label: "Grape", value: "grape" },
-  ]);
+
   return (
     <>
-      <View style={tailwind("flex flex-row m-1")}>
+      <View style={{ zIndex: 1, ...tailwind("flex flex-row m-1") }}>
         <View style={tailwind("w-1/2")}>
           <DropDownPicker
             open={open}
             value={value}
-            items={items}
+            items={primaries}
             setOpen={setOpen}
             setValue={setValue}
-            setItems={setItems}
+            setItems={setPrimaries}
+            maxHeight={100}
           />
         </View>
         <View style={tailwind("flex w-1/2")}>
@@ -125,7 +147,7 @@ export default () => {
           />
         </View>
       </View>
-      <View>
+      <View style={{ zIndex: 0 }}>
         <VictoryPie
           data={Object.values(daylyMap)}
           padding={{ top: 40, bottom: 35 }}
