@@ -92,6 +92,7 @@ export const getWeekHistories = createAsyncThunk(
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
+      console.log(e);
       return rejectWithValue(e);
     }
   }
