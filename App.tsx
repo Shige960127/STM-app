@@ -82,9 +82,9 @@ function TimerStackScreen() {
 
 type tabScreenIcon = "home" | "linechart" | "clockcircleo";
 const screenNameIcon: { [key: string]: tabScreenIcon } = {
-  HomeStack: "home",
-  GraphStack: "linechart",
-  TimerStack: "clockcircleo",
+  Home: "home",
+  Analize: "linechart",
+  Timer: "clockcircleo",
 };
 const MainScreen = () => (
   <Tab.Navigator
@@ -102,18 +102,18 @@ const MainScreen = () => (
     })}
   >
     <Tab.Screen
-      name="HomeStack"
+      name="Home"
       component={HomeStackScreen}
       options={{ headerShown: false }}
     />
     <Tab.Screen
-      name="GraphStack"
-      component={GraphStackScreen}
+      name="Timer"
+      component={TimerStackScreen}
       options={{ headerShown: false }}
     />
     <Tab.Screen
-      name="TimerStack"
-      component={TimerStackScreen}
+      name="Analize"
+      component={GraphStackScreen}
       options={{ headerShown: false }}
     />
   </Tab.Navigator>

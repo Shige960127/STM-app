@@ -30,11 +30,6 @@ const TimerScreen = () => {
   };
   return (
     <SafeAreaView style={tailwind("flex-1")}>
-      <View
-        style={tailwind(
-          "flex flex-col items-start items-center justify-center m-2 p-1"
-        )}
-      ></View>
       <View>
         <Category />
       </View>

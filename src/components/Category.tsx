@@ -1,5 +1,5 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { FlatList, Text, TouchableOpacity } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { useTailwind } from "tailwind-rn/dist";
 import { RootStackParamList, RootReducer } from "../../App";
@@ -14,17 +14,24 @@ type Item = {
 const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => {
   const tailwind = useTailwind();
   return (
-    <TouchableOpacity
-      style={tailwind("bg-amber-500 p-5 border-red-600 mx-4")}
-      onPress={onPress}
-      disabled={!item.isVisble}
-    >
-      {item.isVisble && <Text style={tailwind("text-4xl")}>{item.title}</Text>}
-    </TouchableOpacity>
+    <>
+      <TouchableOpacity
+        style={tailwind("bg-teal-500 border-2 border-black p-2")}
+        onPress={onPress}
+        disabled={!item.isVisble}
+      >
+        {item.isVisble && (
+          <Text style={tailwind("text-center text-2xl font-bold text-white")}>
+            {item.title}
+          </Text>
+        )}
+      </TouchableOpacity>
+    </>
   );
 };
 
 const Category = () => {
+  const tailwind = useTailwind();
   const navigation =
     useNavigation<
       NavigationProp<RootStackParamList, "Primary" | "Secondary">
@@ -36,26 +43,38 @@ const Category = () => {
   const DATA: Item[] = [
     {
       destination: "Primary",
-      title: primary ? primary.name : "PrimaryCategory",
+      title: primary ? primary.name : "大カテゴリを選択",
       isVisble: true,
     },
     {
       destination: "Secondary",
-      title: secondary ? secondary.name : "SecondaryCategory",
+      title: secondary ? secondary.name : "中カテゴリを選択",
       isVisble: true,
     },
   ];
   return (
-    <FlatList
-      data={DATA}
-      renderItem={({ item }: { item: Item }) => (
-        <Item
-          item={item}
-          onPress={() => navigation.navigate(item.destination)}
-        />
-      )}
-      keyExtractor={(_, key) => key.toString()}
-    />
+    <>
+      <FlatList
+        data={DATA}
+        renderItem={({ item }: { item: Item }) => (
+          <Item
+            item={item}
+            onPress={() => navigation.navigate(item.destination)}
+          />
+        )}
+        keyExtractor={(_, key) => key.toString()}
+      />
+      <View style={tailwind("bg-teal-500 border-2 border-black p-2")}>
+        <Text style={tailwind("text-center text-2xl font-bold text-white")}>
+          予鈴
+        </Text>
+      </View>
+      <View style={tailwind("bg-teal-500 border-2 border-black p-2")}>
+        <Text style={tailwind("text-center text-2xl font-bold text-white")}>
+          終了後もカウント
+        </Text>
+      </View>
+    </>
   );
 };
 
