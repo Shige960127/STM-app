@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-import { Text, View } from "react-native";
-=======
 import {
   FlatList,
   View,
@@ -21,16 +18,8 @@ import { zonedTimeToUtc } from "date-fns-tz";
 import { PrimaryCategory } from "@stores/categories";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getPrimaries } from "@stores/categories";
->>>>>>> 7784ddc ([fix]スクリーン構成)
 
 export default () => {
-<<<<<<< HEAD
-  return (
-    <View>
-      <Text>月の学習時間を記載します</Text>
-    </View>
-  );
-=======
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector(({ user }: RootReducer) => user);
@@ -71,7 +60,7 @@ export default () => {
     <View style={tailwind("flex items-center")}>
       <View style={tailwind("ml-2 pl-1 w-4/5")}>
         <Text style={tailwind("text-base")}>
-          {dateFormat(item.created_at.toDate())}
+          {/* {dateFormat(item.created_at.toDate())} */}
         </Text>
       </View>
       <View
@@ -156,5 +145,4 @@ export default () => {
       />
     </>
   );
->>>>>>> 7784ddc ([fix]スクリーン構成)
 };
