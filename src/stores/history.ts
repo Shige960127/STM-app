@@ -12,6 +12,8 @@ import {
   where,
   Timestamp,
   serverTimestamp,
+  orderBy,
+  startAt,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import "react-native-get-random-values";
@@ -79,8 +81,14 @@ export const getWeekHistories = createAsyncThunk(
   "getWeekHistories",
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
-      const q = query(historiesRef, where("user_id", "==", userId));
-      // const getWeekData = query(historiesRef, where("created_at","==",created_at));
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const q = query(
+        historiesRef,
+        where("user_id", "==", userId),
+        orderBy("created_at"),
+        startAt(oneWeekAgo)
+      );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
