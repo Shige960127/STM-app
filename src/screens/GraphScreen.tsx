@@ -4,7 +4,7 @@
 // import { RootStackParamList } from "../../App";
 // import { useSelector } from "react-redux";
 // import { RootReducer } from "../../App";
-// import {Picker} from '@react-native-picker/picker';
+// import { Picker } from "@react-native-picker/picker";
 // import { useState } from "react";
 
 // // type Props = NativeStackScreenProps<RootStackParamList, "Graph">;
@@ -19,14 +19,13 @@
 
 //   return (
 //     <SafeAreaView style={tailwind("flex-1")}>
-// <Picker
-//   selectedValue={primary?.name}
-//   onValueChange={(itemValue, itemIndex) =>
-//     setSelectedLanguage(itemValue)
-//   }>
-//   <Picker.Item label="Java" value="java" />
-//   <Picker.Item label="JavaScript" value="js" />
-// </Picker>
+//       <Picker
+//         selectedValue={primary?.name}
+//         onValueChange={(itemValue, itemIndex) => setSelectedLanguage(itemValue)}
+//       >
+//         <Picker.Item label="Java" value="java" />
+//         <Picker.Item label="JavaScript" value="js" />
+//       </Picker>
 //     </SafeAreaView>
 //   );
 // };

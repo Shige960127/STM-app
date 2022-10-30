@@ -60,8 +60,8 @@ export default () => {
   );
 
   useEffect(() => {
-    dispatch(getWeekHistories({ userId: user!.id }));
-  }, []);
+    if (user?.id) dispatch(getWeekHistories({ userId: user.id }));
+  }, [user]);
 
   const renderItem = ({
     item,
