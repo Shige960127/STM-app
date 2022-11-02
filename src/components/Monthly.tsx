@@ -13,11 +13,7 @@ import { RootReducer } from "../../App";
 import { useEffect } from "react";
 import { getWeekHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
-import { format } from "date-fns";
-import { zonedTimeToUtc } from "date-fns-tz";
-import { PrimaryCategory } from "@stores/categories";
 import DropDownPicker from "react-native-dropdown-picker";
-import { getPrimaries } from "@stores/categories";
 
 export default () => {
   const tailwind = useTailwind();

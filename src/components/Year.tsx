@@ -13,19 +13,11 @@ import { RootReducer } from "../../App";
 import { useEffect } from "react";
 import { getWeekHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
-import { format } from "date-fns";
-import { zonedTimeToUtc } from "date-fns-tz";
+import { dateFormat } from "../utils/format";
 import { PrimaryCategory } from "@stores/categories";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getPrimaries } from "@stores/categories";
 
-export function dateFormat(
-  date: string | number | Date,
-  s = "MM月dd日 HH時mm分"
-) {
-  if (!date) return "";
-  return format(zonedTimeToUtc(date, "JST"), s);
-}
 export default () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
@@ -42,6 +34,7 @@ export default () => {
   // useEffect(() => {
   //   dispatch(getPrimaries({ userID: user!.id }));
   // }, [user]);
+
   const daylyMap = weekly.reduce(
     (
       prev: {

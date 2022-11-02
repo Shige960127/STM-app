@@ -14,6 +14,25 @@ import {
   VictoryAxis,
 } from "victory-native";
 
+type categoryData = {
+  id: number;
+  name: string;
+  history: {
+    date: number;
+    time: number;
+  }[];
+};
+
+const getOneWeekDate = () => {
+  const oneWeek: string[] = [];
+  for (let i = 0; i < 7; i++) {
+    const today = new Date();
+    today.setDate(today.getDate() - i);
+    oneWeek.unshift(`${today.getMonth() + 1}/${today.getDate()}`);
+  }
+  return oneWeek;
+};
+
 export default () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
@@ -78,30 +97,58 @@ export default () => {
     { label: "Grape", value: "grape" },
   ]);
 
-  const english = [
-    { date: 1, time: 60 },
-    { date: 3, time: 40 },
-    { date: 5, time: 30 },
-    { date: 6, time: 70 },
-    { date: 7, time: 60 },
-  ];
-  const programming = [
-    { date: 1, time: 30 },
-    { date: 2, time: 40 },
-    { date: 3, time: 50 },
-    { date: 4, time: 60 },
-    { date: 5, time: 70 },
-    { date: 6, time: 30 },
-    { date: 7, time: 70 },
-  ];
-  const game = [
-    { date: 1, time: 80 },
-    { date: 2, time: 90 },
-    { date: 3, time: 70 },
-    { date: 4, time: 80 },
-    { date: 5, time: 90 },
-    { date: 6, time: 60 },
-    { date: 7, time: 80 },
+  // BEから送られてくるデータの型は以下の通り
+  const weeklySampleData: categoryData[] = [
+    {
+      id: 1,
+      name: "english",
+      history: [
+        { date: 1, time: 60 },
+        { date: 3, time: 40 },
+        { date: 5, time: 30 },
+        { date: 6, time: 70 },
+        { date: 7, time: 60 },
+      ],
+    },
+    {
+      id: 2,
+      name: "programming",
+      history: [
+        { date: 1, time: 30 },
+        { date: 2, time: 40 },
+        { date: 3, time: 50 },
+        { date: 4, time: 60 },
+        { date: 5, time: 70 },
+        { date: 6, time: 30 },
+        { date: 7, time: 70 },
+      ],
+    },
+    {
+      id: 3,
+      name: "game",
+      history: [
+        { date: 1, time: 80 },
+        { date: 2, time: 90 },
+        { date: 3, time: 70 },
+        { date: 4, time: 80 },
+        { date: 5, time: 90 },
+        { date: 6, time: 60 },
+        { date: 7, time: 80 },
+      ],
+    },
+    {
+      id: 4,
+      name: "math",
+      history: [
+        { date: 1, time: 80 },
+        { date: 2, time: 90 },
+        { date: 3, time: 70 },
+        { date: 4, time: 80 },
+        { date: 5, time: 90 },
+        { date: 6, time: 60 },
+        { date: 7, time: 80 },
+      ],
+    },
   ];
 
   return (
@@ -128,18 +175,18 @@ export default () => {
           />
         </View>
       </View>
-      <View>
-        <VictoryChart domainPadding={30} theme={VictoryTheme.material}>
+      <View style={tailwind("px-4")}>
+        <VictoryChart domainPadding={20} theme={VictoryTheme.material}>
           <VictoryAxis
             tickValues={[1, 2, 3, 4, 5, 6, 7]}
-            tickFormat={["1/1", "1/2", "1/3", "1/4", "1/5", "1/6", "1/7"]}
+            tickFormat={getOneWeekDate()}
           />
           <VictoryAxis dependentAxis tickFormat={(x) => `${x}min`} />
 
           <VictoryStack colorScale={["tomato", "orange", "gold"]}>
-            <VictoryBar data={english} x="date" y="time" />
-            <VictoryBar data={programming} x="date" y="time" />
-            <VictoryBar data={game} x="date" y="time" />
+            {weeklySampleData.map((data) => (
+              <VictoryBar data={data.history} x="date" y="time" />
+            ))}
           </VictoryStack>
         </VictoryChart>
       </View>
