@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import DropDownPicker from "react-native-dropdown-picker";
 import { RootReducer } from "../../App";
-import { getWeekHistories } from "@stores/history";
+import { getMonthlyHistories } from "@stores/history";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import {
@@ -19,14 +19,14 @@ export default () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector(({ user }: RootReducer) => user);
   const {
-    histories: { weekly },
+    histories: { monthly },
   } = useSelector(({ history }: RootReducer) => history);
 
   useEffect(() => {
-    dispatch(getWeekHistories({ userId: user!.id }));
+    dispatch(getMonthlyHistories({ userId: user!.id }));
   }, []);
 
-  const weeklyMap = weekly.reduce(
+  const monthlyMap = monthly.reduce(
     (
       prev: {
         [key: string]: { id: string; time: string; name: string };
@@ -144,13 +144,15 @@ export default () => {
         </VictoryChart>
       </View>
       <FlatList
-        data={Object.values(weeklyMap)}
+        data={Object.values(monthlyMap)}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => dispatch(getWeekHistories({ userId: user!.id }))}
+            onRefresh={() =>
+              dispatch(getMonthlyHistories({ userId: user!.id }))
+            }
           />
         }
       />
