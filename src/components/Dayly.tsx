@@ -5,18 +5,18 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
-import { useEffect } from "react";
-import { getWeekHistories, History } from "@stores/history";
+import { getDaylyHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import { format } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getPrimaries } from "@stores/categories";
+
 export function dateFormat(
   date: string | number | Date,
   s = "MM月dd日 HH時mm分"
@@ -36,14 +36,13 @@ export default () => {
     user: { user },
     categories: { primaryCategories },
     history: {
-      histories: { weekly },
+      histories: { dayly },
     },
   } = useSelector((store: RootReducer) => store);
+
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
-
-  console.log({ value });
 
   const [open1, setOpen1] = useState(false);
   const [value1, setValue1] = useState(null);
@@ -51,7 +50,7 @@ export default () => {
     { label: "Lemon", value: "lemon" },
     { label: "Grape", value: "grape" },
   ]);
-  const daylyMap = weekly.reduce(
+  const daylyMap = dayly.reduce(
     (
       prev: {
         [key: string]: { id: string; y: string; x: string };
@@ -69,7 +68,7 @@ export default () => {
   );
 
   useEffect(() => {
-    dispatch(getWeekHistories({ userId: user!.id }));
+    dispatch(getDaylyHistories({ userId: user!.id }));
     dispatch(getPrimaries({ userID: user!.id }));
   }, []);
 
@@ -147,13 +146,13 @@ export default () => {
         <Text style={tailwind("text-right m-2 p-1")}>--もっと見る--</Text>
       </TouchableOpacity>
       <FlatList
-        data={weekly}
+        data={dayly}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => dispatch(getWeekHistories({ userId: user!.id }))}
+            onRefresh={() => dispatch(getDaylyHistories({ userId: user!.id }))}
           />
         }
       />

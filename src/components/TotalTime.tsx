@@ -6,10 +6,10 @@ import { RootReducer } from "../../App";
 export default () => {
   const tailwind = useTailwind();
   const {
-    histories: { weekly },
+    histories: { all },
   } = useSelector(({ history }: RootReducer) => history);
 
-  const totalTime = weekly.reduce(
+  const totalTime = all.reduce(
     (prev, current) => prev + Number(current.measuring_time),
     0
   );

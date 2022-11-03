@@ -14,10 +14,12 @@ import {
   serverTimestamp,
   orderBy,
   startAt,
+  endAt,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
+import { getDate } from "date-fns";
 
 export type History = {
   id: string;
@@ -34,9 +36,10 @@ export type History = {
 
 export type HistoryState = {
   histories: {
-    weekly: History[];
+    dayly: History[];
     monthly: History[];
     yearly: History[];
+    all: History[];
   };
   status: "initial" | "success" | "failure" | "pending";
   errors?: string;
@@ -77,17 +80,25 @@ export const createHistory = createAsyncThunk(
   }
 );
 
-export const getWeekHistories = createAsyncThunk(
-  "getWeekHistories",
+export const getDaylyHistories = createAsyncThunk(
+  "getDaylyHistories",
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const startDay = new Date();
+      startDay.setHours(0);
+      startDay.setMinutes(0);
+      startDay.setSeconds(0);
+      const endDay = new Date();
+      endDay.setDate(endDay.getDate() + 1);
+      endDay.setHours(0);
+      endDay.setMinutes(0);
+      endDay.setSeconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
         orderBy("created_at"),
-        startAt(oneWeekAgo)
+        startAt(startDay),
+        endAt(endDay)
       );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
@@ -98,13 +109,88 @@ export const getWeekHistories = createAsyncThunk(
   }
 );
 
+export const getMonthlyHistories = createAsyncThunk(
+  "getMonthlyHistories",
+  async ({ userId }: { userId: string }, { rejectWithValue }) => {
+    try {
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0);
+      startOfMonth.setMinutes(0);
+      startOfMonth.setSeconds(0);
+      const endOfMonth = new Date();
+      endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+      endOfMonth.setDate(0);
+      endOfMonth.setHours(0);
+      endOfMonth.setMinutes(0);
+      endOfMonth.setSeconds(0);
+      const q = query(
+        historiesRef,
+        where("user_id", "==", userId),
+        orderBy("created_at"),
+        startAt(startOfMonth),
+        endAt(endOfMonth)
+      );
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => doc.data());
+    } catch (e) {
+      console.log(e);
+      return rejectWithValue(e);
+    }
+  }
+);
+export const getYearlyHistories = createAsyncThunk(
+  "getYearlyHistories",
+  async ({ userId }: { userId: string }, { rejectWithValue }) => {
+    try {
+      const startOfYear = new Date();
+      startOfYear.setMonth(0);
+      startOfYear.setDate(1);
+      startOfYear.setHours(0);
+      startOfYear.setMinutes(0);
+      startOfYear.setSeconds(0);
+      const endOfYear = new Date();
+      endOfYear.setFullYear(endOfYear.getFullYear() + 1);
+      endOfYear.setMonth(0);
+      endOfYear.setDate(0);
+      endOfYear.setHours(0);
+      endOfYear.setMinutes(0);
+      endOfYear.setSeconds(0);
+      const q = query(
+        historiesRef,
+        where("user_id", "==", userId),
+        orderBy("created_at"),
+        startAt(startOfYear)
+      );
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => doc.data());
+    } catch (e) {
+      console.log(e);
+      return rejectWithValue(e);
+    }
+  }
+);
+export const getAllHistories = createAsyncThunk(
+  "getAllHistories",
+  async ({ userId }: { userId: string }, { rejectWithValue }) => {
+    try {
+      const q = query(historiesRef, where("user_id", "==", userId));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.docs.map((doc) => doc.data());
+    } catch (e) {
+      console.log(e);
+      return rejectWithValue(e);
+    }
+  }
+);
 export const hiostory = createSlice({
   name: "hiostory",
   initialState: <HistoryState>{
     histories: {
-      weekly: [],
+      dayly: [],
       monthly: [],
       yearly: [],
+      all: [],
     },
     status: "initial",
     errors: undefined,
@@ -122,17 +208,68 @@ export const hiostory = createSlice({
       }
     );
     builder.addCase(
-      getWeekHistories.fulfilled,
+      getDaylyHistories.fulfilled,
       (state, { payload }: { payload: any }) => {
-        state.histories.weekly = payload;
+        state.histories.dayly = payload;
         state.status = "success";
       }
     );
-    builder.addCase(getWeekHistories.pending, (state) => {
+    builder.addCase(getDaylyHistories.pending, (state) => {
       state.status = "pending";
     });
     builder.addCase(
-      getWeekHistories.rejected,
+      getDaylyHistories.rejected,
+      (state, { payload }: { payload: any }) => {
+        state.status = "failure";
+        state.errors = payload;
+      }
+    );
+    builder.addCase(
+      getMonthlyHistories.fulfilled,
+      (state, { payload }: { payload: any }) => {
+        state.histories.monthly = payload;
+        state.status = "success";
+      }
+    );
+    builder.addCase(getMonthlyHistories.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(
+      getMonthlyHistories.rejected,
+      (state, { payload }: { payload: any }) => {
+        state.status = "failure";
+        state.errors = payload;
+      }
+    );
+    builder.addCase(
+      getYearlyHistories.fulfilled,
+      (state, { payload }: { payload: any }) => {
+        state.histories.yearly = payload;
+        state.status = "success";
+      }
+    );
+    builder.addCase(getYearlyHistories.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(
+      getYearlyHistories.rejected,
+      (state, { payload }: { payload: any }) => {
+        state.status = "failure";
+        state.errors = payload;
+      }
+    );
+    builder.addCase(
+      getAllHistories.fulfilled,
+      (state, { payload }: { payload: any }) => {
+        state.histories.all = payload;
+        state.status = "success";
+      }
+    );
+    builder.addCase(getAllHistories.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(
+      getAllHistories.rejected,
       (state, { payload }: { payload: any }) => {
         state.status = "failure";
         state.errors = payload;

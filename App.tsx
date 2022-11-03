@@ -52,7 +52,6 @@ function HomeStackScreen() {
     </HomeStack.Navigator>
   );
 }
-
 const AnalizeStack = createNativeStackNavigator();
 function AnalizeStackScreen() {
   return (
@@ -143,11 +142,13 @@ const RootScreen = () => {
   return (
     <Stack.Navigator initialRouteName="Initial">
       {isLogined ? (
-        <Stack.Screen
-          name="Main"
-          component={MainScreen}
-          options={{ headerShown: false }}
-        />
+        <>
+          <Stack.Screen
+            name="Main"
+            component={MainScreen}
+            options={{ headerShown: false }}
+          />
+        </>
       ) : (
         <Stack.Screen
           name="Initial"
