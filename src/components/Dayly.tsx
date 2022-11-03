@@ -5,17 +5,15 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
-import { useEffect } from "react";
-import { getWeekHistories, History } from "@stores/history";
+import { getDaylyHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import { format } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
-import { PrimaryCategory } from "@stores/categories";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getPrimaries } from "@stores/categories";
 
@@ -26,23 +24,33 @@ export function dateFormat(
   if (!date) return "";
   return format(zonedTimeToUtc(date, "JST"), s);
 }
+
+type item = {
+  label: string;
+  value: string;
+};
 export default () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useSelector(({ user }: RootReducer) => user);
   const {
-    histories: { weekly },
-  } = useSelector(({ history }: RootReducer) => history);
-  // const { primaryCategories } = useSelector(
-  //   ({ categories }: RootReducer) => categories
-  // );
-  // const primaryInfo = primaryCategories.map((item) => {
-  //   return { label: item.name, value: item.name };
-  // });
-  // useEffect(() => {
-  //   dispatch(getPrimaries({ userID: user!.id }));
-  // }, [user]);
-  const daylyMap = weekly.reduce(
+    user: { user },
+    categories: { primaryCategories },
+    history: {
+      histories: { dayly },
+    },
+  } = useSelector((store: RootReducer) => store);
+
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [primaries, setPrimaries] = useState<item[]>([]);
+
+  const [open1, setOpen1] = useState(false);
+  const [value1, setValue1] = useState(null);
+  const [items1, setItems1] = useState([
+    { label: "Lemon", value: "lemon" },
+    { label: "Grape", value: "grape" },
+  ]);
+  const daylyMap = dayly.reduce(
     (
       prev: {
         [key: string]: { id: string; y: string; x: string };
@@ -60,8 +68,16 @@ export default () => {
   );
 
   useEffect(() => {
-    dispatch(getWeekHistories({ userId: user!.id }));
+    dispatch(getDaylyHistories({ userId: user!.id }));
+    dispatch(getPrimaries({ userID: user!.id }));
   }, []);
+
+  useEffect(() => {
+    const primaryInfo = primaryCategories.map((item) => {
+      return { label: item.name, value: item.id };
+    });
+    setPrimaries(primaryInfo);
+  }, [primaryCategories]);
 
   const renderItem = ({ item }: { item: History }) => (
     <View style={tailwind("flex items-center")}>
@@ -89,29 +105,19 @@ export default () => {
       </View>
     </View>
   );
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
-  ]);
-  const [open1, setOpen1] = useState(false);
-  const [value1, setValue1] = useState(null);
-  const [items1, setItems1] = useState([
-    { label: "Lemon", value: "lemon" },
-    { label: "Grape", value: "grape" },
-  ]);
+
   return (
     <>
-      <View style={tailwind("flex flex-row m-1")}>
+      <View style={{ zIndex: 1, ...tailwind("flex flex-row m-1") }}>
         <View style={tailwind("w-1/2")}>
           <DropDownPicker
             open={open}
             value={value}
-            items={items}
+            items={primaries}
             setOpen={setOpen}
             setValue={setValue}
-            setItems={setItems}
+            setItems={setPrimaries}
+            maxHeight={100}
           />
         </View>
         <View style={tailwind("flex w-1/2")}>
@@ -125,7 +131,7 @@ export default () => {
           />
         </View>
       </View>
-      <View>
+      <View style={{ zIndex: 0 }}>
         <VictoryPie
           data={Object.values(daylyMap)}
           padding={{ top: 40, bottom: 35 }}
@@ -140,13 +146,13 @@ export default () => {
         <Text style={tailwind("text-right m-2 p-1")}>--もっと見る--</Text>
       </TouchableOpacity>
       <FlatList
-        data={weekly}
+        data={dayly}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => dispatch(getWeekHistories({ userId: user!.id }))}
+            onRefresh={() => dispatch(getDaylyHistories({ userId: user!.id }))}
           />
         }
       />

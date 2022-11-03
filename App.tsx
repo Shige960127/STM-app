@@ -3,7 +3,7 @@ import utilities from "./tailwind.json";
 import SignUpScreen from "@screens/SignUpScreen";
 import SignInScreen from "@screens/SignInScreen";
 import HomeScreen from "@screens/HomeScreen";
-import GraphScreen from "@screens/GraphScreen";
+import AnalizeScreen from "@screens/AnalizeScreen";
 import TimerScreen from "@screens/TimerScreen";
 import PrimaryCategoryScreen from "@screens/PrimaryCategoryScreen";
 import SecondaryCategoryScreen from "@screens/SecondaryCategoryScreen";
@@ -25,7 +25,7 @@ export type RootStackParamList = {
   SignUp: undefined;
   SignIn: undefined;
   Account: undefined;
-  Graph: undefined;
+  Analize: undefined;
   Timer: undefined;
   Primary: undefined;
   Secondary: undefined;
@@ -52,17 +52,16 @@ function HomeStackScreen() {
     </HomeStack.Navigator>
   );
 }
-
-const GraphStack = createNativeStackNavigator();
-function GraphStackScreen() {
+const AnalizeStack = createNativeStackNavigator();
+function AnalizeStackScreen() {
   return (
-    <GraphStack.Navigator>
-      <GraphStack.Screen
-        name="Graph"
-        component={GraphScreen}
+    <AnalizeStack.Navigator>
+      <AnalizeStack.Screen
+        name="Analize"
+        component={AnalizeScreen}
         options={{ headerShown: false }}
       />
-    </GraphStack.Navigator>
+    </AnalizeStack.Navigator>
   );
 }
 const TimerStack = createNativeStackNavigator();
@@ -113,7 +112,7 @@ const MainScreen = () => (
     />
     <Tab.Screen
       name="Analize"
-      component={GraphStackScreen}
+      component={AnalizeStackScreen}
       options={{ headerShown: false }}
     />
   </Tab.Navigator>
@@ -143,11 +142,13 @@ const RootScreen = () => {
   return (
     <Stack.Navigator initialRouteName="Initial">
       {isLogined ? (
-        <Stack.Screen
-          name="Main"
-          component={MainScreen}
-          options={{ headerShown: false }}
-        />
+        <>
+          <Stack.Screen
+            name="Main"
+            component={MainScreen}
+            options={{ headerShown: false }}
+          />
+        </>
       ) : (
         <Stack.Screen
           name="Initial"
