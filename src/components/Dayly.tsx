@@ -15,10 +15,8 @@ import { getWeekHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import { format } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
-import { PrimaryCategory } from "@stores/categories";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getPrimaries } from "@stores/categories";
-
 export function dateFormat(
   date: string | number | Date,
   s = "MM月dd日 HH時mm分"
@@ -53,19 +51,6 @@ export default () => {
     { label: "Lemon", value: "lemon" },
     { label: "Grape", value: "grape" },
   ]);
-
-  // const {
-  //   histories: { weekly },
-  // } = useSelector(({ history }: RootReducer) => history);
-  // const { primaryCategories } = useSelector(
-  //   ({ categories }: RootReducer) => categories
-  // );
-  // const primaryInfo = primaryCategories.map((item) => {
-  //   return { label: item.name, value: item.name };
-  // });
-  // useEffect(() => {
-  //   dispatch(getPrimaries({ userID: user!.id }));
-  // }, [user]);
   const daylyMap = weekly.reduce(
     (
       prev: {
