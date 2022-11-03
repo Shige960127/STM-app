@@ -10,7 +10,7 @@ import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
-import { getMonthlyHistories, History } from "@stores/history";
+import { getDaylyHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import { format } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
@@ -36,7 +36,7 @@ export default () => {
     user: { user },
     categories: { primaryCategories },
     history: {
-      histories: { monthly },
+      histories: { dayly },
     },
   } = useSelector((store: RootReducer) => store);
 
@@ -50,7 +50,7 @@ export default () => {
     { label: "Lemon", value: "lemon" },
     { label: "Grape", value: "grape" },
   ]);
-  const monthlyMap = monthly.reduce(
+  const daylyMap = dayly.reduce(
     (
       prev: {
         [key: string]: { id: string; y: string; x: string };
@@ -68,7 +68,7 @@ export default () => {
   );
 
   useEffect(() => {
-    dispatch(getMonthlyHistories({ userId: user!.id }));
+    dispatch(getDaylyHistories({ userId: user!.id }));
     dispatch(getPrimaries({ userID: user!.id }));
   }, []);
 
@@ -133,7 +133,7 @@ export default () => {
       </View>
       <View style={{ zIndex: 0 }}>
         <VictoryPie
-          data={Object.values(monthlyMap)}
+          data={Object.values(daylyMap)}
           padding={{ top: 40, bottom: 35 }}
           height={260}
           labelRadius={80}
@@ -146,15 +146,13 @@ export default () => {
         <Text style={tailwind("text-right m-2 p-1")}>--もっと見る--</Text>
       </TouchableOpacity>
       <FlatList
-        data={monthly}
+        data={dayly}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() =>
-              dispatch(getMonthlyHistories({ userId: user!.id }))
-            }
+            onRefresh={() => dispatch(getDaylyHistories({ userId: user!.id }))}
           />
         }
       />

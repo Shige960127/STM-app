@@ -2,7 +2,6 @@ import { useTailwind } from "tailwind-rn/dist";
 import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
 import Timer from "@components/Timer";
 import Category from "@components/Category";
-import CurrentDate from "@components/CurrentDate";
 import { useState } from "react";
 import { RootReducer } from "../../App";
 import { AppDispatch } from "@stores/index";
@@ -31,13 +30,6 @@ const TimerScreen = () => {
   };
   return (
     <SafeAreaView style={tailwind("flex-1")}>
-      <View
-        style={tailwind(
-          "flex flex-col items-start items-center justify-center m-2 p-1"
-        )}
-      >
-        <CurrentDate />
-      </View>
       <View>
         <Category />
       </View>

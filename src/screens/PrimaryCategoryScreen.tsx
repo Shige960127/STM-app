@@ -8,7 +8,7 @@ import {
   TextInput,
 } from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
-import PlusButton from "@components/PlusButton";
+import PlusButton from "../components/PlusButton";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList, RootReducer } from "../../App";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,8 +28,11 @@ const Item = ({
 }) => {
   const tailwind = useTailwind();
   return (
-    <TouchableOpacity style={tailwind("bg-blue-900 p-4")} onPress={onPress}>
-      <Text>{item.name}</Text>
+    <TouchableOpacity
+      style={tailwind("bg-teal-500 p-2 border border-white")}
+      onPress={onPress}
+    >
+      <Text style={tailwind("text-center  text-white")}>{item.name}</Text>
     </TouchableOpacity>
   );
 };
