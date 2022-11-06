@@ -4,6 +4,11 @@
 			"position": "absolute"
 		}
 	},
+	"bottom-0": {
+		"style": {
+			"bottom": 0
+		}
+	},
 	"top-0": {
 		"style": {
 			"top": 0
@@ -12,11 +17,6 @@
 	"left-0": {
 		"style": {
 			"left": 0
-		}
-	},
-	"bottom-0": {
-		"style": {
-			"bottom": 0
 		}
 	},
 	"right-0": {
@@ -66,12 +66,6 @@
 			"marginBottom": 16
 		}
 	},
-	"mx-4": {
-		"style": {
-			"marginLeft": 16,
-			"marginRight": 16
-		}
-	},
 	"ml-2": {
 		"style": {
 			"marginLeft": 8
@@ -97,14 +91,14 @@
 			"marginTop": 16
 		}
 	},
-	"mt-8": {
-		"style": {
-			"marginTop": 32
-		}
-	},
 	"mt-6": {
 		"style": {
 			"marginTop": 24
+		}
+	},
+	"mt-8": {
+		"style": {
+			"marginTop": 32
 		}
 	},
 	"flex": {
@@ -135,16 +129,6 @@
 	"h-8": {
 		"style": {
 			"height": 32
-		}
-	},
-	"h-16": {
-		"style": {
-			"height": 64
-		}
-	},
-	"h-24": {
-		"style": {
-			"height": 96
 		}
 	},
 	"w-4/5": {
@@ -189,16 +173,6 @@
 			"flexDirection": "row"
 		}
 	},
-	"flex-col": {
-		"style": {
-			"flexDirection": "column"
-		}
-	},
-	"items-start": {
-		"style": {
-			"alignItems": "flex-start"
-		}
-	},
 	"items-end": {
 		"style": {
 			"alignItems": "flex-end"
@@ -222,14 +196,6 @@
 			"borderBottomLeftRadius": 6
 		}
 	},
-	"rounded-full": {
-		"style": {
-			"borderTopLeftRadius": 9999,
-			"borderTopRightRadius": 9999,
-			"borderBottomRightRadius": 9999,
-			"borderBottomLeftRadius": 9999
-		}
-	},
 	"rounded-2xl": {
 		"style": {
 			"borderTopLeftRadius": 16,
@@ -238,20 +204,20 @@
 			"borderBottomLeftRadius": 16
 		}
 	},
+	"rounded-full": {
+		"style": {
+			"borderTopLeftRadius": 9999,
+			"borderTopRightRadius": 9999,
+			"borderBottomRightRadius": 9999,
+			"borderBottomLeftRadius": 9999
+		}
+	},
 	"rounded-lg": {
 		"style": {
 			"borderTopLeftRadius": 8,
 			"borderTopRightRadius": 8,
 			"borderBottomRightRadius": 8,
 			"borderBottomLeftRadius": 8
-		}
-	},
-	"rounded": {
-		"style": {
-			"borderTopLeftRadius": 4,
-			"borderTopRightRadius": 4,
-			"borderBottomRightRadius": 4,
-			"borderBottomLeftRadius": 4
 		}
 	},
 	"rounded-t-3xl": {
@@ -316,15 +282,6 @@
 			"borderLeftColor": "rgb(255 255 255 / var(--tw-border-opacity))"
 		}
 	},
-	"border-red-600": {
-		"style": {
-			"--tw-border-opacity": 1,
-			"borderTopColor": "rgb(220 38 38 / var(--tw-border-opacity))",
-			"borderRightColor": "rgb(220 38 38 / var(--tw-border-opacity))",
-			"borderBottomColor": "rgb(220 38 38 / var(--tw-border-opacity))",
-			"borderLeftColor": "rgb(220 38 38 / var(--tw-border-opacity))"
-		}
-	},
 	"bg-yellow-200": {
 		"style": {
 			"--tw-bg-opacity": 1,
@@ -337,46 +294,22 @@
 			"backgroundColor": "rgb(20 184 166 / var(--tw-bg-opacity))"
 		}
 	},
-	"bg-red-500": {
-		"style": {
-			"--tw-bg-opacity": 1,
-			"backgroundColor": "rgb(239 68 68 / var(--tw-bg-opacity))"
-		}
-	},
 	"bg-white": {
 		"style": {
 			"--tw-bg-opacity": 1,
 			"backgroundColor": "rgb(255 255 255 / var(--tw-bg-opacity))"
 		}
 	},
+	"bg-red-500": {
+		"style": {
+			"--tw-bg-opacity": 1,
+			"backgroundColor": "rgb(239 68 68 / var(--tw-bg-opacity))"
+		}
+	},
 	"bg-sky-400": {
 		"style": {
 			"--tw-bg-opacity": 1,
 			"backgroundColor": "rgb(56 189 248 / var(--tw-bg-opacity))"
-		}
-	},
-	"bg-amber-500": {
-		"style": {
-			"--tw-bg-opacity": 1,
-			"backgroundColor": "rgb(245 158 11 / var(--tw-bg-opacity))"
-		}
-	},
-	"bg-red-400": {
-		"style": {
-			"--tw-bg-opacity": 1,
-			"backgroundColor": "rgb(248 113 113 / var(--tw-bg-opacity))"
-		}
-	},
-	"bg-blue-900": {
-		"style": {
-			"--tw-bg-opacity": 1,
-			"backgroundColor": "rgb(30 58 138 / var(--tw-bg-opacity))"
-		}
-	},
-	"bg-violet-800": {
-		"style": {
-			"--tw-bg-opacity": 1,
-			"backgroundColor": "rgb(91 33 182 / var(--tw-bg-opacity))"
 		}
 	},
 	"p-1": {
@@ -395,14 +328,6 @@
 			"paddingLeft": 8
 		}
 	},
-	"p-4": {
-		"style": {
-			"paddingTop": 16,
-			"paddingRight": 16,
-			"paddingBottom": 16,
-			"paddingLeft": 16
-		}
-	},
 	"p-12": {
 		"style": {
 			"paddingTop": 48,
@@ -411,12 +336,12 @@
 			"paddingLeft": 48
 		}
 	},
-	"p-5": {
+	"p-4": {
 		"style": {
-			"paddingTop": 20,
-			"paddingRight": 20,
-			"paddingBottom": 20,
-			"paddingLeft": 20
+			"paddingTop": 16,
+			"paddingRight": 16,
+			"paddingBottom": 16,
+			"paddingLeft": 16
 		}
 	},
 	"py-4": {
@@ -466,18 +391,6 @@
 		"style": {
 			"fontSize": 36,
 			"lineHeight": 40
-		}
-	},
-	"text-6xl": {
-		"style": {
-			"fontSize": 60,
-			"lineHeight": 1
-		}
-	},
-	"text-lg": {
-		"style": {
-			"fontSize": 18,
-			"lineHeight": 28
 		}
 	},
 	"font-bold": {
