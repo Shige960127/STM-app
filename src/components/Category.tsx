@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useTailwind } from "tailwind-rn/dist";
 import { RootStackParamList, RootReducer } from "../../App";
 
-type Item = {
+export type Item = {
   destination: "Primary" | "Secondary";
   title: string;
   isVisble: boolean;

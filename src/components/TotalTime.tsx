@@ -9,10 +9,12 @@ export default () => {
     histories: { all },
   } = useSelector(({ history }: RootReducer) => history);
 
-  const totalTime = all.reduce(
+  const totalTime_bare = all.reduce(
     (prev, current) => prev + Number(current.measuring_time),
     0
   );
+  const totalTime_hour = totalTime_bare / 3600;
+  const totalTime = totalTime_hour.toFixed(2);
 
   return (
     <View style={tailwind("items-center")}>
