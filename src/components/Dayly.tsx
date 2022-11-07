@@ -48,13 +48,10 @@ export default () => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
-
   const [open1, setOpen1] = useState(false);
   const [value1, setValue1] = useState(null);
-  const [items1, setItems1] = useState([
-    { label: "Lemon", value: "lemon" },
-    { label: "Grape", value: "grape" },
-  ]);
+  const [secondary, setSecondary] = useState<item[]>([]);
+
   const daylyMap = dayly.reduce(
     (
       prev: {
@@ -74,19 +71,26 @@ export default () => {
 
   useEffect(() => {
     dispatch(getDaylyHistories({ userId: user!.id }));
-    dispatch(getPrimaries({ userID: user!.id }));
-  }, []);
-
+  }, [user]);
   useEffect(() => {
-    const primaryInfo = primaryCategories.map((item) => {
-      return { label: item.name, value: item.id };
+    const primaryInfo = dayly.map((item) => {
+      return { label: item.primary_name, value: item.primary_id };
     });
     setPrimaries(primaryInfo);
-  }, [primaryCategories]);
+  }, [dayly]);
+
+  useEffect(() => {
+    const secondaryInfo = dayly.map((item) => {
+      return {
+        label: value === item.primary_id ? item.secondary_name : "",
+        value: value === item.primary_id ? item.secondary_id : "",
+      };
+    });
+    setSecondary(secondaryInfo);
+  }, [value]);
 
   const renderItem = ({ item }: { item: History }) => {
     const timeinfo = Number(item.measuring_time) / 60;
-
     return (
       <View style={tailwind("flex items-center")}>
         <View style={tailwind("ml-2 pl-1 w-4/5")}>
@@ -166,16 +170,18 @@ export default () => {
             setValue={setValue}
             setItems={setPrimaries}
             maxHeight={100}
+            placeholder="大カテゴリを選択"
           />
         </View>
         <View style={tailwind("flex w-1/2")}>
           <DropDownPicker
             open={open1}
             value={value1}
-            items={items1}
+            items={secondary}
             setOpen={setOpen1}
             setValue={setValue1}
-            setItems={setItems1}
+            setItems={setSecondary}
+            placeholder="中カテゴリを選択"
           />
         </View>
       </View>

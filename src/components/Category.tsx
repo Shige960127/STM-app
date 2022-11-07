@@ -16,7 +16,7 @@ const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => {
   return (
     <>
       <TouchableOpacity
-        style={tailwind("bg-teal-500 border-2 border-black p-2")}
+        style={tailwind("bg-teal-500 border border-black p-2")}
         onPress={onPress}
         disabled={!item.isVisble}
       >
@@ -64,12 +64,12 @@ const Category = () => {
         )}
         keyExtractor={(_, key) => key.toString()}
       />
-      <View style={tailwind("bg-teal-500 border-2 border-black p-2")}>
+      <View style={tailwind("bg-teal-500 border border-black p-2")}>
         <Text style={tailwind("text-center text-2xl font-bold text-white")}>
           予鈴
         </Text>
       </View>
-      <View style={tailwind("bg-teal-500 border-2 border-black p-2")}>
+      <View style={tailwind("bg-teal-500 border border-black p-2")}>
         <Text style={tailwind("text-center text-2xl font-bold text-white")}>
           終了後もカウント
         </Text>
