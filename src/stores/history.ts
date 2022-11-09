@@ -19,6 +19,7 @@ import {
 import { db } from "../firebase/firebase";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
+import { zonedTimeToUtc, utcToZonedTime } from "date-fns-tz";
 
 export type History = {
   id: string;
@@ -109,8 +110,10 @@ export const getMonthlyHistories = createAsyncThunk(
       const startOfMonth = new Date();
       startOfMonth.setDate(1);
       startOfMonth.setHours(0);
+      startOfMonth.setTime(startOfMonth.getTime() + 1000 * 60 * 60 * 9);
       startOfMonth.setMinutes(0);
       startOfMonth.setSeconds(0);
+      startOfMonth.setMilliseconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
@@ -133,6 +136,7 @@ export const getYearlyHistories = createAsyncThunk(
       startOfYear.setMonth(0);
       startOfYear.setDate(1);
       startOfYear.setHours(0);
+      startOfYear.setTime(startOfYear.getTime() + 1000 * 60 * 60 * 9);
       startOfYear.setMinutes(0);
       startOfYear.setSeconds(0);
       const q = query(
