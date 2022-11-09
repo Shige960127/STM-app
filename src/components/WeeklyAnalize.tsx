@@ -13,25 +13,26 @@ import {
   VictoryTheme,
   VictoryAxis,
 } from "victory-native";
+import { dateFormat } from "@utils/format";
 
 type categoryData = {
-  id: number;
+  id: number | string;
   name: string;
   history: {
-    date: number;
+    date: string;
     time: number;
   }[];
 };
 
-const getOneWeekDate = () => {
-  const oneWeek: string[] = [];
-  for (let i = 0; i < 7; i++) {
-    const today = new Date();
-    today.setDate(today.getDate() - i);
-    oneWeek.unshift(`${today.getMonth() + 1}/${today.getDate()}`);
-  }
-  return oneWeek;
-};
+// const getOneWeekDate = () => {
+//   const oneWeek: string[] = [];
+//   for (let i = 0; i < 7; i++) {
+//     const today = new Date();
+//     today.setDate(today.getDate() - i);
+//     oneWeek.unshift(`${today.getMonth() + 1}/${today.getDate()}`);
+//   }
+//   return oneWeek;
+// };
 
 export default () => {
   const tailwind = useTailwind();
@@ -61,6 +62,40 @@ export default () => {
     },
     {}
   );
+
+  const graphData = weekly.reduce(
+    (
+      prev: {
+        [key: string]: categoryData;
+      },
+      current
+    ) => {
+      const createdAt = dateFormat(current.created_at.toDate(), "MM/dd");
+      const prevHistories = prev[current.primary_id]
+        ? prev[current.primary_id].history
+        : [];
+
+      prev[current.primary_id] = {
+        id: current.primary_id,
+        name: current.primary_name,
+        history: [
+          ...prevHistories,
+          {
+            date: createdAt,
+            time: Number(current.measuring_time),
+          },
+        ],
+      };
+      return prev;
+    },
+    {}
+  );
+
+  console.log(
+    "week1======",
+    Object.values(graphData).map((v) => console.log(v.name, v.history))
+  );
+
   const renderItem = ({
     item,
   }: {
@@ -103,50 +138,37 @@ export default () => {
       id: 1,
       name: "english",
       history: [
-        { date: 1, time: 60 },
-        { date: 3, time: 40 },
-        { date: 5, time: 30 },
-        { date: 6, time: 70 },
-        { date: 7, time: 60 },
+        { date: "09/01", time: 60 },
+        { date: "11/01", time: 40 },
+        { date: "11/01", time: 30 },
+        { date: "11/01", time: 70 },
+        { date: "11/01", time: 60 },
       ],
     },
     {
       id: 2,
       name: "programming",
       history: [
-        { date: 1, time: 30 },
-        { date: 2, time: 40 },
-        { date: 3, time: 50 },
-        { date: 4, time: 60 },
-        { date: 5, time: 70 },
-        { date: 6, time: 30 },
-        { date: 7, time: 70 },
+        { date: "11/01", time: 30 },
+        { date: "11/02", time: 40 },
+        { date: "11/03", time: 50 },
+        { date: "10/31", time: 60 },
+        { date: "11/01", time: 70 },
+        { date: "11/01", time: 30 },
+        { date: "11/01", time: 70 },
       ],
     },
     {
       id: 3,
       name: "game",
       history: [
-        { date: 1, time: 80 },
-        { date: 2, time: 90 },
-        { date: 3, time: 70 },
-        { date: 4, time: 80 },
-        { date: 5, time: 90 },
-        { date: 6, time: 60 },
-        { date: 7, time: 80 },
-      ],
-    },
-    {
-      id: 4,
-      name: "math",
-      history: [
-        { date: 1, time: 80 },
-        { date: 2, time: 90 },
-        { date: 3, time: 70 },
-        { date: 4, time: 80 },
-        { date: 5, time: 90 },
-        { date: 6, time: 60 },
-        { date: 7, time: 80 },
+        { date: "11/01", time: 80 },
+        { date: "11/01", time: 90 },
+        { date: "11/01", time: 70 },
+        { date: "11/01", time: 80 },
+        { date: "11/01", time: 90 },
+        { date: "11/01", time: 60 },
+        { date: "11/01", time: 80 },
       ],
     },
   ];
@@ -177,14 +199,11 @@ export default () => {
       </View>
       <View style={tailwind("px-4")}>
         <VictoryChart domainPadding={20} theme={VictoryTheme.material}>
-          <VictoryAxis
-            tickValues={[1, 2, 3, 4, 5, 6, 7]}
-            tickFormat={getOneWeekDate()}
-          />
+          <VictoryAxis />
           <VictoryAxis dependentAxis tickFormat={(x) => `${x}min`} />
 
           <VictoryStack colorScale={["tomato", "orange", "gold"]}>
-            {weeklySampleData.map((data) => (
+            {Object.values(graphData).map((data) => (
               <VictoryBar data={data.history} x="date" y="time" />
             ))}
           </VictoryStack>
