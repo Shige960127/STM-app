@@ -46,16 +46,24 @@ export default () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+  const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
   const [open1, setOpen1] = useState(false);
-  const [value1, setValue1] = useState(null);
-  const [secondary, setSecondary] = useState<item[]>([]);
+  const [secondary, setSecondary] = useState(null);
+  const [secondaries, setSecondaries] = useState<item[]>([]);
 
   const daylyMap = dayly.reduce(
     (
       prev: {
-        [key: string]: { id: string; y: string; x: string };
+        [key: string]: {
+          id: string;
+          y: string;
+          x: string;
+          secondary: {
+            id: string;
+            name: string;
+          }[];
+        };
       },
       current
     ) => {
@@ -63,6 +71,10 @@ export default () => {
         id: current.primary_id,
         x: current.primary_name,
         y: (prev[current.primary_id]?.y || 0) + current.measuring_time,
+        secondary: [
+          ...(prev[current.primary_id]?.secondary || []),
+          { id: current.secondary_id, name: current.secondary_name },
+        ],
       };
       return prev;
     },
@@ -70,24 +82,24 @@ export default () => {
   );
 
   useEffect(() => {
-    dispatch(getDaylyHistories({ userId: user!.id }));
+    if (user) dispatch(getDaylyHistories({ userId: user.id }));
   }, [user]);
   useEffect(() => {
-    const primaryInfo = dayly.map((item) => {
-      return { label: item.primary_name, value: item.primary_id };
+    const primaryInfo = Object.values(daylyMap).map((item) => {
+      return { label: item.x, value: item.id };
     });
-    setPrimaries(primaryInfo);
+    setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
   }, [dayly]);
 
   useEffect(() => {
     const secondaryInfo = dayly.map((item) => {
       return {
-        label: value === item.primary_id ? item.secondary_name : "",
-        value: value === item.primary_id ? item.secondary_id : "",
+        label: primary === item.primary_id ? item.secondary_name : "",
+        value: primary === item.primary_id ? item.secondary_id : "",
       };
     });
-    setSecondary(secondaryInfo);
-  }, [value]);
+    setSecondaries(secondaryInfo);
+  }, [primary]);
 
   const renderItem = ({ item }: { item: History }) => {
     const timeinfo = Number(item.measuring_time) / 60;
@@ -164,10 +176,10 @@ export default () => {
         <View style={tailwind("w-1/2")}>
           <DropDownPicker
             open={open}
-            value={value}
+            value={primary}
             items={primaries}
             setOpen={setOpen}
-            setValue={setValue}
+            setValue={setPrimary}
             setItems={setPrimaries}
             maxHeight={100}
             placeholder="大カテゴリを選択"
@@ -176,11 +188,11 @@ export default () => {
         <View style={tailwind("flex w-1/2")}>
           <DropDownPicker
             open={open1}
-            value={value1}
-            items={secondary}
+            value={secondary}
+            items={secondaries}
             setOpen={setOpen1}
-            setValue={setValue1}
-            setItems={setSecondary}
+            setValue={setSecondary}
+            setItems={setSecondaries}
             placeholder="中カテゴリを選択"
           />
         </View>

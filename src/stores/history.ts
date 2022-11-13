@@ -87,18 +87,17 @@ export const getDaylyHistories = createAsyncThunk(
       startDay.setHours(0);
       startDay.setMinutes(0);
       startDay.setSeconds(0);
-      const endDay = new Date();
-      endDay.setDate(endDay.getDate() + 1);
-      endDay.setHours(0);
-      endDay.setMinutes(0);
-      endDay.setSeconds(0);
+      startDay.setMilliseconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
         orderBy("created_at"),
-        startAt(startDay),
-        endAt(endDay)
+        startAt(startDay)
       );
+      console.log("=================");
+      console.log(new Date());
+      console.log("=================");
+      console.log("StartDay--------", startDay);
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
@@ -115,21 +114,17 @@ export const getMonthlyHistories = createAsyncThunk(
       const startOfMonth = new Date();
       startOfMonth.setDate(1);
       startOfMonth.setHours(0);
+      startOfMonth.setTime(startOfMonth.getTime() + 1000 * 60 * 60 * 9);
       startOfMonth.setMinutes(0);
       startOfMonth.setSeconds(0);
-      const endOfMonth = new Date();
-      endOfMonth.setMonth(endOfMonth.getMonth() + 1);
-      endOfMonth.setDate(0);
-      endOfMonth.setHours(0);
-      endOfMonth.setMinutes(0);
-      endOfMonth.setSeconds(0);
+      startOfMonth.setMilliseconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
-        orderBy("created_at"),
-        startAt(startOfMonth),
-        endAt(endOfMonth)
+        orderBy("created_at", "desc"),
+        startAt(startOfMonth)
       );
+      console.log("StartOfMonth--------", startOfMonth);
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
@@ -146,21 +141,17 @@ export const getYearlyHistories = createAsyncThunk(
       startOfYear.setMonth(0);
       startOfYear.setDate(1);
       startOfYear.setHours(0);
+      startOfYear.setTime(startOfYear.getTime() + 1000 * 60 * 60 * 9);
       startOfYear.setMinutes(0);
       startOfYear.setSeconds(0);
-      const endOfYear = new Date();
-      endOfYear.setFullYear(endOfYear.getFullYear() + 1);
-      endOfYear.setMonth(0);
-      endOfYear.setDate(0);
-      endOfYear.setHours(0);
-      endOfYear.setMinutes(0);
-      endOfYear.setSeconds(0);
+      startOfYear.setMilliseconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
-        orderBy("created_at"),
+        orderBy("created_at", "desc"),
         startAt(startOfYear)
       );
+      console.log("StartOfYear--------", startOfYear);
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {

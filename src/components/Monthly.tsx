@@ -12,18 +12,9 @@ import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
 import { getMonthlyHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
-import { format } from "date-fns";
-import { zonedTimeToUtc } from "date-fns-tz";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getPrimaries } from "@stores/categories";
-
-export function dateFormat(
-  date: string | number | Date,
-  s = "MM月dd日 HH時mm分"
-) {
-  if (!date) return "";
-  return format(zonedTimeToUtc(date, "JST"), s);
-}
+import { dateFormat } from "@utils/format";
 
 type item = {
   label: string;
@@ -41,12 +32,12 @@ export default () => {
   } = useSelector((store: RootReducer) => store);
 
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+  const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
 
   const [open1, setOpen1] = useState(false);
-  const [value1, setValue1] = useState(null);
-  const [items1, setItems1] = useState([
+  const [secondary, setSecondary] = useState(null);
+  const [secondaries, setSecondaries] = useState([
     { label: "Lemon", value: "lemon" },
     { label: "Grape", value: "grape" },
   ]);
@@ -115,10 +106,10 @@ export default () => {
         <View style={tailwind("w-1/2")}>
           <DropDownPicker
             open={open}
-            value={value}
+            value={primary}
             items={primaries}
             setOpen={setOpen}
-            setValue={setValue}
+            setValue={setPrimary}
             setItems={setPrimaries}
             maxHeight={100}
           />
@@ -126,11 +117,11 @@ export default () => {
         <View style={tailwind("flex w-1/2")}>
           <DropDownPicker
             open={open1}
-            value={value1}
-            items={items1}
+            value={secondary}
+            items={secondaries}
             setOpen={setOpen1}
-            setValue={setValue1}
-            setItems={setItems1}
+            setValue={setSecondary}
+            setItems={setSecondaries}
           />
         </View>
       </View>
