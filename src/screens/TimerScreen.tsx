@@ -12,6 +12,7 @@ const TimerScreen = () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
   const [remainingSecs, setRemainingSecs] = useState(0);
+  const [isActive, setIsActive] = useState(false);
   const { user } = useSelector(({ user }: RootReducer) => user);
   const {
     selectCategory: { primary, secondary },
@@ -27,6 +28,7 @@ const TimerScreen = () => {
         measuringTime: remainingSecs,
       })
     );
+    setRemainingSecs(0);
   };
   return (
     <SafeAreaView style={tailwind("flex-1")}>
@@ -36,6 +38,8 @@ const TimerScreen = () => {
       <Timer
         remainingSecs={remainingSecs}
         setRemainingSecs={setRemainingSecs}
+        isActive={isActive}
+        setIsActive={setIsActive}
       />
       <View style={tailwind("flex items-center justify-center mt-8")}>
         <TouchableOpacity
@@ -43,7 +47,9 @@ const TimerScreen = () => {
           style={tailwind(
             "w-80 flex flex-row justify-center items-center m-4 p-4 rounded-2xl bg-sky-400"
           )}
-          disabled={!primary || !secondary || remainingSecs === 0}
+          disabled={
+            !primary || !secondary || remainingSecs === 0 || isActive === true
+          }
         >
           <Text style={tailwind("text-white font-bold")}>計測時間を保存</Text>
         </TouchableOpacity>

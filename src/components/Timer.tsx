@@ -12,14 +12,16 @@ const getRemaining = (time: number) => {
 const Timer = ({
   remainingSecs,
   setRemainingSecs,
+  isActive,
+  setIsActive,
 }: {
   remainingSecs: number;
   setRemainingSecs: React.Dispatch<React.SetStateAction<number>>;
+  isActive: boolean;
+  setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const tailwind = useTailwind();
-  const [isActive, setIsActive] = useState(false);
   const { mins, secs } = getRemaining(remainingSecs);
-
   const toggle = () => {
     setIsActive(!isActive);
   };

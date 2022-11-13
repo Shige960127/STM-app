@@ -94,10 +94,10 @@ export const getDaylyHistories = createAsyncThunk(
         orderBy("created_at"),
         startAt(startDay)
       );
-      console.log("=================");
+      // console.log("=================");
       console.log(new Date());
-      console.log("=================");
-      console.log("StartDay--------", startDay);
+      // console.log("=================");
+      // console.log("StartDay--------", startDay);
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
@@ -124,7 +124,7 @@ export const getMonthlyHistories = createAsyncThunk(
         orderBy("created_at", "desc"),
         startAt(startOfMonth)
       );
-      console.log("StartOfMonth--------", startOfMonth);
+      // console.log("StartOfMonth--------", startOfMonth);
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
@@ -151,7 +151,7 @@ export const getYearlyHistories = createAsyncThunk(
         orderBy("created_at", "desc"),
         startAt(startOfYear)
       );
-      console.log("StartOfYear--------", startOfYear);
+      // console.log("StartOfYear--------", startOfYear);
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
