@@ -7,6 +7,7 @@ import { RootReducer } from "../../App";
 import { AppDispatch } from "@stores/index";
 import { createHistory } from "@stores/history";
 import { useDispatch, useSelector } from "react-redux";
+import { clearPrimary, clearSecondary } from "@stores/categories";
 
 const TimerScreen = () => {
   const tailwind = useTailwind();
@@ -28,6 +29,8 @@ const TimerScreen = () => {
         measuringTime: remainingSecs,
       })
     );
+    dispatch(clearPrimary(null));
+    dispatch(clearSecondary(null));
     setRemainingSecs(0);
   };
   return (

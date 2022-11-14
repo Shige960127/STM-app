@@ -25,7 +25,6 @@ export default () => {
   const dispatch = useDispatch<AppDispatch>();
   const {
     user: { user },
-    categories: { primaryCategories },
     history: {
       histories: { monthly },
     },
@@ -34,17 +33,19 @@ export default () => {
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
-
   const [open1, setOpen1] = useState(false);
   const [secondary, setSecondary] = useState(null);
-  const [secondaries, setSecondaries] = useState([
-    { label: "Lemon", value: "lemon" },
-    { label: "Grape", value: "grape" },
-  ]);
+  const [secondaries, setSecondaries] = useState<item[]>([]);
+
   const monthlyMap = monthly.reduce(
     (
       prev: {
-        [key: string]: { id: string; y: string; x: string };
+        [key: string]: {
+          id: string;
+          y: string;
+          x: string;
+          secondary: { id: string; name: string }[];
+        };
       },
       current
     ) => {
@@ -52,6 +53,10 @@ export default () => {
         id: current.primary_id,
         x: current.primary_name,
         y: (prev[current.primary_id]?.y || 0) + current.measuring_time,
+        secondary: [
+          ...(prev[current.primary_id]?.secondary || []),
+          { id: current.secondary_id, name: current.secondary_name },
+        ],
       };
       return prev;
     },
@@ -59,16 +64,22 @@ export default () => {
   );
 
   useEffect(() => {
-    dispatch(getMonthlyHistories({ userId: user!.id }));
-    dispatch(getPrimaries({ userID: user!.id }));
-  }, []);
-
+    if (user) dispatch(getMonthlyHistories({ userId: user!.id }));
+  }, [user]);
   useEffect(() => {
-    const primaryInfo = primaryCategories.map((item) => {
-      return { label: item.name, value: item.id };
+    const primaryInfo = Object.values(monthlyMap).map((item) => {
+      return { label: item.x, value: item.id };
     });
-    setPrimaries(primaryInfo);
-  }, [primaryCategories]);
+    setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
+  }, [monthly]);
+  useEffect(() => {
+    if (primary) {
+      const secondaryInfo = monthlyMap[primary].secondary.map((s) => {
+        return { label: s.name, value: s.id };
+      });
+      setSecondaries(secondaryInfo);
+    }
+  }, [primary]);
 
   const renderItem = ({ item }: { item: History }) => {
     const timeinfo = Number(item.measuring_time) / 60;
@@ -112,6 +123,7 @@ export default () => {
             setValue={setPrimary}
             setItems={setPrimaries}
             maxHeight={100}
+            placeholder="大カテゴリを選択"
           />
         </View>
         <View style={tailwind("flex w-1/2")}>
@@ -122,6 +134,8 @@ export default () => {
             setOpen={setOpen1}
             setValue={setSecondary}
             setItems={setSecondaries}
+            maxHeight={100}
+            placeholder="中カテゴリを選択"
           />
         </View>
       </View>

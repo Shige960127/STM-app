@@ -13,20 +13,11 @@ import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
 import { getDaylyHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
-import { format } from "date-fns";
-import { zonedTimeToUtc } from "date-fns-tz";
+import { dateFormat } from "@utils/format";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getPrimaries } from "@stores/categories";
 import ChangeInfo from "./ChangeInfo";
 import Modal from "react-native-modal";
-
-export function dateFormat(
-  date: string | number | Date,
-  s = "MM月dd日 HH時mm分"
-) {
-  if (!date) return "";
-  return format(zonedTimeToUtc(date, "JST"), s);
-}
 
 type item = {
   label: string;
@@ -37,7 +28,6 @@ export default () => {
   const dispatch = useDispatch<AppDispatch>();
   const {
     user: { user },
-    categories: { primaryCategories },
     history: {
       histories: { dayly },
     },
@@ -92,13 +82,12 @@ export default () => {
   }, [dayly]);
 
   useEffect(() => {
-    const secondaryInfo = dayly.map((item) => {
-      return {
-        label: primary === item.primary_id ? item.secondary_name : "",
-        value: primary === item.primary_id ? item.secondary_id : "",
-      };
-    });
-    setSecondaries(secondaryInfo);
+    if (primary) {
+      const secondaryInfo = daylyMap[primary].secondary.map((s) => {
+        return { label: s.name, value: s.id };
+      });
+      setSecondaries(secondaryInfo);
+    }
   }, [primary]);
 
   const renderItem = ({ item }: { item: History }) => {
@@ -193,6 +182,7 @@ export default () => {
             setOpen={setOpen1}
             setValue={setSecondary}
             setItems={setSecondaries}
+            maxHeight={100}
             placeholder="中カテゴリを選択"
           />
         </View>
