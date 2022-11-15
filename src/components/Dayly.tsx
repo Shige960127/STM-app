@@ -32,6 +32,13 @@ type item = {
   label: string;
   value: string;
 };
+
+type pie = {
+  id: string;
+  y: string;
+  x: string;
+};
+
 export default () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
@@ -42,15 +49,6 @@ export default () => {
       histories: { dayly },
     },
   } = useSelector((store: RootReducer) => store);
-
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const [open, setOpen] = useState(false);
-  const [primary, setPrimary] = useState(null);
-  const [primaries, setPrimaries] = useState<item[]>([]);
-  const [open1, setOpen1] = useState(false);
-  const [secondary, setSecondary] = useState(null);
-  const [secondaries, setSecondaries] = useState<item[]>([]);
 
   // keyがprimary_id
   const daylyMap = dayly.reduce(
@@ -63,6 +61,7 @@ export default () => {
           secondaries: {
             id: string;
             name: string;
+            time: string;
           }[];
         };
       },
@@ -74,13 +73,30 @@ export default () => {
         y: (prev[current.primary_id]?.y || 0) + current.measuring_time,
         secondaries: [
           ...(prev[current.primary_id]?.secondaries || []),
-          { id: current.secondary_id, name: current.secondary_name },
+          {
+            id: current.secondary_id,
+            name: current.secondary_name,
+            time: current.measuring_time,
+          },
         ],
       };
       return prev;
     },
     {}
   );
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [pieData, setPieData] = useState<pie[]>(Object.values(daylyMap));
+  const [open, setOpen] = useState(false);
+  const [primary, setPrimary] = useState(null);
+  const [primaries, setPrimaries] = useState<item[]>([]);
+  const [open1, setOpen1] = useState(false);
+  const [secondary, setSecondary] = useState(null);
+  const [secondaries, setSecondaries] = useState<item[]>([]);
+
+  useEffect(() => {
+    setPieData(Object.values(daylyMap));
+  }, []);
 
   useEffect(() => {
     if (user) dispatch(getDaylyHistories({ userId: user.id }));
@@ -93,20 +109,46 @@ export default () => {
   }, [dayly]);
 
   useEffect(() => {
-    if (primary) {
-      const result = daylyMap[primary].secondaries
-        .filter(
-          (x, i, array) =>
-            array.findIndex((y) => y.id === x.id && y.name === x.name) === i
-        )
-        .map((s) => {
+    if (primary && primary !== "all") {
+      const secondariesByPrimary = daylyMap[primary].secondaries.filter(
+        (x, i, array) =>
+          array.findIndex((y) => y.id === x.id && y.name === x.name) === i
+      );
+      setSecondaries(
+        secondariesByPrimary.map((s) => {
           return {
             label: s.name,
             value: s.id,
           };
-        });
+        })
+      );
 
-      setSecondaries(result);
+      setPieData(
+        secondariesByPrimary.map((s) => {
+          return {
+            id: s.id,
+            y: s.time,
+            x: s.name,
+          };
+        })
+      );
+    }
+
+    if (primary === "all") {
+      setPieData(Object.values(daylyMap));
+
+      const newSecondaries = dayly
+        .filter(
+          (x, i, array) =>
+            array.findIndex((y) => y.secondary_id === x.secondary_id) === i
+        )
+        .map((s) => {
+          return {
+            label: s.secondary_name,
+            value: s.secondary_id,
+          };
+        });
+      setSecondaries(newSecondaries);
     }
   }, [primary]);
 
@@ -209,7 +251,7 @@ export default () => {
       </View>
       <View style={{ zIndex: 0 }}>
         <VictoryPie
-          data={Object.values(daylyMap)}
+          data={pieData}
           padding={{ top: 40, bottom: 35 }}
           height={260}
           labelRadius={80}
