@@ -96,7 +96,7 @@ export default () => {
 
   useEffect(() => {
     setPieData(Object.values(daylyMap));
-  }, []);
+  }, [dayly]);
 
   useEffect(() => {
     if (user) dispatch(getDaylyHistories({ userId: user.id }));
