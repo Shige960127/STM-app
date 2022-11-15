@@ -60,7 +60,7 @@ export default () => {
           id: string;
           y: string;
           x: string;
-          secondary: {
+          secondaries: {
             id: string;
             name: string;
           }[];
@@ -72,8 +72,8 @@ export default () => {
         id: current.primary_id,
         x: current.primary_name,
         y: (prev[current.primary_id]?.y || 0) + current.measuring_time,
-        secondary: [
-          ...(prev[current.primary_id]?.secondary || []),
+        secondaries: [
+          ...(prev[current.primary_id]?.secondaries || []),
           { id: current.secondary_id, name: current.secondary_name },
         ],
       };
@@ -93,12 +93,20 @@ export default () => {
   }, [dayly]);
 
   useEffect(() => {
-    // FIXME:ここは後で修正します。
     if (primary) {
-      const secondaryInfo = daylyMap[primary].secondary.map((s) => {
-        return { label: s.name, value: s.id };
-      });
-      setSecondaries(secondaryInfo);
+      const result = daylyMap[primary].secondaries
+        .filter(
+          (x, i, array) =>
+            array.findIndex((y) => y.id === x.id && y.name === x.name) === i
+        )
+        .map((s) => {
+          return {
+            label: s.name,
+            value: s.id,
+          };
+        });
+
+      setSecondaries(result);
     }
   }, [primary]);
 
