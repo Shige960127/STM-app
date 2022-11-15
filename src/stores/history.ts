@@ -83,15 +83,15 @@ export const getDaylyHistories = createAsyncThunk(
   "getDaylyHistories",
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
-      const startDay = new Date();
-      startDay.setHours(0);
-      startDay.setMinutes(0);
-      startDay.setSeconds(0);
+      const startDate = new Date();
+      startDate.setHours(0);
+      startDate.setMinutes(0);
+      startDate.setSeconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
-        orderBy("created_at", "desc"),
-        startAt(startDay)
+        where("created_at", ">", startDate),
+        orderBy("created_at", "desc")
       );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
@@ -106,18 +106,17 @@ export const getMonthlyHistories = createAsyncThunk(
   "getMonthlyHistories",
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0);
-      startOfMonth.setTime(startOfMonth.getTime() + 1000 * 60 * 60 * 9);
-      startOfMonth.setMinutes(0);
-      startOfMonth.setSeconds(0);
-      startOfMonth.setMilliseconds(0);
+      const startDate = new Date();
+      startDate.setDate(1);
+      startDate.setMinutes(0);
+      startDate.setSeconds(0);
+      startDate.setMilliseconds(0);
+
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
-        orderBy("created_at", "desc"),
-        startAt(startOfMonth)
+        where("created_at", ">", startDate),
+        orderBy("created_at", "desc")
       );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
@@ -135,14 +134,13 @@ export const getYearlyHistories = createAsyncThunk(
       startOfYear.setMonth(0);
       startOfYear.setDate(1);
       startOfYear.setHours(0);
-      startOfYear.setTime(startOfYear.getTime() + 1000 * 60 * 60 * 9);
       startOfYear.setMinutes(0);
       startOfYear.setSeconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
-        orderBy("created_at", "desc"),
-        startAt(startOfYear)
+        where("created_at", ">", startOfYear),
+        orderBy("created_at", "desc")
       );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
