@@ -1,13 +1,18 @@
 import { useTailwind } from "tailwind-rn/dist";
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { useEffect } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 const formatNumber = (number: number) => `0${number}`.slice(-2);
 
 const getRemaining = (time: number) => {
+  const hours = Math.floor(time / 3600);
   const mins = Math.floor(time / 60);
   const secs = time - mins * 60;
-  return { mins: formatNumber(mins), secs: formatNumber(secs) };
+  return {
+    hours: formatNumber(hours),
+    mins: formatNumber(mins),
+    secs: formatNumber(secs),
+  };
 };
 const Timer = ({
   remainingSecs,
@@ -21,7 +26,7 @@ const Timer = ({
   setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const tailwind = useTailwind();
-  const { mins, secs } = getRemaining(remainingSecs);
+  const { hours, mins, secs } = getRemaining(remainingSecs);
   const toggle = () => {
     setIsActive(!isActive);
   };
@@ -39,9 +44,7 @@ const Timer = ({
   }, [isActive, remainingSecs]);
   return (
     <View style={tailwind("flex-1 items-center justify-center")}>
-      <Text
-        style={tailwind("text-violet-400 text-4xl font-bold h-20 m-4")}
-      >{`${mins}:${secs}`}</Text>
+      <Text style={styles.timer}>{`${hours}:${mins}:${secs}`}</Text>
       <TouchableOpacity
         onPress={toggle}
         style={tailwind(
@@ -56,3 +59,15 @@ const Timer = ({
   );
 };
 export default Timer;
+
+const styles = StyleSheet.create({
+  timer: {
+    shadowColor: "gray",
+    shadowOffset: { width: 10, height: 10 },
+    shadowOpacity: 1,
+    margin: 4,
+    padding: 1,
+    fontSize: 70,
+    fontWeight: "bold",
+  },
+});

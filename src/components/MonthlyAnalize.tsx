@@ -1,4 +1,4 @@
-import { View, Text, FlatList, RefreshControl } from "react-native";
+import { View, Text, FlatList, RefreshControl, StyleSheet } from "react-native";
 import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -13,20 +13,30 @@ import {
   VictoryTheme,
   VictoryAxis,
 } from "victory-native";
+import { dateFormat } from "@utils/format";
+
+type categoryData = {
+  id: number | string;
+  name: string;
+  history: {
+    date: string;
+    time: number;
+  }[];
+};
 
 export default () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector(({ user }: RootReducer) => user);
   const {
-    histories: { monthly },
+    histories: { all },
   } = useSelector(({ history }: RootReducer) => history);
 
   useEffect(() => {
     dispatch(getMonthlyHistories({ userId: user!.id }));
   }, []);
 
-  const monthlyMap = monthly.reduce(
+  const monthlyMap = all.reduce(
     (
       prev: {
         [key: string]: { id: string; time: string; name: string };
@@ -37,6 +47,33 @@ export default () => {
         id: cureent.primary_id,
         time: (prev[cureent.primary_id]?.time || 0) + cureent.measuring_time,
         name: cureent.primary_name,
+      };
+      return prev;
+    },
+    {}
+  );
+  const graphData = all.reduce(
+    (
+      prev: {
+        [key: string]: categoryData;
+      },
+      current
+    ) => {
+      const createAt = dateFormat(current.created_at.toDate(), "MM/dd");
+      const prevHistories = prev[current.primary_id]
+        ? prev[current.primary_id].history
+        : [];
+
+      prev[current.primary_id] = {
+        id: current.primary_id,
+        name: current.primary_name,
+        history: [
+          ...prevHistories,
+          {
+            date: createAt,
+            time: Number(current.measuring_time),
+          },
+        ],
       };
       return prev;
     },
@@ -78,34 +115,23 @@ export default () => {
     { label: "Grape", value: "grape" },
   ]);
 
-  const english = [
-    { date: 1, time: 60 },
-    { date: 3, time: 40 },
-    { date: 5, time: 30 },
-    { date: 6, time: 70 },
-    { date: 7, time: 60 },
-  ];
-  const programming = [
-    { date: 1, time: 30 },
-    { date: 2, time: 40 },
-    { date: 3, time: 50 },
-    { date: 4, time: 60 },
-    { date: 5, time: 70 },
-    { date: 6, time: 30 },
-    { date: 7, time: 70 },
-  ];
-  const game = [
-    { date: 1, time: 80 },
-    { date: 2, time: 90 },
-    { date: 3, time: 70 },
-    { date: 4, time: 80 },
-    { date: 5, time: 90 },
-    { date: 6, time: 60 },
-    { date: 7, time: 80 },
-  ];
-
   return (
     <>
+      {/* <View style={tailwind("flex flex-row m-1")}>
+        {/* <Text>昨年</Text> */}
+      {/* <View style={styles.totaltime}>
+          <Text style={tailwind("text-2xl font-bold text-right m-1 p-1")}>
+            test_h
+          </Text>
+        </View> */}
+
+      {/* <Text>今年</Text> */}
+      {/* <View style={styles.totaltime}>
+          <Text style={tailwind("text-2xl font-bold text-right m-1 p-1")}>
+            test_h
+          </Text>
+        </View>
+      </View> */}
       <View style={tailwind("flex flex-row m-1")}>
         <View style={tailwind("w-1/2")}>
           <DropDownPicker
@@ -128,18 +154,14 @@ export default () => {
           />
         </View>
       </View>
-      <View>
-        <VictoryChart domainPadding={30} theme={VictoryTheme.material}>
-          <VictoryAxis
-            tickValues={[1, 2, 3, 4, 5, 6, 7]}
-            tickFormat={["1/1", "1/2", "1/3", "1/4", "1/5", "1/6", "1/7"]}
-          />
+      <View style={tailwind("px-4")}>
+        <VictoryChart domainPadding={20} theme={VictoryTheme.material}>
+          <VictoryAxis />
           <VictoryAxis dependentAxis tickFormat={(x) => `${x}min`} />
-
           <VictoryStack colorScale={["tomato", "orange", "gold"]}>
-            <VictoryBar data={english} x="date" y="time" />
-            <VictoryBar data={programming} x="date" y="time" />
-            <VictoryBar data={game} x="date" y="time" />
+            {Object.values(graphData).map((data) => (
+              <VictoryBar data={data.history} x="date" y="time" />
+            ))}
           </VictoryStack>
         </VictoryChart>
       </View>
@@ -159,3 +181,17 @@ export default () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  totaltime: {
+    shadowColor: "gray",
+    shadowOffset: { width: 10, height: 10 },
+    shadowOpacity: 1,
+    backgroundColor: "white",
+    marginBottom: 10,
+    marginLeft: 5,
+    marginRight: 5,
+    padding: 4,
+    width: "45%",
+  },
+});

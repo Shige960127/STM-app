@@ -29,8 +29,8 @@ const TimerScreen = () => {
         measuringTime: remainingSecs,
       })
     );
-    dispatch(clearPrimary(null));
-    dispatch(clearSecondary(null));
+    dispatch(clearPrimary());
+    dispatch(clearSecondary());
     setRemainingSecs(0);
   };
   return (
@@ -50,9 +50,7 @@ const TimerScreen = () => {
           style={tailwind(
             "w-80 flex flex-row justify-center items-center m-4 p-4 rounded-2xl bg-sky-400"
           )}
-          disabled={
-            !primary || !secondary || remainingSecs === 0 || isActive === true
-          }
+          disabled={!primary || !secondary || !remainingSecs || isActive}
         >
           <Text style={tailwind("text-white font-bold")}>計測時間を保存</Text>
         </TouchableOpacity>

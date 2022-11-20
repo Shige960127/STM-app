@@ -13,8 +13,6 @@ import {
   Timestamp,
   serverTimestamp,
   orderBy,
-  startAt,
-  endAt,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import "react-native-get-random-values";
@@ -83,21 +81,17 @@ export const getDaylyHistories = createAsyncThunk(
   "getDaylyHistories",
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
-      const startDay = new Date();
-      startDay.setHours(0);
-      startDay.setMinutes(0);
-      startDay.setSeconds(0);
-      startDay.setMilliseconds(0);
+      const startDate = new Date();
+      startDate.setHours(0);
+      startDate.setMinutes(0);
+      startDate.setSeconds(0);
+      startDate.setMilliseconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
-        orderBy("created_at"),
-        startAt(startDay)
+        where("created_at", ">", startDate),
+        orderBy("created_at", "desc")
       );
-      // console.log("=================");
-      console.log(new Date());
-      // console.log("=================");
-      // console.log("StartDay--------", startDay);
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
@@ -114,17 +108,15 @@ export const getMonthlyHistories = createAsyncThunk(
       const startOfMonth = new Date();
       startOfMonth.setDate(1);
       startOfMonth.setHours(0);
-      startOfMonth.setTime(startOfMonth.getTime() + 1000 * 60 * 60 * 9);
       startOfMonth.setMinutes(0);
       startOfMonth.setSeconds(0);
       startOfMonth.setMilliseconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
-        orderBy("created_at", "desc"),
-        startAt(startOfMonth)
+        where("created_at", ">", startOfMonth),
+        orderBy("created_at", "desc")
       );
-      // console.log("StartOfMonth--------", startOfMonth);
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
@@ -141,17 +133,15 @@ export const getYearlyHistories = createAsyncThunk(
       startOfYear.setMonth(0);
       startOfYear.setDate(1);
       startOfYear.setHours(0);
-      startOfYear.setTime(startOfYear.getTime() + 1000 * 60 * 60 * 9);
       startOfYear.setMinutes(0);
       startOfYear.setSeconds(0);
       startOfYear.setMilliseconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
-        orderBy("created_at", "desc"),
-        startAt(startOfYear)
+        where("created_at", ">", startOfYear),
+        orderBy("created_at", "desc")
       );
-      // console.log("StartOfYear--------", startOfYear);
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {
@@ -164,7 +154,11 @@ export const getAllHistories = createAsyncThunk(
   "getAllHistories",
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
-      const q = query(historiesRef, where("user_id", "==", userId));
+      const q = query(
+        historiesRef,
+        where("user_id", "==", userId),
+        orderBy("created_at", "desc")
+      );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
     } catch (e) {

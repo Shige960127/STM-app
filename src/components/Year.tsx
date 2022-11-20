@@ -20,6 +20,12 @@ type item = {
   label: string;
   value: string;
 };
+type pie = {
+  id: string;
+  y: string;
+  x: string;
+};
+
 export default () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
@@ -30,20 +36,16 @@ export default () => {
       histories: { yearly },
     },
   } = useSelector((store: RootReducer) => store);
-  const [open, setOpen] = useState(false);
-  const [primary, setPrimary] = useState(null);
-  const [primaries, setPrimaries] = useState<item[]>([]);
 
-  const [open1, setOpen1] = useState(false);
-  const [secondary, setSecondary] = useState(null);
-  const [secondaries, setSecondaries] = useState([
-    { label: "Lemon", value: "lemon" },
-    { label: "Grape", value: "grape" },
-  ]);
   const yearlyMap = yearly.reduce(
     (
       prev: {
-        [key: string]: { id: string; y: string; x: string };
+        [key: string]: {
+          id: string;
+          y: string;
+          x: string;
+          secondaries: { id: string; name: string; time: string }[];
+        };
       },
       current
     ) => {
@@ -51,23 +53,75 @@ export default () => {
         id: current.primary_id,
         x: current.primary_name,
         y: (prev[current.primary_id]?.y || 0) + current.measuring_time,
+        secondaries: [
+          ...(prev[current.primary_id]?.secondaries || []),
+          {
+            id: current.secondary_id,
+            name: current.secondary_name,
+            time: current.measuring_time,
+          },
+        ],
       };
       return prev;
     },
     {}
   );
+  const [pieData, setPieData] = useState<pie[]>(Object.values(yearlyMap));
+  const [open, setOpen] = useState(false);
+  const [primary, setPrimary] = useState(null);
+  const [primaries, setPrimaries] = useState<item[]>([]);
+  const [open1, setOpen1] = useState(false);
+  const [secondary, setSecondary] = useState(null);
+  const [secondaries, setSecondaries] = useState<item[]>([]);
 
   useEffect(() => {
-    dispatch(getYearlyHistories({ userId: user!.id }));
-    dispatch(getPrimaries({ userID: user!.id }));
-  }, []);
-
+    if (user) dispatch(getYearlyHistories({ userId: user!.id }));
+  }, [user]);
   useEffect(() => {
-    const primaryInfo = primaryCategories.map((item) => {
-      return { label: item.name, value: item.id };
+    const primaryInfo = Object.values(yearlyMap).map((item) => {
+      return { label: item.x, value: item.id };
     });
-    setPrimaries(primaryInfo);
-  }, [primaryCategories]);
+    setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
+    setPieData(Object.values(yearlyMap));
+  }, [yearly]);
+  useEffect(() => {
+    if (primary && primary !== "all") {
+      const secondariesByPrimary = yearlyMap[primary].secondaries.filter(
+        (x, i, array) =>
+          array.findIndex((y) => y.id === x.id && y.name === x.name) === i
+      );
+      setSecondaries(
+        secondariesByPrimary.map((s) => {
+          return { label: s.name, value: s.id };
+        })
+      );
+      setPieData(
+        secondariesByPrimary.map((s) => {
+          return {
+            id: s.id,
+            y: s.time,
+            x: s.name,
+          };
+        })
+      );
+    }
+
+    if (primary === "all") {
+      setPieData(Object.values(yearlyMap));
+      const newSecondaries = yearly
+        .filter(
+          (x, i, array) =>
+            array.findIndex((y) => y.secondary_id === x.secondary_id) === i
+        )
+        .map((s) => {
+          return {
+            label: s.secondary_name,
+            value: s.secondary_id,
+          };
+        });
+      setSecondaries(newSecondaries);
+    }
+  }, [primary]);
 
   const renderItem = ({ item }: { item: History }) => {
     const timeinfo = Number(item.measuring_time) / 60;
@@ -126,7 +180,7 @@ export default () => {
       </View>
       <View style={{ zIndex: 0 }}>
         <VictoryPie
-          data={Object.values(yearlyMap)}
+          data={pieData}
           padding={{ top: 40, bottom: 35 }}
           height={260}
           labelRadius={80}
