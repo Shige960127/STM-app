@@ -13,6 +13,7 @@ import {
   Timestamp,
   serverTimestamp,
   orderBy,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import "react-native-get-random-values";
@@ -167,6 +168,17 @@ export const getAllHistories = createAsyncThunk(
     }
   }
 );
+export const deleteHistories = createAsyncThunk(
+  "deleteHistories",
+  async ({ historyId }: { historyId: string }, { rejectWithValue }) => {
+    try {
+      await deleteDoc(doc(db, "histories", historyId));
+    } catch (e) {
+      console.log(e);
+      return rejectWithValue(e);
+    }
+  }
+);
 export const hiostory = createSlice({
   name: "hiostory",
   initialState: <HistoryState>{
@@ -254,6 +266,24 @@ export const hiostory = createSlice({
     });
     builder.addCase(
       getAllHistories.rejected,
+      (state, { payload }: { payload: any }) => {
+        state.status = "failure";
+        state.errors = payload;
+      }
+    );
+    builder.addCase(
+      deleteHistories.fulfilled,
+      (state, { payload }: { payload: any }) => {
+        state.histories.dayly = payload;
+
+        state.status = "success";
+      }
+    );
+    builder.addCase(deleteHistories.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(
+      deleteHistories.rejected,
       (state, { payload }: { payload: any }) => {
         state.status = "failure";
         state.errors = payload;

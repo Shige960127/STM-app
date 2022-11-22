@@ -2,19 +2,23 @@ import { View, Text, StyleSheet } from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
 import { useSelector } from "react-redux";
 import { RootReducer } from "../../App";
+import { useEffect, useState } from "react";
 
 export default () => {
   const tailwind = useTailwind();
   const {
     histories: { all },
   } = useSelector(({ history }: RootReducer) => history);
-
-  const totalTime_bare = all.reduce(
-    (prev, current) => prev + Number(current.measuring_time),
-    0
-  );
-  const totalTime_hour = totalTime_bare / 3600;
-  const totalTime = totalTime_hour.toFixed(2);
+  const [totalTime, setTotalTime] = useState("");
+  useEffect(() => {
+    const totalTime_bare = all.reduce(
+      (prev, current) => prev + Number(current.measuring_time),
+      0
+    );
+    const totalTime_hour = totalTime_bare / 3600;
+    const total = totalTime_hour.toFixed(2);
+    setTotalTime(total);
+  }, [all]);
 
   return (
     <View style={tailwind("items-center")}>

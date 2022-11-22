@@ -11,7 +11,7 @@ import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
-import { getDaylyHistories, History } from "@stores/history";
+import { getDaylyHistories, History, deleteHistories } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import { dateFormat } from "@utils/format";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -29,7 +29,16 @@ type pie = {
   y: string;
   x: string;
 };
-
+type daylyData = {
+  id: string;
+  y: string;
+  x: string;
+  secondaries: {
+    id: string;
+    x: string;
+    y: string;
+  }[];
+};
 export default () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
@@ -39,45 +48,40 @@ export default () => {
       histories: { dayly },
     },
   } = useSelector((store: RootReducer) => store);
-
-  const daylyMap = dayly.reduce(
-    (
-      prev: {
-        [key: string]: {
-          id: string;
-          y: string;
-          x: string;
-          secondaries: {
-            id: string;
-            x: string;
-            y: string;
-          }[];
+  console.log("1");
+  useEffect(() => {
+    const daylyMap = dayly.reduce(
+      (
+        prev: {
+          [key: string]: daylyData;
+        },
+        current
+      ) => {
+        prev[current.primary_id] = {
+          id: current.primary_id,
+          x: current.primary_name,
+          y: (prev[current.primary_id]?.y || 0) + current.measuring_time,
+          secondaries: [
+            ...(prev[current.primary_id]?.secondaries || []),
+            {
+              id: current.secondary_id,
+              x: current.secondary_name,
+              y: current.measuring_time,
+            },
+          ],
         };
+        return prev;
       },
-      current
-    ) => {
-      prev[current.primary_id] = {
-        id: current.primary_id,
-        x: current.primary_name,
-        y: (prev[current.primary_id]?.y || 0) + current.measuring_time,
-        secondaries: [
-          ...(prev[current.primary_id]?.secondaries || []),
-          {
-            id: current.secondary_id,
-            x: current.secondary_name,
-            y:
-              (prev[current.primary_id && current.secondary_id]?.y || 0) +
-              current.measuring_time,
-          },
-        ],
-      };
-      return prev;
-    },
-    {}
-  );
+      {}
+    );
+    console.log("2");
+    console.log("=======");
+    setDaylyInfo(Object.values(daylyMap));
+  }, [dayly]);
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [pieData, setPieData] = useState<pie[]>(Object.values(daylyMap));
+  const [daylyInfo, setDaylyInfo] = useState<daylyData[]>([]);
+  const [pieData, setPieData] = useState<pie[]>(daylyInfo);
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
@@ -89,16 +93,16 @@ export default () => {
     if (user) dispatch(getDaylyHistories({ userId: user.id }));
   }, [user]);
   useEffect(() => {
-    const primaryInfo = Object.values(daylyMap).map((item) => {
+    const primaryInfo = daylyInfo.map((item) => {
       return { label: item.x, value: item.id };
     });
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
-    setPieData(Object.values(daylyMap));
+    setPieData(daylyInfo);
   }, [dayly]);
 
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondariesByPrimary = Object.values(daylyMap[primary].secondaries);
+      const secondariesByPrimary = daylyInfo[primary].secondaries;
       const filteredSecondaries = secondariesByPrimary
         .filter(
           (x, i, array) =>
@@ -115,7 +119,7 @@ export default () => {
     }
 
     if (primary === "all") {
-      setPieData(Object.values(daylyMap));
+      setPieData(Object.values(daylyInfo));
 
       const newSecondaries = dayly
         .filter(
@@ -157,13 +161,6 @@ export default () => {
                   データの修正はこちらから
                 </Text>
                 <Button
-                  title="日付の修正"
-                  onPress={() => {
-                    setModalVisible(false);
-                    dispatch(getPrimaries({ userID: user!.id }));
-                  }}
-                />
-                <Button
                   title="カテゴリ情報の修正"
                   onPress={() => {
                     setModalVisible(false);
@@ -181,7 +178,7 @@ export default () => {
                   title="データの削除"
                   onPress={() => {
                     setModalVisible(false);
-                    dispatch(getPrimaries({ userID: user!.id }));
+                    dispatch(deleteHistories({ historyId: item.id }));
                   }}
                 />
               </View>

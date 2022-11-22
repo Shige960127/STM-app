@@ -52,7 +52,6 @@ export const handleSignUp = createAsyncThunk(
       await setDoc(doc(usersRef, user.uid), {
         id: user.uid,
         email: email,
-        // password: password,
         age: age,
       });
       alert("Document written with ID:" + user.uid);

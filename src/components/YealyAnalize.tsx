@@ -59,10 +59,10 @@ export default () => {
           },
         ],
       };
-      console.log("=============");
-      console.log(prevHistories);
+      // console.log("=============");
+      // console.log(prevHistories);
       // console.log(yearByYear);
-      console.log("=============");
+      // console.log("=============");
       return prev;
     },
     {}

@@ -28,6 +28,11 @@ type item = {
   label: string;
   value: string;
 };
+type pie = {
+  id: string;
+  y: string;
+  x: string;
+};
 export default () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
@@ -41,29 +46,32 @@ export default () => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
-
   const [open1, setOpen1] = useState(false);
   const [value1, setValue1] = useState(null);
   const [items1, setItems1] = useState([
     { label: "Lemon", value: "lemon" },
     { label: "Grape", value: "grape" },
   ]);
-  const allMap = all.reduce(
-    (
-      prev: {
-        [key: string]: { id: string; y: string; x: string };
+  const [pieData, setPieData] = useState<pie[]>([]);
+  useEffect(() => {
+    const allMap = all.reduce(
+      (
+        prev: {
+          [key: string]: pie;
+        },
+        current
+      ) => {
+        prev[current.primary_id] = {
+          id: current.primary_id,
+          x: current.primary_name,
+          y: (prev[current.primary_id]?.y || 0) + current.measuring_time,
+        };
+        return prev;
       },
-      current
-    ) => {
-      prev[current.primary_id] = {
-        id: current.primary_id,
-        x: current.primary_name,
-        y: (prev[current.primary_id]?.y || 0) + current.measuring_time,
-      };
-      return prev;
-    },
-    {}
-  );
+      {}
+    );
+    setPieData(Object.values(allMap));
+  }, [all]);
 
   useEffect(() => {
     dispatch(getAllHistories({ userId: user!.id }));
@@ -134,7 +142,7 @@ export default () => {
       </View>
       <View style={{ zIndex: 0 }}>
         <VictoryPie
-          data={Object.values(allMap)}
+          data={pieData}
           padding={{ top: 40, bottom: 35 }}
           height={260}
           labelRadius={80}
