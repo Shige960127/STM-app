@@ -11,7 +11,7 @@ import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
-import { getDaylyHistories, History, deleteHistories } from "@stores/history";
+import { getDaylyHistories, History, deleteHistory } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import { dateFormat } from "@utils/format";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -178,7 +178,7 @@ export default () => {
                   title="データの削除"
                   onPress={() => {
                     setModalVisible(false);
-                    dispatch(deleteHistories({ historyId: item.id }));
+                    dispatch(deleteHistory({ historyId: item.id }));
                   }}
                 />
               </View>

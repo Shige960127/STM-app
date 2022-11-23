@@ -168,11 +168,12 @@ export const getAllHistories = createAsyncThunk(
     }
   }
 );
-export const deleteHistories = createAsyncThunk(
-  "deleteHistories",
+export const deleteHistory = createAsyncThunk(
+  "deleteHistory",
   async ({ historyId }: { historyId: string }, { rejectWithValue }) => {
     try {
       await deleteDoc(doc(db, "histories", historyId));
+      return historyId;
     } catch (e) {
       console.log(e);
       return rejectWithValue(e);
@@ -272,18 +273,20 @@ export const hiostory = createSlice({
       }
     );
     builder.addCase(
-      deleteHistories.fulfilled,
-      (state, { payload }: { payload: any }) => {
-        state.histories.dayly = payload;
+      deleteHistory.fulfilled,
+      (state, { payload }: { payload: string }) => {
+        state.histories.dayly = state.histories.dayly.filter(
+          (h) => h.id !== payload
+        );
 
         state.status = "success";
       }
     );
-    builder.addCase(deleteHistories.pending, (state) => {
+    builder.addCase(deleteHistory.pending, (state) => {
       state.status = "pending";
     });
     builder.addCase(
-      deleteHistories.rejected,
+      deleteHistory.rejected,
       (state, { payload }: { payload: any }) => {
         state.status = "failure";
         state.errors = payload;
