@@ -110,10 +110,33 @@ export default () => {
 
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondariesByPrimary = daylyMap[primary].secondaries.filter(
+      // primaryに紐づくsecondariesを取得
+      const secondaryMap = daylyMap[primary].secondaries.reduce(
+        (
+          pre: {
+            [key: string]: {
+              id: string;
+              name: string;
+              time: string;
+            };
+          },
+          cur
+        ) => {
+          pre[cur.id] = {
+            id: cur.id,
+            name: cur.name,
+            time: (pre[cur.id]?.time || 0) + cur.time,
+          };
+          return pre;
+        },
+        {}
+      );
+
+      const secondariesByPrimary = Object.values(secondaryMap).filter(
         (x, i, array) =>
           array.findIndex((y) => y.id === x.id && y.name === x.name) === i
       );
+
       setSecondaries(
         secondariesByPrimary.map((s) => {
           return {

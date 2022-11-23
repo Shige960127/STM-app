@@ -2,16 +2,16 @@
   position: absolute
 }
 
-.bottom-0 {
-  bottom: 0px
-}
-
 .top-0 {
   top: 0px
 }
 
 .left-0 {
   left: 0px
+}
+
+.bottom-0 {
+  bottom: 0px
 }
 
 .right-0 {
@@ -166,12 +166,12 @@
   border-width: 2px
 }
 
-.border-8 {
-  border-width: 8px
-}
-
 .border {
   border-width: 1px
+}
+
+.border-8 {
+  border-width: 8px
 }
 
 .border-b-2 {
