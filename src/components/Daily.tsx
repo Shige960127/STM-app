@@ -29,7 +29,7 @@ type pie = {
   y: string;
   x: string;
 };
-type daylyData = {
+type dailyData = {
   id: string;
   y: string;
   x: string;
@@ -45,14 +45,14 @@ export default () => {
   const {
     user: { user },
     history: {
-      histories: { dayly },
+      histories: { daily },
     },
   } = useSelector((store: RootReducer) => store);
   useEffect(() => {
-    const daylyMap = dayly.reduce(
+    const dailyMap = daily.reduce(
       (
         prev: {
-          [key: string]: daylyData;
+          [key: string]: dailyData;
         },
         current
       ) => {
@@ -73,12 +73,12 @@ export default () => {
       },
       {}
     );
-    setDailyInfo(Object.values(daylyMap));
-  }, [dayly]);
+    setDailyInfo(Object.values(dailyMap));
+  }, [daily]);
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [daylyInfo, setDailyInfo] = useState<daylyData[]>([]);
-  const [pieData, setPieData] = useState<pie[]>(daylyInfo);
+  const [dailyInfo, setDailyInfo] = useState<dailyData[]>([]);
+  const [pieData, setPieData] = useState<pie[]>(dailyInfo);
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
@@ -90,16 +90,16 @@ export default () => {
     if (user) dispatch(getDailyHistories({ userId: user.id }));
   }, [user]);
   useEffect(() => {
-    const primaryInfo = daylyInfo.map((item) => {
+    const primaryInfo = dailyInfo.map((item) => {
       return { label: item.x, value: item.id };
     });
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
-    setPieData(daylyInfo);
-  }, [dayly]);
+    setPieData(dailyInfo);
+  }, [daily]);
 
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondariesByPrimary = daylyInfo[primary].secondaries;
+      const secondariesByPrimary = dailyInfo[primary].secondaries;
       const filteredSecondaries = secondariesByPrimary
         .filter(
           (x, i, array) =>
@@ -116,9 +116,9 @@ export default () => {
     }
 
     if (primary === "all") {
-      setPieData(Object.values(daylyInfo));
+      setPieData(Object.values(dailyInfo));
 
-      const newSecondaries = dayly
+      const newSecondaries = daily
         .filter(
           (x, i, array) =>
             array.findIndex((y) => y.secondary_id === x.secondary_id) === i
@@ -238,7 +238,7 @@ export default () => {
         <Text style={tailwind("text-right m-2 p-1")}>--もっと見る--</Text>
       </TouchableOpacity>
       <FlatList
-        data={dayly}
+        data={daily}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={

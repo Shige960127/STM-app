@@ -34,7 +34,7 @@ export type History = {
 
 export type HistoryState = {
   histories: {
-    dayly: History[];
+    daily: History[];
     monthly: History[];
     yearly: History[];
     all: History[];
@@ -184,7 +184,7 @@ export const hiostory = createSlice({
   name: "hiostory",
   initialState: <HistoryState>{
     histories: {
-      dayly: [],
+      daily: [],
       monthly: [],
       yearly: [],
       all: [],
@@ -207,7 +207,7 @@ export const hiostory = createSlice({
     builder.addCase(
       getDailyHistories.fulfilled,
       (state, { payload }: { payload: any }) => {
-        state.histories.dayly = payload;
+        state.histories.daily = payload;
         state.status = "success";
       }
     );
@@ -275,7 +275,7 @@ export const hiostory = createSlice({
     builder.addCase(
       deleteHistory.fulfilled,
       (state, { payload }: { payload: string }) => {
-        state.histories.dayly = state.histories.dayly.filter(
+        state.histories.daily = state.histories.daily.filter(
           (h) => h.id !== payload
         );
 
