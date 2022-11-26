@@ -1,17 +1,10 @@
-import {
-  FlatList,
-  View,
-  Text,
-  RefreshControl,
-  TouchableOpacity,
-  Button,
-} from "react-native";
+import { FlatList, View, Text, RefreshControl, Button } from "react-native";
 import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
-import { getDaylyHistories, History } from "@stores/history";
+import { getDaylyHistories, History, deleteHistory } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import { dateFormat } from "@utils/format";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -49,8 +42,8 @@ export default () => {
           x: string;
           secondaries: {
             id: string;
-            x: string;
-            y: string;
+            name: string;
+            time: string;
           }[];
         };
       },
@@ -64,10 +57,8 @@ export default () => {
           ...(prev[current.primary_id]?.secondaries || []),
           {
             id: current.secondary_id,
-            x: current.secondary_name,
-            y:
-              (prev[current.primary_id && current.secondary_id]?.y || 0) +
-              current.measuring_time,
+            name: current.secondary_name,
+            time: current.measuring_time,
           },
         ],
       };
@@ -98,20 +89,48 @@ export default () => {
 
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondariesByPrimary = Object.values(daylyMap[primary].secondaries);
-      const filteredSecondaries = secondariesByPrimary
-        .filter(
-          (x, i, array) =>
-            array.findIndex((y) => y.id === x.id && y.x === x.x) === i
-        )
-        .map((s) => {
+      const secondaryMap = daylyMap[primary].secondaries.reduce(
+        (
+          pre: {
+            [key: string]: {
+              id: string;
+              name: string;
+              time: string;
+            };
+          },
+          cur
+        ) => {
+          pre[cur.id] = {
+            id: cur.id,
+            name: cur.name,
+            time: (pre[cur.id]?.time || 0) + cur.time,
+          };
+          return pre;
+        },
+        {}
+      );
+
+      const secondariesByPrimary = Object.values(secondaryMap).filter(
+        (x, i, array) =>
+          array.findIndex((y) => y.id === x.id && y.name === x.name) === i
+      );
+      setSecondaries(
+        secondariesByPrimary.map((s) => {
           return {
-            label: s.x,
+            label: s.name,
             value: s.id,
           };
-        });
-      setSecondaries(filteredSecondaries);
-      setPieData(secondariesByPrimary);
+        })
+      );
+      setPieData(
+        secondariesByPrimary.map((s) => {
+          return {
+            id: s.id,
+            y: s.time,
+            x: s.name,
+          };
+        })
+      );
     }
 
     if (primary === "all") {
@@ -181,7 +200,7 @@ export default () => {
                   title="データの削除"
                   onPress={() => {
                     setModalVisible(false);
-                    dispatch(getPrimaries({ userID: user!.id }));
+                    dispatch(deleteHistory({ historyId: item.id }));
                   }}
                 />
               </View>
@@ -240,9 +259,6 @@ export default () => {
           colorScale={["orange", "navy", "tomato", "gold", "cyan"]}
         />
       </View>
-      <TouchableOpacity>
-        <Text style={tailwind("text-right m-2 p-1")}>--もっと見る--</Text>
-      </TouchableOpacity>
       <FlatList
         data={dayly}
         renderItem={renderItem}

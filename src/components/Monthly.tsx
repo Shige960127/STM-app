@@ -1,20 +1,16 @@
-import {
-  FlatList,
-  View,
-  Text,
-  RefreshControl,
-  TouchableOpacity,
-} from "react-native";
+import { FlatList, View, Text, RefreshControl, Button } from "react-native";
 import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
-import { getMonthlyHistories, History } from "@stores/history";
+import { getMonthlyHistories, History, deleteHistory } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getPrimaries } from "@stores/categories";
 import { dateFormat } from "@utils/format";
+import ChangeInfo from "./ChangeInfo";
+import Modal from "react-native-modal";
 
 type item = {
   label: string;
@@ -67,6 +63,7 @@ export default () => {
     {}
   );
 
+  const [modalVisible, setModalVisible] = useState(false);
   const [pieData, setPieData] = useState<pie[]>(Object.values(monthlyMap));
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
@@ -85,9 +82,31 @@ export default () => {
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
     setPieData(Object.values(monthlyMap));
   }, [monthly]);
+
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondariesByPrimary = monthlyMap[primary].secondaries.filter(
+      const secondaryMap = monthlyMap[primary].secondaries.reduce(
+        (
+          pre: {
+            [key: string]: {
+              id: string;
+              name: string;
+              time: string;
+            };
+          },
+          cur
+        ) => {
+          pre[cur.id] = {
+            id: cur.id,
+            name: cur.name,
+            time: (pre[cur.id]?.time || 0) + cur.time,
+          };
+          return pre;
+        },
+        {}
+      );
+
+      const secondariesByPrimary = Object.values(secondaryMap).filter(
         (x, i, array) =>
           array.findIndex((y) => y.id === x.id && y.name === x.name) === i
       );
@@ -142,9 +161,48 @@ export default () => {
             <Text style={tailwind("text-base font-bold")}>
               {item.primary_name}
             </Text>
-            <TouchableOpacity style={tailwind("flex-1 items-end mr-1 pr-1")}>
-              <Text>•••</Text>
-            </TouchableOpacity>
+            <ChangeInfo onPress={() => setModalVisible(true)} />
+            <Modal isVisible={modalVisible}>
+              <View style={tailwind("bg-white p-2 m-1 rounded-2xl")}>
+                <Text style={tailwind("text-center text-base")}>
+                  データの修正はこちらから
+                </Text>
+                <Button
+                  title="日付の修正"
+                  onPress={() => {
+                    setModalVisible(false);
+                    dispatch(getPrimaries({ userID: user!.id }));
+                  }}
+                />
+                <Button
+                  title="カテゴリ情報の修正"
+                  onPress={() => {
+                    setModalVisible(false);
+                    dispatch(getPrimaries({ userID: user!.id }));
+                  }}
+                />
+                <Button
+                  title="計測時間の修正"
+                  onPress={() => {
+                    setModalVisible(false);
+                    dispatch(getPrimaries({ userID: user!.id }));
+                  }}
+                />
+                <Button
+                  title="データの削除"
+                  onPress={() => {
+                    setModalVisible(false);
+                    dispatch(deleteHistory({ historyId: item.id }));
+                  }}
+                />
+              </View>
+              <View style={tailwind("bg-white p-2 m-1 rounded-2xl")}>
+                <Button
+                  title="キャンセル"
+                  onPress={() => setModalVisible(false)}
+                />
+              </View>
+            </Modal>
           </View>
           <Text style={tailwind("text-base font-bold text-right mr-1 pr-1")}>
             {timeinfo.toFixed(2)}min
@@ -193,9 +251,6 @@ export default () => {
           colorScale={["orange", "navy", "tomato", "gold", "cyan"]}
         />
       </View>
-      <TouchableOpacity>
-        <Text style={tailwind("text-right m-2 p-1")}>--もっと見る--</Text>
-      </TouchableOpacity>
       <FlatList
         data={monthly}
         renderItem={renderItem}

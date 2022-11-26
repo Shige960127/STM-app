@@ -13,7 +13,7 @@ import {
   VictoryTheme,
   VictoryAxis,
 } from "victory-native";
-import { dateFormat } from "@utils/format";
+import { dateFormat } from "../utils/format";
 
 type categoryData = {
   id: string;
@@ -59,10 +59,10 @@ export default () => {
           },
         ],
       };
-      console.log("=============");
-      console.log(prevHistories);
-      // console.log(yearByYear);
-      console.log("=============");
+      // console.log("=============");
+      // console.log(prevHistories);
+      // // console.log(yearByYear);
+      // console.log("=============");
       return prev;
     },
     {}
