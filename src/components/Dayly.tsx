@@ -48,7 +48,6 @@ export default () => {
       histories: { dayly },
     },
   } = useSelector((store: RootReducer) => store);
-  console.log("1");
   useEffect(() => {
     const daylyMap = dayly.reduce(
       (
@@ -74,8 +73,6 @@ export default () => {
       },
       {}
     );
-    console.log("2");
-    console.log("=======");
     setDaylyInfo(Object.values(daylyMap));
   }, [dayly]);
 
