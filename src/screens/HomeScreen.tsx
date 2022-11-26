@@ -1,13 +1,10 @@
 import { useTailwind } from "tailwind-rn/dist";
-import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
-import { useDispatch } from "react-redux";
-import { handleSignOut } from "../stores/user";
-import { AppDispatch } from "../stores/index";
+import { View, Text, SafeAreaView } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import TotalTime from "@components/TotalTime";
 
 import Monthly from "@components/Monthly";
-import Year from "@components/Year";
+import Yearly from "@components/Yearly";
 import All from "@components/All";
 import Daily from "@components/Daily";
 
@@ -17,7 +14,7 @@ const HomeTopTabs = () => {
     <Tab.Navigator initialRouteName="Daily">
       <Tab.Screen name="Daily" component={Daily} />
       <Tab.Screen name="Monthly" component={Monthly} />
-      <Tab.Screen name="Year" component={Year} />
+      <Tab.Screen name="Yearly" component={Yearly} />
       <Tab.Screen name="All" component={All} />
     </Tab.Navigator>
   );
@@ -25,7 +22,6 @@ const HomeTopTabs = () => {
 
 const HomeScreen = () => {
   const tailwind = useTailwind();
-  const dispatch = useDispatch<AppDispatch>();
   return (
     <SafeAreaView style={tailwind("flex-1")}>
       <TotalTime />
