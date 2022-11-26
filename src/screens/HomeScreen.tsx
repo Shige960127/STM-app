@@ -9,13 +9,13 @@ import TotalTime from "@components/TotalTime";
 import Monthly from "@components/Monthly";
 import Year from "@components/Year";
 import All from "@components/All";
-import Dayly from "@components/Dayly";
+import Daily from "@components/Daily";
 
 const Tab = createMaterialTopTabNavigator();
 const HomeTopTabs = () => {
   return (
-    <Tab.Navigator initialRouteName="Dayly">
-      <Tab.Screen name="Dayly" component={Dayly} />
+    <Tab.Navigator initialRouteName="Daily">
+      <Tab.Screen name="Daily" component={Daily} />
       <Tab.Screen name="Monthly" component={Monthly} />
       <Tab.Screen name="Year" component={Year} />
       <Tab.Screen name="All" component={All} />

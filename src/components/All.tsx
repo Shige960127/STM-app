@@ -4,7 +4,7 @@ import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
-import { getDaylyHistories, History, deleteHistory } from "@stores/history";
+import { getDailyHistories, History, deleteHistory } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import { dateFormat } from "@utils/format";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -77,7 +77,7 @@ export default () => {
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
   useEffect(() => {
-    if (user) dispatch(getDaylyHistories({ userId: user.id }));
+    if (user) dispatch(getDailyHistories({ userId: user.id }));
   }, [user]);
   useEffect(() => {
     const primaryInfo = Object.values(allMap).map((item) => {
@@ -266,7 +266,7 @@ export default () => {
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => dispatch(getDaylyHistories({ userId: user!.id }))}
+            onRefresh={() => dispatch(getDailyHistories({ userId: user!.id }))}
           />
         }
       />
