@@ -21,14 +21,20 @@ import { AntDesign } from "@expo/vector-icons";
 export type RootStackParamList = {
   Main: undefined;
   Initial: undefined;
-  Home: undefined;
+  HomeTop: undefined;
   SignUp: undefined;
   SignIn: undefined;
   Account: undefined;
-  Analize: undefined;
-  Timer: undefined;
+  AnalizeTop: undefined;
+  TimerTop: undefined;
   Primary: undefined;
   Secondary: undefined;
+};
+
+export type TabParamList = {
+  Home: undefined;
+  Timer: undefined;
+  Analize: undefined;
 };
 
 export type RootReducer = {
@@ -38,14 +44,14 @@ export type RootReducer = {
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<TabParamList>();
 
 const HomeStack = createNativeStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
-        name="Home"
+        name="HomeTop"
         component={HomeScreen}
         options={{ headerShown: false }}
       />
@@ -57,7 +63,7 @@ function AnalizeStackScreen() {
   return (
     <AnalizeStack.Navigator>
       <AnalizeStack.Screen
-        name="Analize"
+        name="AnalizeTop"
         component={AnalizeScreen}
         options={{ headerShown: false }}
       />
@@ -69,7 +75,7 @@ function TimerStackScreen() {
   return (
     <TimerStack.Navigator>
       <TimerStack.Screen
-        name="Timer"
+        name="TimerTop"
         component={TimerScreen}
         options={{ headerShown: false }}
       />
