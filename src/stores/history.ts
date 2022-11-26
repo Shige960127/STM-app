@@ -78,8 +78,8 @@ export const createHistory = createAsyncThunk(
   }
 );
 
-export const getDaylyHistories = createAsyncThunk(
-  "getDaylyHistories",
+export const getDailyHistories = createAsyncThunk(
+  "getDailyHistories",
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
       const startDate = new Date();
@@ -205,17 +205,17 @@ export const hiostory = createSlice({
       }
     );
     builder.addCase(
-      getDaylyHistories.fulfilled,
+      getDailyHistories.fulfilled,
       (state, { payload }: { payload: any }) => {
         state.histories.dayly = payload;
         state.status = "success";
       }
     );
-    builder.addCase(getDaylyHistories.pending, (state) => {
+    builder.addCase(getDailyHistories.pending, (state) => {
       state.status = "pending";
     });
     builder.addCase(
-      getDaylyHistories.rejected,
+      getDailyHistories.rejected,
       (state, { payload }: { payload: any }) => {
         state.status = "failure";
         state.errors = payload;
