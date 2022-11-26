@@ -30,7 +30,9 @@ const HomeScreen = () => {
     <SafeAreaView style={tailwind("flex-1")}>
       <TotalTime />
       <View style={tailwind("items-center")}>
-        <Text style={tailwind("text-2xl font-bold")}>本日の学習時間</Text>
+        <Text style={tailwind("text-2xl font-bold m-1 p-1")}>
+          学習時間グラフ
+        </Text>
       </View>
       <HomeTopTabs />
     </SafeAreaView>

@@ -13,8 +13,7 @@ import {
   Timestamp,
   serverTimestamp,
   orderBy,
-  startAt,
-  endAt,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import "react-native-get-random-values";
@@ -83,21 +82,16 @@ export const getDaylyHistories = createAsyncThunk(
   "getDaylyHistories",
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
-      const startDay = new Date();
-      startDay.setHours(0);
-      startDay.setMinutes(0);
-      startDay.setSeconds(0);
-      const endDay = new Date();
-      endDay.setDate(endDay.getDate() + 1);
-      endDay.setHours(0);
-      endDay.setMinutes(0);
-      endDay.setSeconds(0);
+      const startDate = new Date();
+      startDate.setHours(0);
+      startDate.setMinutes(0);
+      startDate.setSeconds(0);
+      startDate.setMilliseconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
-        orderBy("created_at"),
-        startAt(startDay),
-        endAt(endDay)
+        where("created_at", ">", startDate),
+        orderBy("created_at", "desc")
       );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
@@ -117,18 +111,12 @@ export const getMonthlyHistories = createAsyncThunk(
       startOfMonth.setHours(0);
       startOfMonth.setMinutes(0);
       startOfMonth.setSeconds(0);
-      const endOfMonth = new Date();
-      endOfMonth.setMonth(endOfMonth.getMonth() + 1);
-      endOfMonth.setDate(0);
-      endOfMonth.setHours(0);
-      endOfMonth.setMinutes(0);
-      endOfMonth.setSeconds(0);
+      startOfMonth.setMilliseconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
-        orderBy("created_at"),
-        startAt(startOfMonth),
-        endAt(endOfMonth)
+        where("created_at", ">", startOfMonth),
+        orderBy("created_at", "desc")
       );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
@@ -148,18 +136,12 @@ export const getYearlyHistories = createAsyncThunk(
       startOfYear.setHours(0);
       startOfYear.setMinutes(0);
       startOfYear.setSeconds(0);
-      const endOfYear = new Date();
-      endOfYear.setFullYear(endOfYear.getFullYear() + 1);
-      endOfYear.setMonth(0);
-      endOfYear.setDate(0);
-      endOfYear.setHours(0);
-      endOfYear.setMinutes(0);
-      endOfYear.setSeconds(0);
+      startOfYear.setMilliseconds(0);
       const q = query(
         historiesRef,
         where("user_id", "==", userId),
-        orderBy("created_at"),
-        startAt(startOfYear)
+        where("created_at", ">", startOfYear),
+        orderBy("created_at", "desc")
       );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
@@ -173,9 +155,25 @@ export const getAllHistories = createAsyncThunk(
   "getAllHistories",
   async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
-      const q = query(historiesRef, where("user_id", "==", userId));
+      const q = query(
+        historiesRef,
+        where("user_id", "==", userId),
+        orderBy("created_at", "desc")
+      );
       const querySnapshot = await getDocs(q);
       return querySnapshot.docs.map((doc) => doc.data());
+    } catch (e) {
+      console.log(e);
+      return rejectWithValue(e);
+    }
+  }
+);
+export const deleteHistory = createAsyncThunk(
+  "deleteHistory",
+  async ({ historyId }: { historyId: string }, { rejectWithValue }) => {
+    try {
+      await deleteDoc(doc(db, "histories", historyId));
+      return historyId;
     } catch (e) {
       console.log(e);
       return rejectWithValue(e);
@@ -269,6 +267,25 @@ export const hiostory = createSlice({
     });
     builder.addCase(
       getAllHistories.rejected,
+      (state, { payload }: { payload: any }) => {
+        state.status = "failure";
+        state.errors = payload;
+      }
+    );
+    builder.addCase(
+      deleteHistory.fulfilled,
+      (state, { payload }: { payload: string }) => {
+        state.histories.all = state.histories.all.filter(
+          (h) => h.id !== payload
+        );
+        state.status = "success";
+      }
+    );
+    builder.addCase(deleteHistory.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(
+      deleteHistory.rejected,
       (state, { payload }: { payload: any }) => {
         state.status = "failure";
         state.errors = payload;

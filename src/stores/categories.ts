@@ -122,6 +122,12 @@ export const categories = createSlice({
     setSecondary(state, { payload }: { payload: SecondaryCategory }) {
       state.selectCategory.secondary = payload;
     },
+    clearPrimary(state) {
+      state.selectCategory.primary = null;
+    },
+    clearSecondary(state) {
+      state.selectCategory.secondary = null;
+    },
   },
   extraReducers: (builder: ActionReducerMapBuilder<CategoryState>) => {
     builder.addCase(createPrimary.fulfilled, (state) => {
@@ -153,5 +159,6 @@ export const categories = createSlice({
   },
 });
 
-export const { setPrimary, setSecondary } = categories.actions;
+export const { setPrimary, setSecondary, clearPrimary, clearSecondary } =
+  categories.actions;
 export default categories.reducer;
