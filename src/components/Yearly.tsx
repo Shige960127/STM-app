@@ -4,7 +4,7 @@ import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
-import { getDaylyHistories, History, deleteHistory } from "@stores/history";
+import { getYearlyHistories, History, deleteHistory } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import { dateFormat } from "@utils/format";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -29,11 +29,11 @@ export default () => {
   const {
     user: { user },
     history: {
-      histories: { dayly },
+      histories: { yearly },
     },
   } = useSelector((store: RootReducer) => store);
 
-  const daylyMap = dayly.reduce(
+  const yearlyMap = yearly.reduce(
     (
       prev: {
         [key: string]: {
@@ -68,7 +68,7 @@ export default () => {
   );
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [pieData, setPieData] = useState<pie[]>(Object.values(daylyMap));
+  const [pieData, setPieData] = useState<pie[]>(Object.values(yearlyMap));
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
@@ -77,19 +77,19 @@ export default () => {
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
   useEffect(() => {
-    if (user) dispatch(getDaylyHistories({ userId: user.id }));
+    if (user) dispatch(getYearlyHistories({ userId: user.id }));
   }, [user]);
   useEffect(() => {
-    const primaryInfo = Object.values(daylyMap).map((item) => {
+    const primaryInfo = Object.values(yearlyMap).map((item) => {
       return { label: item.x, value: item.id };
     });
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
-    setPieData(Object.values(daylyMap));
-  }, [dayly]);
+    setPieData(Object.values(yearlyMap));
+  }, [yearly]);
 
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondaryMap = daylyMap[primary].secondaries.reduce(
+      const secondaryMap = yearlyMap[primary].secondaries.reduce(
         (
           pre: {
             [key: string]: {
@@ -134,9 +134,9 @@ export default () => {
     }
 
     if (primary === "all") {
-      setPieData(Object.values(daylyMap));
+      setPieData(Object.values(yearlyMap));
 
-      const newSecondaries = dayly
+      const newSecondaries = yearly
         .filter(
           (x, i, array) =>
             array.findIndex((y) => y.secondary_id === x.secondary_id) === i
@@ -260,13 +260,13 @@ export default () => {
         />
       </View>
       <FlatList
-        data={dayly}
+        data={yearly}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => dispatch(getDaylyHistories({ userId: user!.id }))}
+            onRefresh={() => dispatch(getYearlyHistories({ userId: user!.id }))}
           />
         }
       />
