@@ -17,6 +17,7 @@ import { CategoryState } from "@stores/categories";
 import { HistoryState } from "@stores/history";
 import store, { AppDispatch } from "@stores/index";
 import { AntDesign } from "@expo/vector-icons";
+import TertiaryCategoryScreen from "@screens/TertiaryCategoryScreen";
 
 export type RootStackParamList = {
   Initial: undefined;
@@ -29,6 +30,7 @@ export type RootStackParamList = {
   Account: undefined;
   Primary: undefined;
   Secondary: undefined;
+  Tertiary: undefined;
 };
 
 export type TabParamList = {
@@ -81,6 +83,7 @@ function TimerStackScreen() {
       />
       <TimerStack.Screen name="Primary" component={PrimaryCategoryScreen} />
       <TimerStack.Screen name="Secondary" component={SecondaryCategoryScreen} />
+      <TimerStack.Screen name="Tertiary" component={TertiaryCategoryScreen} />
     </TimerStack.Navigator>
   );
 }
