@@ -1,10 +1,22 @@
-import { FlatList, View, Text, RefreshControl, Button } from "react-native";
+import {
+  FlatList,
+  View,
+  Text,
+  RefreshControl,
+  Button,
+  TextInput,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../App";
-import { getDailyHistories, History, deleteHistory } from "@stores/history";
+import {
+  getDailyHistories,
+  History,
+  deleteHistory,
+  changeMeansuringTime,
+} from "@stores/history";
 import { VictoryPie } from "victory-native";
 import { dateFormat } from "@utils/format";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -68,6 +80,8 @@ export default () => {
   );
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible1, setModalVisible1] = useState(false);
+  const [changeTime, setChangeTime] = useState("");
   const [pieData, setPieData] = useState<pie[]>(Object.values(dailyMap));
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
@@ -76,6 +90,18 @@ export default () => {
   const [secondary, setSecondary] = useState(null);
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
+  const writingTime = () => {
+    return (
+      <View style={tailwind("bg-white p-12 rounded-2xl")}>
+        <TextInput
+          style={tailwind("border p-2 rounded-lg")}
+          onChangeText={(text) => setChangeTime(text)}
+          value={changeTime}
+        />
+        <Button title="閉じる" onPress={() => setModalVisible1(false)} />
+      </View>
+    );
+  };
   useEffect(() => {
     if (user) dispatch(getDailyHistories({ userId: user.id }));
   }, [user]);
@@ -176,24 +202,23 @@ export default () => {
                   データの修正はこちらから
                 </Text>
                 <Button
-                  title="日付の修正"
-                  onPress={() => {
-                    setModalVisible(false);
-                    dispatch(getPrimaries({ userID: user!.id }));
-                  }}
-                />
-                <Button
                   title="カテゴリ情報の修正"
                   onPress={() => {
                     setModalVisible(false);
                     dispatch(getPrimaries({ userID: user!.id }));
                   }}
                 />
+                {/* ここを修正する必要あり */}
                 <Button
                   title="計測時間の修正"
                   onPress={() => {
                     setModalVisible(false);
-                    dispatch(getPrimaries({ userID: user!.id }));
+                    dispatch(
+                      changeMeansuringTime({
+                        historyId: item.id,
+                        measuringTime: changeTime,
+                      })
+                    );
                   }}
                 />
                 <Button
