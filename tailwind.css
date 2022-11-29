@@ -22,10 +22,6 @@
   margin: 0.25rem
 }
 
-.m-2 {
-  margin: 0.5rem
-}
-
 .m-4 {
   margin: 1rem
 }
@@ -71,6 +67,18 @@
 
 .mt-8 {
   margin-top: 2rem
+}
+
+.mr-2 {
+  margin-right: 0.5rem
+}
+
+.ml-6 {
+  margin-left: 1.5rem
+}
+
+.ml-10 {
+  margin-left: 2.5rem
 }
 
 .flex {
@@ -198,14 +206,14 @@
   background-color: rgb(254 240 138 / var(--tw-bg-opacity))
 }
 
-.bg-teal-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(20 184 166 / var(--tw-bg-opacity))
-}
-
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity))
+}
+
+.bg-teal-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(20 184 166 / var(--tw-bg-opacity))
 }
 
 .bg-red-500 {
@@ -218,12 +226,12 @@
   background-color: rgb(56 189 248 / var(--tw-bg-opacity))
 }
 
-.p-1 {
-  padding: 0.25rem
-}
-
 .p-2 {
   padding: 0.5rem
+}
+
+.p-1 {
+  padding: 0.25rem
 }
 
 .p-12 {

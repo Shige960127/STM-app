@@ -7,7 +7,11 @@ import { RootReducer } from "../../App";
 import { AppDispatch } from "@stores/index";
 import { createHistory } from "@stores/history";
 import { useDispatch, useSelector } from "react-redux";
-import { clearPrimary, clearSecondary } from "@stores/categories";
+import {
+  clearPrimary,
+  clearSecondary,
+  clearTertiary,
+} from "@stores/categories";
 
 const TimerScreen = () => {
   const tailwind = useTailwind();
@@ -16,7 +20,7 @@ const TimerScreen = () => {
   const [isActive, setIsActive] = useState(false);
   const { user } = useSelector(({ user }: RootReducer) => user);
   const {
-    selectCategory: { primary, secondary },
+    selectCategory: { primary, secondary, tertiary },
   } = useSelector(({ categories }: RootReducer) => categories);
   const save = () => {
     dispatch(
@@ -26,11 +30,14 @@ const TimerScreen = () => {
         primaryName: primary!.name,
         secondaryId: secondary!.id,
         secondaryName: secondary!.name,
+        tertiaryId: tertiary!.id,
+        tertiaryName: tertiary!.name,
         measuringTime: remainingSecs,
       })
     );
     dispatch(clearPrimary());
     dispatch(clearSecondary());
+    dispatch(clearTertiary());
     setRemainingSecs(0);
   };
   return (
