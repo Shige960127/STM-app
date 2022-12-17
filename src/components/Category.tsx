@@ -76,7 +76,7 @@ const Category = () => {
     {
       destination: "Tertiary",
       title: tertiary ? tertiary.name : "小カテゴリを選択",
-      isVisble: true,
+      isVisble: Boolean(secondary),
       value: tertiary?.id,
     },
   ];
@@ -84,7 +84,7 @@ const Category = () => {
   return (
     <>
       <FlatList
-        data={DATA}
+        data={DATA.filter((data) => data.isVisble)}
         renderItem={({ item }: { item: Item }) => (
           <Item
             item={item}
