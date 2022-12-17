@@ -14,6 +14,7 @@ import {
   serverTimestamp,
   orderBy,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import "react-native-get-random-values";
@@ -180,6 +181,24 @@ export const deleteHistory = createAsyncThunk(
     }
   }
 );
+export const changeMeansuringTime = createAsyncThunk(
+  "changeMeansuringTime",
+  async (
+    { historyId, measuringTime }: { historyId: string; measuringTime: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const changeTimeRef = doc(db, "histories", historyId);
+      await updateDoc(changeTimeRef, {
+        measuring_time: measuringTime,
+      });
+    } catch (e) {
+      console.log(e);
+      return rejectWithValue(e);
+    }
+  }
+);
+
 export const hiostory = createSlice({
   name: "hiostory",
   initialState: <HistoryState>{
@@ -286,6 +305,16 @@ export const hiostory = createSlice({
     });
     builder.addCase(
       deleteHistory.rejected,
+      (state, { payload }: { payload: any }) => {
+        state.status = "failure";
+        state.errors = payload;
+      }
+    );
+    builder.addCase(changeMeansuringTime.fulfilled, (state) => {
+      state.status = "success";
+    });
+    builder.addCase(
+      changeMeansuringTime.rejected,
       (state, { payload }: { payload: any }) => {
         state.status = "failure";
         state.errors = payload;

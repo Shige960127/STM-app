@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useTailwind } from "tailwind-rn/dist";
 import { RootStackParamList, RootReducer } from "../../App";
 import { useState } from "react";
-import Modal from "react-native-modal";
+import { Picker } from "@react-native-picker/picker";
 
 export type Item = {
   destination: "Primary" | "Secondary" | "Tertiary";
@@ -12,16 +12,31 @@ export type Item = {
   isVisble: boolean;
   value?: string;
 };
+const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => {
+  const tailwind = useTailwind();
+  return (
+    <>
+      <TouchableOpacity
+        style={tailwind("bg-teal-500 border border-black p-2")}
+        onPress={onPress}
+        disabled={!item.isVisble}
+      >
+        {item.isVisble && (
+          <Text style={tailwind("text-center text-2xl font-bold text-white")}>
+            {item.title}
+          </Text>
+        )}
+      </TouchableOpacity>
+    </>
+  );
+};
 
 const Category = () => {
   const tailwind = useTailwind();
-  const [modalVisible, setModalVisible] = useState(false);
   const [countSwitch, setCountSwitch] = useState(false);
-  const [alertSwitch, setAlertSwitch] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("");
   const toggleCountSwitch = () =>
     setCountSwitch((previousState) => !previousState);
-  const toggleAlertSwitch = () =>
-    setAlertSwitch((previousState) => !previousState);
   const navigation =
     useNavigation<
       NavigationProp<RootStackParamList, "Primary" | "Secondary" | "Tertiary">
@@ -29,6 +44,22 @@ const Category = () => {
   const {
     selectCategory: { primary, secondary, tertiary },
   } = useSelector(({ categories }: RootReducer) => categories);
+  // ここを修正する必要あり
+  const timeAlert = () => {
+    return (
+      <View>
+        <Picker
+          selectedValue={selectedLanguage}
+          onValueChange={(itemValue, itemIndex) =>
+            setSelectedLanguage(itemValue)
+          }
+        >
+          <Picker.Item label="Java" value="java" />
+          <Picker.Item label="JavaScript" value="js" />
+        </Picker>
+      </View>
+    );
+  };
   const DATA: Item[] = [
     {
       destination: "Primary",
@@ -45,33 +76,15 @@ const Category = () => {
     {
       destination: "Tertiary",
       title: tertiary ? tertiary.name : "小カテゴリを選択",
-      isVisble: true,
+      isVisble: Boolean(secondary),
       value: tertiary?.id,
     },
   ];
-  const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => {
-    const tailwind = useTailwind();
-    return (
-      <>
-        <TouchableOpacity
-          style={tailwind("bg-teal-500 border border-black p-2")}
-          onPress={onPress}
-          disabled={!item.isVisble}
-        >
-          {item.isVisble && (
-            <Text style={tailwind("text-center text-2xl font-bold text-white")}>
-              {item.title}
-            </Text>
-          )}
-        </TouchableOpacity>
-      </>
-    );
-  };
 
   return (
     <>
       <FlatList
-        data={DATA}
+        data={DATA.filter((data) => data.isVisble)}
         renderItem={({ item }: { item: Item }) => (
           <Item
             item={item}
@@ -80,22 +93,12 @@ const Category = () => {
         )}
         keyExtractor={(_, key) => key.toString()}
       />
-      <View
-        style={tailwind(
-          "flex items-center bg-teal-500 border border-black p-2"
-        )}
+      <TouchableOpacity
+        style={tailwind("items-center bg-teal-500 border border-black p-2")}
+        onPress={() => timeAlert()}
       >
-        <View style={tailwind("flex flex-row")}>
-          <Text style={tailwind("text-2xl font-bold text-white")}>予鈴</Text>
-          <Switch
-            style={tailwind("ml-2")}
-            trackColor={{ false: "#767577", true: "#49fc58" }}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleAlertSwitch}
-            value={alertSwitch}
-          />
-        </View>
-      </View>
+        <Text style={tailwind("text-2xl font-bold text-white")}>予鈴</Text>
+      </TouchableOpacity>
       <View
         style={tailwind(
           "flex items-center bg-teal-500 border border-black p-2"

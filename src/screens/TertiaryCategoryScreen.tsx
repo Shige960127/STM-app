@@ -54,7 +54,7 @@ export default () => {
   useEffect(() => {
     if (secondary) {
       setNewTertiary("");
-      dispatch(getTertiaries({ secondaryID: secondary.id }));
+      dispatch(getTertiaries({ secondaryID: secondary!.id }));
     }
   }, [secondary]);
 

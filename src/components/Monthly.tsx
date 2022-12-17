@@ -1,4 +1,11 @@
-import { FlatList, View, Text, RefreshControl, Button } from "react-native";
+import {
+  FlatList,
+  View,
+  Text,
+  RefreshControl,
+  Button,
+  TextInput,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +14,6 @@ import { RootReducer } from "../../App";
 import { getMonthlyHistories, History, deleteHistory } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { getPrimaries } from "@stores/categories";
 import { dateFormat } from "@utils/format";
 import ChangeInfo from "./ChangeInfo";
 import Modal from "react-native-modal";
@@ -63,7 +69,9 @@ export default () => {
     {}
   );
 
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalType, setModalType] = useState<"initial" | "editTime" | null>(
+    null
+  );
   const [pieData, setPieData] = useState<pie[]>(Object.values(monthlyMap));
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
@@ -71,6 +79,8 @@ export default () => {
   const [open1, setOpen1] = useState(false);
   const [secondary, setSecondary] = useState(null);
   const [secondaries, setSecondaries] = useState<item[]>([]);
+
+  const close = () => setModalType(null);
 
   useEffect(() => {
     if (user) dispatch(getMonthlyHistories({ userId: user!.id }));
@@ -161,47 +171,18 @@ export default () => {
             <Text style={tailwind("text-base font-bold")}>
               {item.primary_name}
             </Text>
-            <ChangeInfo onPress={() => setModalVisible(true)} />
-            <Modal isVisible={modalVisible}>
-              <View style={tailwind("bg-white p-2 m-1 rounded-2xl")}>
-                <Text style={tailwind("text-center text-base")}>
-                  データの修正はこちらから
-                </Text>
-                <Button
-                  title="日付の修正"
-                  onPress={() => {
-                    setModalVisible(false);
-                    dispatch(getPrimaries({ userID: user!.id }));
-                  }}
+            <ChangeInfo onPress={() => setModalType("initial")} />
+            <Modal isVisible={Boolean(modalType)} onBackdropPress={close}>
+              {modalType === "initial" && (
+                <InitialModal
+                  close={close}
+                  editTime={() => setModalType("editTime")}
+                  deleteItem={() =>
+                    dispatch(deleteHistory({ historyId: item.id }))
+                  }
                 />
-                <Button
-                  title="カテゴリ情報の修正"
-                  onPress={() => {
-                    setModalVisible(false);
-                    dispatch(getPrimaries({ userID: user!.id }));
-                  }}
-                />
-                <Button
-                  title="計測時間の修正"
-                  onPress={() => {
-                    setModalVisible(false);
-                    dispatch(getPrimaries({ userID: user!.id }));
-                  }}
-                />
-                <Button
-                  title="データの削除"
-                  onPress={() => {
-                    setModalVisible(false);
-                    dispatch(deleteHistory({ historyId: item.id }));
-                  }}
-                />
-              </View>
-              <View style={tailwind("bg-white p-2 m-1 rounded-2xl")}>
-                <Button
-                  title="キャンセル"
-                  onPress={() => setModalVisible(false)}
-                />
-              </View>
+              )}
+              {modalType == "editTime" && <EditTimeModal />}
             </Modal>
           </View>
           <Text style={tailwind("text-base font-bold text-right mr-1 pr-1")}>
@@ -265,5 +246,54 @@ export default () => {
         }
       />
     </>
+  );
+};
+
+const InitialModal = ({
+  close,
+  editTime,
+  deleteItem,
+}: {
+  close: () => void;
+  editTime: () => void;
+  deleteItem: () => void;
+}) => {
+  const tailwind = useTailwind();
+  return (
+    <>
+      <View style={tailwind("bg-white p-2 m-1 rounded-2xl")}>
+        <Text style={tailwind("text-center text-base")}>
+          データの修正はこちらから
+        </Text>
+        <Button title="日付の修正" onPress={close} />
+        <Button title="カテゴリ情報の修正" onPress={close} />
+        <Button title="計測時間の修正" onPress={editTime} />
+        <Button
+          title="データの削除"
+          onPress={() => {
+            close();
+            deleteItem();
+          }}
+        />
+      </View>
+    </>
+  );
+};
+
+const EditTimeModal = () => {
+  const [time, setTime] = useState("");
+  const tailwind = useTailwind();
+  return (
+    <View style={tailwind("bg-white p-12 m-1 rounded-2xl")}>
+      <View>
+        <Text style={tailwind("font-bold text-center")}>計測時間を修正</Text>
+      </View>
+      <TextInput
+        style={tailwind("border rounded-md px-2 py-1 mt-1")}
+        value={time}
+        onChangeText={(text) => setTime(text)}
+        autoFocus
+      />
+    </View>
   );
 };
