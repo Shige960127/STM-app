@@ -49,6 +49,10 @@
   margin-right: 0.25rem
 }
 
+.mt-1 {
+  margin-top: 0.25rem
+}
+
 .mb-4 {
   margin-bottom: 1rem
 }
@@ -67,18 +71,6 @@
 
 .mt-8 {
   margin-top: 2rem
-}
-
-.mr-2 {
-  margin-right: 0.5rem
-}
-
-.ml-6 {
-  margin-left: 1.5rem
-}
-
-.ml-10 {
-  margin-left: 2.5rem
 }
 
 .flex {
@@ -230,16 +222,26 @@
   padding: 0.5rem
 }
 
-.p-1 {
-  padding: 0.25rem
-}
-
 .p-12 {
   padding: 3rem
 }
 
+.p-1 {
+  padding: 0.25rem
+}
+
 .p-4 {
   padding: 1rem
+}
+
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem
 }
 
 .px-4 {
