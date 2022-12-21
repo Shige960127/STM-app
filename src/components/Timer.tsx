@@ -33,10 +33,12 @@ const Timer = ({
 
   useEffect(() => {
     let interval: null | NodeJS.Timer = null;
-    if (isActive) {
+    if (isActive && remainingSecs <= 172800) {
       interval = setInterval(() => {
         setRemainingSecs(remainingSecs + 1);
       }, 1000);
+    } else if (isActive && remainingSecs > 172800) {
+      setRemainingSecs(remainingSecs);
     } else {
       clearInterval(Number(interval));
     }
@@ -48,10 +50,10 @@ const Timer = ({
       <TouchableOpacity
         onPress={toggle}
         style={tailwind(
-          "flex flex-row border-8 border-violet-400 w-48 h-48 rounded-full items-center justify-center"
+          "flex flex-row border-8 border-violet-300 w-48 h-48 rounded-full items-center justify-center bg-black m-2 p-1"
         )}
       >
-        <Text style={tailwind("text-4xl  text-violet-400 font-bold")}>
+        <Text style={tailwind("text-4xl  text-violet-500 font-bold")}>
           {isActive ? "Pause" : "Start"}
         </Text>
       </TouchableOpacity>

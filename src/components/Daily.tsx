@@ -134,6 +134,7 @@ export default () => {
         <Button
           title="OK"
           onPress={() => {
+            close;
             dispatch(
               changeMeansuringTime({
                 historyId: id,

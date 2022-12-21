@@ -16,12 +16,15 @@ import {
   History,
   deleteHistory,
   changeMeansuringTime,
+  updatePrimary,
 } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { dateFormat } from "@utils/format";
 import ChangeInfo from "./ChangeInfo";
 import Modal from "react-native-modal";
+import { Picker } from "@react-native-picker/picker";
+import { PrimaryCategory, getPrimaries } from "@stores/categories";
 
 type item = {
   label: string;
@@ -42,6 +45,7 @@ export default () => {
     history: {
       histories: { monthly },
     },
+    categories: { primaryCategories },
   } = useSelector((store: RootReducer) => store);
 
   const monthlyMap = monthly.reduce(
@@ -74,9 +78,10 @@ export default () => {
     {}
   );
 
-  const [modalType, setModalType] = useState<"initial" | "editTime" | null>(
-    null
-  );
+  const [modalType, setModalType] = useState<
+    "initial" | "editTime" | "updatePrimary" | null
+  >(null);
+  const [selectPrimary, setSelectPrimary] = useState();
   const [pieData, setPieData] = useState<pie[]>(Object.values(monthlyMap));
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
@@ -85,16 +90,22 @@ export default () => {
   const [secondary, setSecondary] = useState(null);
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
+  useEffect(() => {
+    dispatch(getPrimaries({ userID: user!.id }));
+  }, [user]);
+
   const close = () => setModalType(null);
 
   const InitialModal = ({
     close,
     editTime,
     deleteItem,
+    showPrimary,
   }: {
     close: () => void;
     editTime: () => void;
     deleteItem: () => void;
+    showPrimary: () => void;
   }) => {
     const tailwind = useTailwind();
     return (
@@ -103,7 +114,7 @@ export default () => {
           <Text style={tailwind("text-center text-base")}>
             データの修正はこちらから
           </Text>
-          <Button title="カテゴリ情報の修正" onPress={close} />
+          <Button title="カテゴリ情報の修正" onPress={showPrimary} />
           <Button title="計測時間の修正" onPress={editTime} />
           <Button
             title="データの削除"
@@ -116,8 +127,20 @@ export default () => {
       </>
     );
   };
+  const ShowPrimaryPicker = ({ id }: { id: string }) => {
+    return (
+      <Picker
+        selectedValue={selectPrimary}
+        onValueChange={(item) => setSelectPrimary(item)}
+      >
+        {primaryCategories.map((data) => (
+          <Picker.Item label={data.name} value={data.name} />
+        ))}
+      </Picker>
+    );
+  };
 
-  const EditTimeModal = ({ id }: { id: string }) => {
+  const EditTimeModal = ({ id, close }: { id: string; close: () => void }) => {
     const [time, setTime] = useState("");
     const tailwind = useTailwind();
     return (
@@ -134,6 +157,7 @@ export default () => {
         <Button
           title="OK"
           onPress={() => {
+            close;
             dispatch(
               changeMeansuringTime({
                 historyId: id,
@@ -244,9 +268,15 @@ export default () => {
                   deleteItem={() =>
                     dispatch(deleteHistory({ historyId: item.id }))
                   }
+                  showPrimary={() => setModalType("updatePrimary")}
                 />
               )}
-              {modalType == "editTime" && <EditTimeModal id={item.id} />}
+              {modalType == "editTime" && (
+                <EditTimeModal id={item.id} close={close} />
+              )}
+              {modalType == "updatePrimary" && (
+                <ShowPrimaryPicker id={item.id} />
+              )}
             </Modal>
           </View>
           <Text style={tailwind("text-base font-bold text-right mr-1 pr-1")}>
