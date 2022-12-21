@@ -81,6 +81,14 @@
   margin-bottom: 0.5rem
 }
 
+.mt-12 {
+  margin-top: 3rem
+}
+
+.mt-5 {
+  margin-top: 1.25rem
+}
+
 .flex {
   display: flex
 }
@@ -147,6 +155,10 @@
 
 .justify-center {
   justify-content: center
+}
+
+.self-auto {
+  align-self: auto
 }
 
 .rounded-md {
@@ -234,6 +246,11 @@
   background-color: rgb(56 189 248 / var(--tw-bg-opacity))
 }
 
+.bg-red-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(127 29 29 / var(--tw-bg-opacity))
+}
+
 .p-2 {
   padding: 0.5rem
 }
@@ -248,6 +265,22 @@
 
 .p-4 {
   padding: 1rem
+}
+
+.p-10 {
+  padding: 2.5rem
+}
+
+.p-5 {
+  padding: 1.25rem
+}
+
+.p-3 {
+  padding: 0.75rem
+}
+
+.p-8 {
+  padding: 2rem
 }
 
 .px-4 {
