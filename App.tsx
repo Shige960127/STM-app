@@ -3,6 +3,7 @@ import utilities from "./tailwind.json";
 import SignUpScreen from "@screens/SignUpScreen";
 import SignInScreen from "@screens/SignInScreen";
 import HomeScreen from "@screens/HomeScreen";
+import HistoryDetailScreen from "@screens/HistoryDetailScreen";
 import AnalizeScreen from "@screens/AnalizeScreen";
 import TimerScreen from "@screens/TimerScreen";
 import PrimaryCategoryScreen from "@screens/PrimaryCategoryScreen";
@@ -14,7 +15,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useSelector, Provider, useDispatch } from "react-redux";
 import { UserState, checkLogin } from "@stores/user";
 import { CategoryState } from "@stores/categories";
-import { HistoryState } from "@stores/history";
+import { HistoryState, History } from "@stores/history";
 import store, { AppDispatch } from "@stores/index";
 import { AntDesign } from "@expo/vector-icons";
 import TertiaryCategoryScreen from "@screens/TertiaryCategoryScreen";
@@ -25,6 +26,9 @@ export type RootStackParamList = {
   SignIn: undefined;
   Main: undefined;
   HomeTop: undefined;
+  HistoryDetail: {
+    item: History;
+  };
   TimerTop: undefined;
   AnalizeTop: undefined;
   Account: undefined;
@@ -57,6 +61,7 @@ function HomeStackScreen() {
         component={HomeScreen}
         options={{ headerShown: false }}
       />
+      <HomeStack.Screen name="HistoryDetail" component={HistoryDetailScreen} />
     </HomeStack.Navigator>
   );
 }

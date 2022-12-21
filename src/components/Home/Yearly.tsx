@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
-import { RootReducer } from "../../App";
+import { RootReducer } from "../../../App";
 import {
   getYearlyHistories,
   History,
@@ -20,7 +20,7 @@ import {
 import { VictoryPie } from "victory-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { dateFormat } from "@utils/format";
-import ChangeInfo from "./ChangeInfo";
+import ChangeInfo from "../ChangeInfo";
 import Modal from "react-native-modal";
 
 type item = {
