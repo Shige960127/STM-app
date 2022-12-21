@@ -30,8 +30,8 @@ const TimerScreen = () => {
         primaryName: primary!.name,
         secondaryId: secondary!.id,
         secondaryName: secondary!.name,
-        tertiaryId: tertiary!.id,
-        tertiaryName: tertiary!.name,
+        tertiaryId: tertiary?.id,
+        tertiaryName: tertiary?.name,
         measuringTime: remainingSecs,
       })
     );

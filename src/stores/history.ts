@@ -68,8 +68,8 @@ export const createHistory = createAsyncThunk(
         primary_name: data.primaryName,
         secondary_id: data.secondaryId,
         secondary_name: data.secondaryName,
-        tertiary_id: data.tertiaryId ? data.tertiaryId : "undefined",
-        tertiary_name: data.tertiaryName ? data.tertiaryName : "undefined",
+        tertiary_id: data?.tertiaryId,
+        tertiary_name: data?.tertiaryName,
         measuring_time: data.measuringTime,
         created_at: serverTimestamp(),
       });
