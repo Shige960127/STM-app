@@ -39,13 +39,15 @@ export default () => {
   const monthlyMap = all.reduce(
     (
       prev: {
-        [key: string]: { id: string; time: string; name: string };
+        [key: string]: { id: string; time: number; name: string };
       },
       cureent
     ) => {
       prev[cureent.primary_id] = {
         id: cureent.primary_id,
-        time: (prev[cureent.primary_id]?.time || 0) + cureent.measuring_time,
+        time:
+          (prev[cureent.primary_id]?.time || 0) +
+          Number(cureent.measuring_time),
         name: cureent.primary_name,
       };
       return prev;
@@ -59,12 +61,12 @@ export default () => {
       },
       current
     ) => {
-      const createAt = dateFormat(current.created_at.toDate(), "MM/dd");
+      const createAt = dateFormat(current.created_at.toDate(), "yyyy/MM");
       const prevHistories = prev[current.primary_id]
         ? prev[current.primary_id].history
         : [];
 
-      prev[current.primary_id] = {
+      prev[current.primary_id + createAt] = {
         id: current.primary_id,
         name: current.primary_name,
         history: [
@@ -85,7 +87,7 @@ export default () => {
     item: {
       id: string;
       name: string;
-      time: string;
+      time: number;
     };
   }) => (
     <View style={tailwind("flex items-center")}>
@@ -117,21 +119,6 @@ export default () => {
 
   return (
     <>
-      {/* <View style={tailwind("flex flex-row m-1")}>
-        {/* <Text>昨年</Text> */}
-      {/* <View style={styles.totaltime}>
-          <Text style={tailwind("text-2xl font-bold text-right m-1 p-1")}>
-            test_h
-          </Text>
-        </View> */}
-
-      {/* <Text>今年</Text> */}
-      {/* <View style={styles.totaltime}>
-          <Text style={tailwind("text-2xl font-bold text-right m-1 p-1")}>
-            test_h
-          </Text>
-        </View>
-      </View> */}
       <View style={tailwind("flex flex-row m-1")}>
         <View style={tailwind("w-1/2")}>
           <DropDownPicker
@@ -181,17 +168,3 @@ export default () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  totaltime: {
-    shadowColor: "gray",
-    shadowOffset: { width: 10, height: 10 },
-    shadowOpacity: 1,
-    backgroundColor: "white",
-    marginBottom: 10,
-    marginLeft: 5,
-    marginRight: 5,
-    padding: 4,
-    width: "45%",
-  },
-});

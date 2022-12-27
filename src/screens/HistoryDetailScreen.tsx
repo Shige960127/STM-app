@@ -4,7 +4,6 @@ import {
   SafeAreaView,
   TouchableOpacity,
   TextInput,
-  Button,
 } from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";

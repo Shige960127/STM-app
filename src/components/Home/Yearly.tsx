@@ -12,18 +12,12 @@ import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../../App";
-import {
-  getMonthlyHistories,
-  History,
-  deleteHistory,
-  changeMeansuringTime,
-  updatePrimary,
-} from "@stores/history";
+
+import { getMonthlyHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { dateFormat } from "@utils/format";
-import { Picker } from "@react-native-picker/picker";
-import { PrimaryCategory, getPrimaries } from "@stores/categories";
+import { getPrimaries } from "@stores/categories";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../../App";
 
