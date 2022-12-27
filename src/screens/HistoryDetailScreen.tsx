@@ -146,6 +146,8 @@ const EditTimeModal = ({
 }) => {
   const [time, setTime] = useState(defaultTime);
   const tailwind = useTailwind();
+
+  const disabled = time <= 0;
   return (
     <Modal isVisible={isVisible} onBackdropPress={close}>
       <View style={tailwind("bg-white p-8 rounded-xl")}>
@@ -161,10 +163,10 @@ const EditTimeModal = ({
         />
         <TouchableOpacity
           style={tailwind(
-            `mt-5 p-4 rounded-xl ${time > 0 ? "bg-black" : "bg-gray-300"}`
+            `mt-5 p-4 rounded-xl ${disabled ? "bg-gray-300" : "bg-black"}`
           )}
           onPress={() => editTimeItem({ measuring_time: time })}
-          disabled={!time}
+          disabled={disabled}
         >
           <Text style={tailwind("font-bold text-center text-white")}>
             時間を変更
