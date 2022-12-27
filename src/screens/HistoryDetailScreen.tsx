@@ -21,15 +21,14 @@ export default ({ route, navigation }: Props) => {
   const { item } = route.params;
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
-  const [deleteModal, toggleDeleteModal] = useState(false);
-  const [editTimeModal, toggleEditTimeModal] = useState(false);
 
-  const deleteModalClose = () => toggleDeleteModal(false);
-  const editTimeModalClose = () => toggleEditTimeModal(false);
+  const [modal, setModal] = useState<"delete" | "edit" | null>(null);
+
+  const close = () => setModal(null);
 
   const deleteItem = () => {
     dispatch(deleteHistory({ historyId: item.id }));
-    deleteModalClose();
+    close();
     navigation.goBack();
   };
 
@@ -40,7 +39,7 @@ export default ({ route, navigation }: Props) => {
         measuringTime: measuring_time,
       })
     );
-    editTimeModalClose();
+    close();
     navigation.goBack();
   };
 
@@ -69,33 +68,33 @@ export default ({ route, navigation }: Props) => {
         </View>
         <TouchableOpacity
           style={tailwind("bg-blue-900 p-4 rounded-xl mt-12")}
-          onPress={() => toggleEditTimeModal(true)}
+          onPress={() => setModal("edit")}
         >
           <Text style={tailwind("font-bold text-white text-center text-xl")}>
             時間を修正
           </Text>
         </TouchableOpacity>
-        {editTimeModal && (
+        {modal === "edit" && (
           <EditTimeModal
-            isVisible={editTimeModal}
+            isVisible={modal === "edit"}
             editTimeItem={editTimeItem}
-            close={editTimeModalClose}
+            close={close}
           />
         )}
         <TouchableOpacity
           style={tailwind("bg-red-900 p-4 rounded-xl mt-12")}
-          onPress={() => toggleDeleteModal(true)}
+          onPress={() => setModal("delete")}
         >
           <Text style={tailwind("font-bold text-white text-center text-xl")}>
             削除
           </Text>
         </TouchableOpacity>
       </View>
-      {deleteModal && (
+      {modal === "delete" && (
         <DeleteModal
-          isVisible={deleteModal}
+          isVisible={modal === "delete"}
           deleteItem={deleteItem}
-          close={deleteModalClose}
+          close={close}
         />
       )}
     </SafeAreaView>
@@ -140,7 +139,7 @@ const EditTimeModal = ({
   close,
 }: {
   isVisible: boolean;
-  editTimeItem: () => void;
+  editTimeItem: ({ measuring_time }: { measuring_time: string }) => void;
   close: () => void;
 }) => {
   const [time, setTime] = useState("");
