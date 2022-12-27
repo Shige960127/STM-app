@@ -30,8 +30,8 @@ const TimerScreen = () => {
         primaryName: primary!.name,
         secondaryId: secondary!.id,
         secondaryName: secondary!.name,
-        tertiaryId: tertiary!.id,
-        tertiaryName: tertiary!.name,
+        tertiaryId: tertiary?.id,
+        tertiaryName: tertiary?.name,
         measuringTime: remainingSecs,
       })
     );
@@ -55,7 +55,7 @@ const TimerScreen = () => {
         <TouchableOpacity
           onPress={save}
           style={tailwind(
-            "w-80 flex flex-row justify-center items-center m-4 p-4 rounded-2xl bg-sky-400"
+            "w-80 flex flex-row justify-center items-center m-4 p-4 rounded-2xl bg-violet-500"
           )}
           disabled={!primary || !secondary || !remainingSecs || isActive}
         >

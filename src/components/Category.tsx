@@ -3,8 +3,6 @@ import { FlatList, Text, TouchableOpacity, View, Switch } from "react-native";
 import { useSelector } from "react-redux";
 import { useTailwind } from "tailwind-rn/dist";
 import { RootStackParamList, RootReducer } from "../../App";
-import { useState } from "react";
-import { Picker } from "@react-native-picker/picker";
 
 export type Item = {
   destination: "Primary" | "Secondary" | "Tertiary";
@@ -17,7 +15,7 @@ const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => {
   return (
     <>
       <TouchableOpacity
-        style={tailwind("bg-teal-500 border border-black p-2")}
+        style={tailwind("bg-violet-500 border border-black p-2")}
         onPress={onPress}
         disabled={!item.isVisble}
       >
@@ -32,11 +30,6 @@ const Item = ({ item, onPress }: { item: Item; onPress: () => void }) => {
 };
 
 const Category = () => {
-  const tailwind = useTailwind();
-  const [countSwitch, setCountSwitch] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("");
-  const toggleCountSwitch = () =>
-    setCountSwitch((previousState) => !previousState);
   const navigation =
     useNavigation<
       NavigationProp<RootStackParamList, "Primary" | "Secondary" | "Tertiary">
@@ -44,22 +37,7 @@ const Category = () => {
   const {
     selectCategory: { primary, secondary, tertiary },
   } = useSelector(({ categories }: RootReducer) => categories);
-  // ここを修正する必要あり
-  const timeAlert = () => {
-    return (
-      <View>
-        <Picker
-          selectedValue={selectedLanguage}
-          onValueChange={(itemValue, itemIndex) =>
-            setSelectedLanguage(itemValue)
-          }
-        >
-          <Picker.Item label="Java" value="java" />
-          <Picker.Item label="JavaScript" value="js" />
-        </Picker>
-      </View>
-    );
-  };
+
   const DATA: Item[] = [
     {
       destination: "Primary",
@@ -77,47 +55,21 @@ const Category = () => {
       destination: "Tertiary",
       title: tertiary ? tertiary.name : "小カテゴリを選択",
       isVisble: Boolean(secondary),
-      value: tertiary?.id,
+      value: tertiary?.id || undefined,
     },
   ];
 
   return (
-    <>
-      <FlatList
-        data={DATA.filter((data) => data.isVisble)}
-        renderItem={({ item }: { item: Item }) => (
-          <Item
-            item={item}
-            onPress={() => navigation.navigate(item.destination)}
-          />
-        )}
-        keyExtractor={(_, key) => key.toString()}
-      />
-      <TouchableOpacity
-        style={tailwind("items-center bg-teal-500 border border-black p-2")}
-        onPress={() => timeAlert()}
-      >
-        <Text style={tailwind("text-2xl font-bold text-white")}>予鈴</Text>
-      </TouchableOpacity>
-      <View
-        style={tailwind(
-          "flex items-center bg-teal-500 border border-black p-2"
-        )}
-      >
-        <View style={tailwind("flex flex-row")}>
-          <Text style={tailwind("text-2xl font-bold text-white")}>
-            終了後もカウント
-          </Text>
-          <Switch
-            style={tailwind("ml-2")}
-            trackColor={{ false: "#767577", true: "#49fc58" }}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleCountSwitch}
-            value={countSwitch}
-          />
-        </View>
-      </View>
-    </>
+    <FlatList
+      data={DATA.filter((data) => data.isVisble)}
+      renderItem={({ item }: { item: Item }) => (
+        <Item
+          item={item}
+          onPress={() => navigation.navigate(item.destination)}
+        />
+      )}
+      keyExtractor={(_, key) => key.toString()}
+    />
   );
 };
 

@@ -68,8 +68,8 @@ export const createHistory = createAsyncThunk(
         primary_name: data.primaryName,
         secondary_id: data.secondaryId,
         secondary_name: data.secondaryName,
-        tertiary_id: data.tertiaryId ? data.tertiaryId : "undefined",
-        tertiary_name: data.tertiaryName ? data.tertiaryName : "undefined",
+        tertiary_id: data?.tertiaryId,
+        tertiary_name: data?.tertiaryName,
         measuring_time: data.measuringTime,
         created_at: serverTimestamp(),
       });
@@ -191,6 +191,23 @@ export const changeMeansuringTime = createAsyncThunk(
       const changeTimeRef = doc(db, "histories", historyId);
       await updateDoc(changeTimeRef, {
         measuring_time: measuringTime,
+      });
+    } catch (e) {
+      console.log(e);
+      return rejectWithValue(e);
+    }
+  }
+);
+export const updatePrimary = createAsyncThunk(
+  "updatePrimary",
+  async (
+    { historyId, primaryInfo }: { historyId: string; primaryInfo: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const updatePrimaryRef = doc(db, "histories", historyId);
+      await updateDoc(updatePrimaryRef, {
+        primary_id: primaryInfo,
       });
     } catch (e) {
       console.log(e);
@@ -320,6 +337,9 @@ export const hiostory = createSlice({
         state.errors = payload;
       }
     );
+    builder.addCase(updatePrimary.fulfilled, (state) => {
+      state.status = "success";
+    });
   },
 });
 
