@@ -2,8 +2,8 @@ import { View, Text, FlatList, RefreshControl } from "react-native";
 import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import DropDownPicker from "react-native-dropdown-picker";
-import { RootReducer } from "../../App";
-import { getAllHistories } from "@stores/history";
+import { RootReducer } from "../../../App";
+import { getMonthlyHistories } from "@stores/history";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import {
@@ -13,12 +13,11 @@ import {
   VictoryTheme,
   VictoryAxis,
 } from "victory-native";
-import { dateFormat } from "../utils/format";
+import { dateFormat } from "@utils/format";
 
 type categoryData = {
-  id: string;
+  id: number | string;
   name: string;
-  time: string;
   history: {
     date: string;
     time: number;
@@ -34,27 +33,44 @@ export default () => {
   } = useSelector(({ history }: RootReducer) => history);
 
   useEffect(() => {
-    dispatch(getAllHistories({ userId: user!.id }));
+    dispatch(getMonthlyHistories({ userId: user!.id }));
   }, []);
 
-  const yearByYear = all.reduce(
+  const monthlyMap = all.reduce(
+    (
+      prev: {
+        [key: string]: { id: string; time: string; name: string };
+      },
+      cureent
+    ) => {
+      prev[cureent.primary_id] = {
+        id: cureent.primary_id,
+        time: (prev[cureent.primary_id]?.time || 0) + cureent.measuring_time,
+        name: cureent.primary_name,
+      };
+      return prev;
+    },
+    {}
+  );
+  const graphData = all.reduce(
     (
       prev: {
         [key: string]: categoryData;
       },
       current
     ) => {
+      const createAt = dateFormat(current.created_at.toDate(), "MM/dd");
       const prevHistories = prev[current.primary_id]
         ? prev[current.primary_id].history
         : [];
+
       prev[current.primary_id] = {
         id: current.primary_id,
-        time: (prev[current.primary_id]?.time || 0) + current.measuring_time,
         name: current.primary_name,
         history: [
           ...prevHistories,
           {
-            date: dateFormat(current.created_at.toDate(), "MM/dd"),
+            date: createAt,
             time: Number(current.measuring_time),
           },
         ],
@@ -63,7 +79,6 @@ export default () => {
     },
     {}
   );
-
   const renderItem = ({
     item,
   }: {
@@ -129,20 +144,22 @@ export default () => {
           <VictoryAxis />
           <VictoryAxis dependentAxis tickFormat={(x) => `${x}min`} />
           <VictoryStack colorScale={["tomato", "orange", "gold"]}>
-            {Object.values(yearByYear).map((data) => (
+            {Object.values(graphData).map((data) => (
               <VictoryBar data={data.history} x="date" y="time" />
             ))}
           </VictoryStack>
         </VictoryChart>
       </View>
       <FlatList
-        data={Object.values(yearByYear)}
+        data={Object.values(monthlyMap)}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => dispatch(getAllHistories({ userId: user!.id }))}
+            onRefresh={() =>
+              dispatch(getMonthlyHistories({ userId: user!.id }))
+            }
           />
         }
       />

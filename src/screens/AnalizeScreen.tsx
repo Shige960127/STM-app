@@ -1,9 +1,9 @@
 import { SafeAreaView, View } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-import WeeklyAnalize from "@components/WeeklyAnalize";
-import MonthlyAnalize from "@components/MonthlyAnalize";
-import YearlyAnalize from "@components/YearlyAnalize";
+import WeeklyAnalize from "@components/Analize/WeeklyAnalize";
+import MonthlyAnalize from "@components/Analize/MonthlyAnalize";
+import YearlyAnalize from "@components/Analize/YearlyAnalize";
 import { useTailwind } from "tailwind-rn/dist";
 
 const Tab = createMaterialTopTabNavigator();

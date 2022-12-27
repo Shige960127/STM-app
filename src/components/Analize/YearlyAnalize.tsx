@@ -1,9 +1,9 @@
-import { View, Text, FlatList, RefreshControl, StyleSheet } from "react-native";
+import { View, Text, FlatList, RefreshControl } from "react-native";
 import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import DropDownPicker from "react-native-dropdown-picker";
-import { RootReducer } from "../../App";
-import { getMonthlyHistories } from "@stores/history";
+import { RootReducer } from "../../../App";
+import { getAllHistories } from "@stores/history";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import {
@@ -13,11 +13,12 @@ import {
   VictoryTheme,
   VictoryAxis,
 } from "victory-native";
-import { dateFormat } from "@utils/format";
+import { dateFormat } from "../../utils/format";
 
 type categoryData = {
-  id: number | string;
+  id: string;
   name: string;
+  time: string;
   history: {
     date: string;
     time: number;
@@ -33,44 +34,27 @@ export default () => {
   } = useSelector(({ history }: RootReducer) => history);
 
   useEffect(() => {
-    dispatch(getMonthlyHistories({ userId: user!.id }));
+    dispatch(getAllHistories({ userId: user!.id }));
   }, []);
 
-  const monthlyMap = all.reduce(
-    (
-      prev: {
-        [key: string]: { id: string; time: string; name: string };
-      },
-      cureent
-    ) => {
-      prev[cureent.primary_id] = {
-        id: cureent.primary_id,
-        time: (prev[cureent.primary_id]?.time || 0) + cureent.measuring_time,
-        name: cureent.primary_name,
-      };
-      return prev;
-    },
-    {}
-  );
-  const graphData = all.reduce(
+  const yearByYear = all.reduce(
     (
       prev: {
         [key: string]: categoryData;
       },
       current
     ) => {
-      const createAt = dateFormat(current.created_at.toDate(), "MM/dd");
       const prevHistories = prev[current.primary_id]
         ? prev[current.primary_id].history
         : [];
-
       prev[current.primary_id] = {
         id: current.primary_id,
+        time: (prev[current.primary_id]?.time || 0) + current.measuring_time,
         name: current.primary_name,
         history: [
           ...prevHistories,
           {
-            date: createAt,
+            date: dateFormat(current.created_at.toDate(), "MM/dd"),
             time: Number(current.measuring_time),
           },
         ],
@@ -79,6 +63,7 @@ export default () => {
     },
     {}
   );
+
   const renderItem = ({
     item,
   }: {
@@ -117,21 +102,6 @@ export default () => {
 
   return (
     <>
-      {/* <View style={tailwind("flex flex-row m-1")}>
-        {/* <Text>昨年</Text> */}
-      {/* <View style={styles.totaltime}>
-          <Text style={tailwind("text-2xl font-bold text-right m-1 p-1")}>
-            test_h
-          </Text>
-        </View> */}
-
-      {/* <Text>今年</Text> */}
-      {/* <View style={styles.totaltime}>
-          <Text style={tailwind("text-2xl font-bold text-right m-1 p-1")}>
-            test_h
-          </Text>
-        </View>
-      </View> */}
       <View style={tailwind("flex flex-row m-1")}>
         <View style={tailwind("w-1/2")}>
           <DropDownPicker
@@ -159,39 +129,23 @@ export default () => {
           <VictoryAxis />
           <VictoryAxis dependentAxis tickFormat={(x) => `${x}min`} />
           <VictoryStack colorScale={["tomato", "orange", "gold"]}>
-            {Object.values(graphData).map((data) => (
+            {Object.values(yearByYear).map((data) => (
               <VictoryBar data={data.history} x="date" y="time" />
             ))}
           </VictoryStack>
         </VictoryChart>
       </View>
       <FlatList
-        data={Object.values(monthlyMap)}
+        data={Object.values(yearByYear)}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() =>
-              dispatch(getMonthlyHistories({ userId: user!.id }))
-            }
+            onRefresh={() => dispatch(getAllHistories({ userId: user!.id }))}
           />
         }
       />
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  totaltime: {
-    shadowColor: "gray",
-    shadowOffset: { width: 10, height: 10 },
-    shadowOpacity: 1,
-    backgroundColor: "white",
-    marginBottom: 10,
-    marginLeft: 5,
-    marginRight: 5,
-    padding: 4,
-    width: "45%",
-  },
-});

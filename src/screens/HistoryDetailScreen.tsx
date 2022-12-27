@@ -1,11 +1,17 @@
-import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 import { useState } from "react";
 import Modal from "react-native-modal";
 import { useDispatch } from "react-redux";
-import { deleteHistory } from "@stores/history";
+import { changeMeansuringTime, deleteHistory } from "@stores/history";
 import { AppDispatch } from "../stores/index";
 
 type Props = NativeStackScreenProps<RootStackParamList, "HistoryDetail">;
@@ -14,12 +20,24 @@ export default ({ route, navigation }: Props) => {
   const { item } = route.params;
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
-  const [deleteModal, toggleDeleteModal] = useState(false);
 
-  const close = () => toggleDeleteModal(false);
+  const [modal, setModal] = useState<"delete" | "edit" | null>(null);
+
+  const close = () => setModal(null);
 
   const deleteItem = () => {
     dispatch(deleteHistory({ historyId: item.id }));
+    close();
+    navigation.goBack();
+  };
+
+  const editTimeItem = ({ measuring_time }: { measuring_time: string }) => {
+    dispatch(
+      changeMeansuringTime({
+        historyId: item.id,
+        measuringTime: measuring_time,
+      })
+    );
     close();
     navigation.goBack();
   };
@@ -48,17 +66,32 @@ export default ({ route, navigation }: Props) => {
           </Text>
         </View>
         <TouchableOpacity
+          style={tailwind("bg-blue-900 p-4 rounded-xl mt-12")}
+          onPress={() => setModal("edit")}
+        >
+          <Text style={tailwind("font-bold text-white text-center text-xl")}>
+            時間を修正
+          </Text>
+        </TouchableOpacity>
+        {modal === "edit" && (
+          <EditTimeModal
+            isVisible={modal === "edit"}
+            editTimeItem={editTimeItem}
+            close={close}
+          />
+        )}
+        <TouchableOpacity
           style={tailwind("bg-red-900 p-4 rounded-xl mt-12")}
-          onPress={() => toggleDeleteModal(true)}
+          onPress={() => setModal("delete")}
         >
           <Text style={tailwind("font-bold text-white text-center text-xl")}>
             削除
           </Text>
         </TouchableOpacity>
       </View>
-      {deleteModal && (
+      {modal === "delete" && (
         <DeleteModal
-          isVisible={deleteModal}
+          isVisible={modal === "delete"}
           deleteItem={deleteItem}
           close={close}
         />
@@ -92,6 +125,42 @@ const DeleteModal = ({
         >
           <Text style={tailwind("font-bold text-center text-white")}>
             削除する
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
+  );
+};
+
+const EditTimeModal = ({
+  isVisible,
+  editTimeItem,
+  close,
+}: {
+  isVisible: boolean;
+  editTimeItem: ({ measuring_time }: { measuring_time: string }) => void;
+  close: () => void;
+}) => {
+  const [time, setTime] = useState("");
+  const tailwind = useTailwind();
+  return (
+    <Modal isVisible={isVisible} onBackdropPress={close}>
+      <View style={tailwind("bg-white p-8 rounded-xl")}>
+        <View>
+          <Text style={tailwind("font-bold text-center")}>計測時間を修正</Text>
+        </View>
+        <TextInput
+          style={tailwind("border rounded-md px-2 py-1 mt-1")}
+          value={time}
+          onChangeText={(text) => setTime(text)}
+          autoFocus
+        />
+        <TouchableOpacity
+          style={tailwind("mt-5 bg-black p-4 rounded-xl")}
+          onPress={() => editTimeItem({ measuring_time: time })}
+        >
+          <Text style={tailwind("font-bold text-center text-white")}>
+            時間を変更
           </Text>
         </TouchableOpacity>
       </View>

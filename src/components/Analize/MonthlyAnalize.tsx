@@ -1,8 +1,8 @@
-import { View, Text, FlatList, RefreshControl } from "react-native";
+import { View, Text, FlatList, RefreshControl, StyleSheet } from "react-native";
 import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import DropDownPicker from "react-native-dropdown-picker";
-import { RootReducer } from "../../App";
+import { RootReducer } from "../../../App";
 import { getMonthlyHistories } from "@stores/history";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "@stores/index";
@@ -39,13 +39,15 @@ export default () => {
   const monthlyMap = all.reduce(
     (
       prev: {
-        [key: string]: { id: string; time: string; name: string };
+        [key: string]: { id: string; time: number; name: string };
       },
       cureent
     ) => {
       prev[cureent.primary_id] = {
         id: cureent.primary_id,
-        time: (prev[cureent.primary_id]?.time || 0) + cureent.measuring_time,
+        time:
+          (prev[cureent.primary_id]?.time || 0) +
+          Number(cureent.measuring_time),
         name: cureent.primary_name,
       };
       return prev;
@@ -59,12 +61,12 @@ export default () => {
       },
       current
     ) => {
-      const createAt = dateFormat(current.created_at.toDate(), "MM/dd");
+      const createAt = dateFormat(current.created_at.toDate(), "yyyy/MM");
       const prevHistories = prev[current.primary_id]
         ? prev[current.primary_id].history
         : [];
 
-      prev[current.primary_id] = {
+      prev[current.primary_id + createAt] = {
         id: current.primary_id,
         name: current.primary_name,
         history: [
@@ -85,7 +87,7 @@ export default () => {
     item: {
       id: string;
       name: string;
-      time: string;
+      time: number;
     };
   }) => (
     <View style={tailwind("flex items-center")}>

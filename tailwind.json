@@ -24,14 +24,6 @@
 			"right": 0
 		}
 	},
-	"m-1": {
-		"style": {
-			"marginTop": 4,
-			"marginRight": 4,
-			"marginBottom": 4,
-			"marginLeft": 4
-		}
-	},
 	"m-2": {
 		"style": {
 			"marginTop": 8,
@@ -40,12 +32,26 @@
 			"marginLeft": 8
 		}
 	},
+	"m-1": {
+		"style": {
+			"marginTop": 4,
+			"marginRight": 4,
+			"marginBottom": 4,
+			"marginLeft": 4
+		}
+	},
 	"m-4": {
 		"style": {
 			"marginTop": 16,
 			"marginRight": 16,
 			"marginBottom": 16,
 			"marginLeft": 16
+		}
+	},
+	"my-4": {
+		"style": {
+			"marginTop": 16,
+			"marginBottom": 16
 		}
 	},
 	"mx-3.5": {
@@ -60,17 +66,6 @@
 			"marginRight": 12
 		}
 	},
-	"my-4": {
-		"style": {
-			"marginTop": 16,
-			"marginBottom": 16
-		}
-	},
-	"mr-1": {
-		"style": {
-			"marginRight": 4
-		}
-	},
 	"mb-4": {
 		"style": {
 			"marginBottom": 16
@@ -79,31 +74,6 @@
 	"mr-4": {
 		"style": {
 			"marginRight": 16
-		}
-	},
-	"mt-4": {
-		"style": {
-			"marginTop": 16
-		}
-	},
-	"mt-6": {
-		"style": {
-			"marginTop": 24
-		}
-	},
-	"mt-8": {
-		"style": {
-			"marginTop": 32
-		}
-	},
-	"mt-1": {
-		"style": {
-			"marginTop": 4
-		}
-	},
-	"ml-2": {
-		"style": {
-			"marginLeft": 8
 		}
 	},
 	"mb-2": {
@@ -119,6 +89,36 @@
 	"mt-5": {
 		"style": {
 			"marginTop": 20
+		}
+	},
+	"mt-1": {
+		"style": {
+			"marginTop": 4
+		}
+	},
+	"mt-6": {
+		"style": {
+			"marginTop": 24
+		}
+	},
+	"mt-8": {
+		"style": {
+			"marginTop": 32
+		}
+	},
+	"mr-1": {
+		"style": {
+			"marginRight": 4
+		}
+	},
+	"ml-2": {
+		"style": {
+			"marginLeft": 8
+		}
+	},
+	"mt-4": {
+		"style": {
+			"marginTop": 16
 		}
 	},
 	"flex": {
@@ -156,16 +156,6 @@
 			"width": "100%"
 		}
 	},
-	"w-4/5": {
-		"style": {
-			"width": "80%"
-		}
-	},
-	"w-1/2": {
-		"style": {
-			"width": "50%"
-		}
-	},
 	"w-20": {
 		"style": {
 			"width": 80
@@ -181,6 +171,16 @@
 			"width": 320
 		}
 	},
+	"w-4/5": {
+		"style": {
+			"width": "80%"
+		}
+	},
+	"w-1/2": {
+		"style": {
+			"width": "50%"
+		}
+	},
 	"flex-1": {
 		"style": {
 			"flexGrow": 1,
@@ -193,11 +193,6 @@
 			"flexDirection": "row"
 		}
 	},
-	"items-end": {
-		"style": {
-			"alignItems": "flex-end"
-		}
-	},
 	"items-center": {
 		"style": {
 			"alignItems": "center"
@@ -208,9 +203,20 @@
 			"justifyContent": "center"
 		}
 	},
-	"self-auto": {
+	"rounded-full": {
 		"style": {
-			"alignSelf": "auto"
+			"borderTopLeftRadius": 9999,
+			"borderTopRightRadius": 9999,
+			"borderBottomRightRadius": 9999,
+			"borderBottomLeftRadius": 9999
+		}
+	},
+	"rounded-xl": {
+		"style": {
+			"borderTopLeftRadius": 12,
+			"borderTopRightRadius": 12,
+			"borderBottomRightRadius": 12,
+			"borderBottomLeftRadius": 12
 		}
 	},
 	"rounded-md": {
@@ -219,14 +225,6 @@
 			"borderTopRightRadius": 6,
 			"borderBottomRightRadius": 6,
 			"borderBottomLeftRadius": 6
-		}
-	},
-	"rounded-full": {
-		"style": {
-			"borderTopLeftRadius": 9999,
-			"borderTopRightRadius": 9999,
-			"borderBottomRightRadius": 9999,
-			"borderBottomLeftRadius": 9999
 		}
 	},
 	"rounded-2xl": {
@@ -243,22 +241,6 @@
 			"borderTopRightRadius": 8,
 			"borderBottomRightRadius": 8,
 			"borderBottomLeftRadius": 8
-		}
-	},
-	"rounded": {
-		"style": {
-			"borderTopLeftRadius": 4,
-			"borderTopRightRadius": 4,
-			"borderBottomRightRadius": 4,
-			"borderBottomLeftRadius": 4
-		}
-	},
-	"rounded-xl": {
-		"style": {
-			"borderTopLeftRadius": 12,
-			"borderTopRightRadius": 12,
-			"borderBottomRightRadius": 12,
-			"borderBottomLeftRadius": 12
 		}
 	},
 	"rounded-t-3xl": {
@@ -329,12 +311,6 @@
 			"backgroundColor": "rgb(139 92 246 / var(--tw-bg-opacity))"
 		}
 	},
-	"bg-yellow-200": {
-		"style": {
-			"--tw-bg-opacity": 1,
-			"backgroundColor": "rgb(254 240 138 / var(--tw-bg-opacity))"
-		}
-	},
 	"bg-black": {
 		"style": {
 			"--tw-bg-opacity": 1,
@@ -347,16 +323,28 @@
 			"backgroundColor": "rgb(255 255 255 / var(--tw-bg-opacity))"
 		}
 	},
-	"bg-sky-400": {
+	"bg-blue-900": {
 		"style": {
 			"--tw-bg-opacity": 1,
-			"backgroundColor": "rgb(56 189 248 / var(--tw-bg-opacity))"
+			"backgroundColor": "rgb(30 58 138 / var(--tw-bg-opacity))"
 		}
 	},
 	"bg-red-900": {
 		"style": {
 			"--tw-bg-opacity": 1,
 			"backgroundColor": "rgb(127 29 29 / var(--tw-bg-opacity))"
+		}
+	},
+	"bg-sky-400": {
+		"style": {
+			"--tw-bg-opacity": 1,
+			"backgroundColor": "rgb(56 189 248 / var(--tw-bg-opacity))"
+		}
+	},
+	"bg-yellow-200": {
+		"style": {
+			"--tw-bg-opacity": 1,
+			"backgroundColor": "rgb(254 240 138 / var(--tw-bg-opacity))"
 		}
 	},
 	"p-2": {
@@ -375,44 +363,12 @@
 			"paddingLeft": 4
 		}
 	},
-	"p-12": {
-		"style": {
-			"paddingTop": 48,
-			"paddingRight": 48,
-			"paddingBottom": 48,
-			"paddingLeft": 48
-		}
-	},
 	"p-4": {
 		"style": {
 			"paddingTop": 16,
 			"paddingRight": 16,
 			"paddingBottom": 16,
 			"paddingLeft": 16
-		}
-	},
-	"p-10": {
-		"style": {
-			"paddingTop": 40,
-			"paddingRight": 40,
-			"paddingBottom": 40,
-			"paddingLeft": 40
-		}
-	},
-	"p-5": {
-		"style": {
-			"paddingTop": 20,
-			"paddingRight": 20,
-			"paddingBottom": 20,
-			"paddingLeft": 20
-		}
-	},
-	"p-3": {
-		"style": {
-			"paddingTop": 12,
-			"paddingRight": 12,
-			"paddingBottom": 12,
-			"paddingLeft": 12
 		}
 	},
 	"p-8": {
@@ -423,16 +379,12 @@
 			"paddingLeft": 32
 		}
 	},
-	"px-4": {
+	"p-12": {
 		"style": {
-			"paddingLeft": 16,
-			"paddingRight": 16
-		}
-	},
-	"py-4": {
-		"style": {
-			"paddingTop": 16,
-			"paddingBottom": 16
+			"paddingTop": 48,
+			"paddingRight": 48,
+			"paddingBottom": 48,
+			"paddingLeft": 48
 		}
 	},
 	"px-2": {
@@ -447,14 +399,21 @@
 			"paddingBottom": 4
 		}
 	},
+	"py-4": {
+		"style": {
+			"paddingTop": 16,
+			"paddingBottom": 16
+		}
+	},
+	"px-4": {
+		"style": {
+			"paddingLeft": 16,
+			"paddingRight": 16
+		}
+	},
 	"pr-1": {
 		"style": {
 			"paddingRight": 4
-		}
-	},
-	"pt-2": {
-		"style": {
-			"paddingTop": 8
 		}
 	},
 	"pl-1": {
@@ -462,9 +421,9 @@
 			"paddingLeft": 4
 		}
 	},
-	"pt-12": {
+	"pt-2": {
 		"style": {
-			"paddingTop": 48
+			"paddingTop": 8
 		}
 	},
 	"text-center": {
@@ -483,12 +442,6 @@
 			"lineHeight": 32
 		}
 	},
-	"text-base": {
-		"style": {
-			"fontSize": 16,
-			"lineHeight": 24
-		}
-	},
 	"text-4xl": {
 		"style": {
 			"fontSize": 36,
@@ -505,6 +458,12 @@
 		"style": {
 			"fontSize": 20,
 			"lineHeight": 28
+		}
+	},
+	"text-base": {
+		"style": {
+			"fontSize": 16,
+			"lineHeight": 24
 		}
 	},
 	"font-bold": {

@@ -12,6 +12,12 @@ import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../../App";
+import { VictoryPie } from "victory-native";
+import DropDownPicker from "react-native-dropdown-picker";
+import { dateFormat } from "@utils/format";
+import { getPrimaries } from "@stores/categories";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { RootStackParamList } from "../../../App";
 import {
   getMonthlyHistories,
   History,
@@ -19,15 +25,7 @@ import {
   changeMeansuringTime,
   updatePrimary,
 } from "@stores/history";
-import { VictoryPie } from "victory-native";
-import DropDownPicker from "react-native-dropdown-picker";
-import { dateFormat } from "@utils/format";
-import ChangeInfo from "../ChangeInfo";
-import Modal from "react-native-modal";
-import { Picker } from "@react-native-picker/picker";
-import { PrimaryCategory, getPrimaries } from "@stores/categories";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
-import { RootStackParamList } from "../../../App";
+
 type item = {
   label: string;
   value: string;
@@ -83,9 +81,6 @@ export default () => {
     {}
   );
 
-  const [modalType, setModalType] = useState<
-    "initial" | "editTime" | "updatePrimary" | null
-  >(null);
   const [selectPrimary, setSelectPrimary] = useState();
   const [pieData, setPieData] = useState<pie[]>(Object.values(monthlyMap));
   const [open, setOpen] = useState(false);
@@ -99,7 +94,7 @@ export default () => {
     dispatch(getPrimaries({ userID: user!.id }));
   }, [user]);
 
-  const close = () => setModalType(null);
+  // const close = () => setModalType(null);
 
   const InitialModal = ({
     close,
@@ -132,18 +127,18 @@ export default () => {
       </>
     );
   };
-  const ShowPrimaryPicker = ({ id }: { id: string }) => {
-    return (
-      <Picker
-        selectedValue={selectPrimary}
-        onValueChange={(item) => setSelectPrimary(item)}
-      >
-        {primaryCategories.map((data, index) => (
-          <Picker.Item key={index} label={data.name} value={data.name} />
-        ))}
-      </Picker>
-    );
-  };
+  // const ShowPrimaryPicker = ({ id }: { id: string }) => {
+  //   return (
+  //     <Picker
+  //       selectedValue={selectPrimary}
+  //       onValueChange={(item) => setSelectPrimary(item)}
+  //     >
+  //       {primaryCategories.map((data, index) => (
+  //         <Picker.Item key={index} label={data.name} value={data.name} />
+  //       ))}
+  //     </Picker>
+  //   );
+  // };
 
   const EditTimeModal = ({ id, close }: { id: string; close: () => void }) => {
     const [time, setTime] = useState("");
@@ -248,7 +243,6 @@ export default () => {
 
   const renderItem = ({ item }: { item: History }) => {
     const timeinfo = Number(item.measuring_time) / 60;
-
     return (
       <TouchableOpacity
         style={tailwind("flex items-center")}
@@ -268,25 +262,6 @@ export default () => {
             <Text style={tailwind("text-base font-bold")}>
               {item.primary_name}
             </Text>
-            <ChangeInfo onPress={() => setModalType("initial")} />
-            <Modal isVisible={Boolean(modalType)} onBackdropPress={close}>
-              {modalType === "initial" && (
-                <InitialModal
-                  close={close}
-                  editTime={() => setModalType("editTime")}
-                  deleteItem={() =>
-                    dispatch(deleteHistory({ historyId: item.id }))
-                  }
-                  showPrimary={() => setModalType("updatePrimary")}
-                />
-              )}
-              {modalType == "editTime" && (
-                <EditTimeModal id={item.id} close={close} />
-              )}
-              {modalType == "updatePrimary" && (
-                <ShowPrimaryPicker id={item.id} />
-              )}
-            </Modal>
           </View>
           <Text style={tailwind("text-base font-bold text-right mr-1 pr-1")}>
             {timeinfo.toFixed(2)}min
