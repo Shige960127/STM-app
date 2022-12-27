@@ -31,7 +31,7 @@ export default ({ route, navigation }: Props) => {
     navigation.goBack();
   };
 
-  const editTimeItem = ({ measuring_time }: { measuring_time: string }) => {
+  const editTimeItem = ({ measuring_time }: { measuring_time: number }) => {
     dispatch(
       changeMeansuringTime({
         historyId: item.id,
@@ -75,6 +75,7 @@ export default ({ route, navigation }: Props) => {
         </TouchableOpacity>
         {modal === "edit" && (
           <EditTimeModal
+            defaultTime={item.measuring_time}
             isVisible={modal === "edit"}
             editTimeItem={editTimeItem}
             close={close}
@@ -133,15 +134,17 @@ const DeleteModal = ({
 };
 
 const EditTimeModal = ({
+  defaultTime,
   isVisible,
   editTimeItem,
   close,
 }: {
+  defaultTime: number;
   isVisible: boolean;
-  editTimeItem: ({ measuring_time }: { measuring_time: string }) => void;
+  editTimeItem: ({ measuring_time }: { measuring_time: number }) => void;
   close: () => void;
 }) => {
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState(defaultTime);
   const tailwind = useTailwind();
   return (
     <Modal isVisible={isVisible} onBackdropPress={close}>
@@ -151,13 +154,17 @@ const EditTimeModal = ({
         </View>
         <TextInput
           style={tailwind("border rounded-md px-2 py-1 mt-1")}
-          value={time}
-          onChangeText={(text) => setTime(text)}
+          value={String(time)}
+          onChangeText={(text) => setTime(Number(text))}
           autoFocus
+          keyboardType="numeric"
         />
         <TouchableOpacity
-          style={tailwind("mt-5 bg-black p-4 rounded-xl")}
+          style={tailwind(
+            `mt-5 p-4 rounded-xl ${time > 0 ? "bg-black" : "bg-gray-300"}`
+          )}
           onPress={() => editTimeItem({ measuring_time: time })}
+          disabled={!time}
         >
           <Text style={tailwind("font-bold text-center text-white")}>
             時間を変更

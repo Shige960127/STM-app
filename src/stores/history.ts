@@ -29,7 +29,7 @@ export type History = {
   secondary_name: string;
   tertiary_id?: string;
   tertiary_name?: string;
-  measuring_time: string;
+  measuring_time: number;
   created_at: Timestamp;
 };
 
@@ -184,7 +184,7 @@ export const deleteHistory = createAsyncThunk(
 export const changeMeansuringTime = createAsyncThunk(
   "changeMeansuringTime",
   async (
-    { historyId, measuringTime }: { historyId: string; measuringTime: string },
+    { historyId, measuringTime }: { historyId: string; measuringTime: number },
     { rejectWithValue }
   ) => {
     try {
