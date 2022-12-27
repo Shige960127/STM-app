@@ -2,7 +2,7 @@ import { View, Text, FlatList, RefreshControl } from "react-native";
 import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import DropDownPicker from "react-native-dropdown-picker";
-import { RootReducer } from "../../App";
+import { RootReducer } from "../../../App";
 import { getMonthlyHistories } from "@stores/history";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "@stores/index";

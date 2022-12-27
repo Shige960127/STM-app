@@ -1,12 +1,12 @@
 import { useTailwind } from "tailwind-rn/dist";
 import { View, Text, SafeAreaView } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import TotalTime from "@components/TotalTime";
+import TotalTime from "@components/Home/TotalTime";
 
-import Monthly from "@components/Monthly";
-import Yearly from "@components/Yearly";
-import All from "@components/All";
-import Daily from "@components/Daily";
+import Monthly from "@components/Home/Monthly";
+import Yearly from "@components/Home/Yearly";
+import All from "@components/Home/All";
+import Daily from "@components/Home/Daily";
 
 const Tab = createMaterialTopTabNavigator();
 const HomeTopTabs = () => {
