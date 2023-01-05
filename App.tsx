@@ -8,6 +8,7 @@ import AnalizeScreen from "@screens/AnalizeScreen";
 import TimerScreen from "@screens/TimerScreen";
 import PrimaryCategoryScreen from "@screens/PrimaryCategoryScreen";
 import SecondaryCategoryScreen from "@screens/SecondaryCategoryScreen";
+import AccountScreen from "@screens/AccountScreen";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -31,7 +32,7 @@ export type RootStackParamList = {
   };
   TimerTop: undefined;
   AnalizeTop: undefined;
-  Account: undefined;
+  AccountTop: undefined;
   Primary: undefined;
   Secondary: undefined;
   Tertiary: undefined;
@@ -41,6 +42,7 @@ export type TabParamList = {
   Home: undefined;
   Timer: undefined;
   Analize: undefined;
+  Account: undefined;
 };
 
 export type RootReducer = {
@@ -53,7 +55,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
 const HomeStack = createNativeStackNavigator();
-function HomeStackScreen() {
+const HomeStackScreen = () => {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -64,9 +66,9 @@ function HomeStackScreen() {
       <HomeStack.Screen name="HistoryDetail" component={HistoryDetailScreen} />
     </HomeStack.Navigator>
   );
-}
+};
 const AnalizeStack = createNativeStackNavigator();
-function AnalizeStackScreen() {
+const AnalizeStackScreen = () => {
   return (
     <AnalizeStack.Navigator>
       <AnalizeStack.Screen
@@ -76,9 +78,9 @@ function AnalizeStackScreen() {
       />
     </AnalizeStack.Navigator>
   );
-}
+};
 const TimerStack = createNativeStackNavigator();
-function TimerStackScreen() {
+const TimerStackScreen = () => {
   return (
     <TimerStack.Navigator>
       <TimerStack.Screen
@@ -91,13 +93,27 @@ function TimerStackScreen() {
       <TimerStack.Screen name="Tertiary" component={TertiaryCategoryScreen} />
     </TimerStack.Navigator>
   );
-}
+};
 
-type tabScreenIcon = "home" | "linechart" | "clockcircleo";
+const AccountStack = createNativeStackNavigator();
+const AccountStackScreen = () => {
+  return (
+    <AccountStack.Navigator>
+      <AccountStack.Screen
+        name="AccountTop"
+        component={AccountScreen}
+        options={{ headerTitle: "Account" }}
+      />
+    </AccountStack.Navigator>
+  );
+};
+
+type tabScreenIcon = "home" | "linechart" | "clockcircleo" | "user";
 const screenNameIcon: { [key: string]: tabScreenIcon } = {
   Home: "home",
   Analize: "linechart",
   Timer: "clockcircleo",
+  Account: "user",
 };
 const MainScreen = () => (
   <Tab.Navigator
@@ -127,6 +143,11 @@ const MainScreen = () => (
     <Tab.Screen
       name="Analize"
       component={AnalizeStackScreen}
+      options={{ headerShown: false }}
+    />
+    <Tab.Screen
+      name="Account"
+      component={AccountStackScreen}
       options={{ headerShown: false }}
     />
   </Tab.Navigator>

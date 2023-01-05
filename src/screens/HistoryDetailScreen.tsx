@@ -1,11 +1,17 @@
-import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 import { useState } from "react";
 import Modal from "react-native-modal";
 import { useDispatch } from "react-redux";
-import { deleteHistory } from "@stores/history";
+import { changeMeansuringTime, deleteHistory } from "@stores/history";
 import { AppDispatch } from "../stores/index";
 
 type Props = NativeStackScreenProps<RootStackParamList, "HistoryDetail">;
@@ -14,9 +20,8 @@ export default ({ route, navigation }: Props) => {
   const { item } = route.params;
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
-  const [deleteModal, toggleDeleteModal] = useState(false);
-
-  const close = () => toggleDeleteModal(false);
+  const [modal, setModal] = useState<"delete" | "edit" | null>(null);
+  const close = () => setModal(null);
 
   const deleteItem = () => {
     dispatch(deleteHistory({ historyId: item.id }));
@@ -24,6 +29,16 @@ export default ({ route, navigation }: Props) => {
     navigation.goBack();
   };
 
+  const editTimeItem = ({ measuring_time }: { measuring_time: number }) => {
+    dispatch(
+      changeMeansuringTime({
+        historyId: item.id,
+        measuringTime: measuring_time,
+      })
+    );
+    close();
+    navigation.goBack();
+  };
   return (
     <SafeAreaView style={tailwind("flex-1")}>
       <View style={tailwind("p-4")}>
@@ -48,17 +63,33 @@ export default ({ route, navigation }: Props) => {
           </Text>
         </View>
         <TouchableOpacity
+          style={tailwind("bg-blue-900 p-4 rounded-xl mt-12")}
+          onPress={() => setModal("edit")}
+        >
+          <Text style={tailwind("font-bold text-white text-center text-xl")}>
+            時間を修正
+          </Text>
+        </TouchableOpacity>
+        {modal === "edit" && (
+          <EditTimeModal
+            defaultTime={item.measuring_time}
+            isVisible={modal === "edit"}
+            editTimeItem={editTimeItem}
+            close={close}
+          />
+        )}
+        <TouchableOpacity
           style={tailwind("bg-red-900 p-4 rounded-xl mt-12")}
-          onPress={() => toggleDeleteModal(true)}
+          onPress={() => setModal("delete")}
         >
           <Text style={tailwind("font-bold text-white text-center text-xl")}>
             削除
           </Text>
         </TouchableOpacity>
       </View>
-      {deleteModal && (
+      {modal === "delete" && (
         <DeleteModal
-          isVisible={deleteModal}
+          isVisible={modal === "delete"}
           deleteItem={deleteItem}
           close={close}
         />
@@ -66,7 +97,6 @@ export default ({ route, navigation }: Props) => {
     </SafeAreaView>
   );
 };
-
 const DeleteModal = ({
   isVisible,
   close,
@@ -77,7 +107,6 @@ const DeleteModal = ({
   deleteItem: () => void;
 }) => {
   const tailwind = useTailwind();
-
   return (
     <Modal isVisible={isVisible} onBackdropPress={close}>
       <View style={tailwind("bg-white p-8 rounded-xl")}>
@@ -92,6 +121,50 @@ const DeleteModal = ({
         >
           <Text style={tailwind("font-bold text-center text-white")}>
             削除する
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
+  );
+};
+
+const EditTimeModal = ({
+  defaultTime,
+  isVisible,
+  editTimeItem,
+  close,
+}: {
+  defaultTime: number;
+  isVisible: boolean;
+  editTimeItem: ({ measuring_time }: { measuring_time: number }) => void;
+  close: () => void;
+}) => {
+  const [time, setTime] = useState(defaultTime);
+  const tailwind = useTailwind();
+
+  const disabled = time <= 0;
+  return (
+    <Modal isVisible={isVisible} onBackdropPress={close}>
+      <View style={tailwind("bg-white p-8 rounded-xl")}>
+        <View>
+          <Text style={tailwind("font-bold text-center")}>計測時間を修正</Text>
+        </View>
+        <TextInput
+          style={tailwind("border rounded-md px-2 py-1 mt-1")}
+          value={String(time)}
+          onChangeText={(text) => setTime(Number(text))}
+          autoFocus
+          keyboardType="numeric"
+        />
+        <TouchableOpacity
+          style={tailwind(
+            `mt-5 p-4 rounded-xl ${disabled ? "bg-gray-300" : "bg-black"}`
+          )}
+          onPress={() => editTimeItem({ measuring_time: time })}
+          disabled={disabled}
+        >
+          <Text style={tailwind("font-bold text-center text-white")}>
+            時間を変更
           </Text>
         </TouchableOpacity>
       </View>

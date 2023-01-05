@@ -3,25 +3,20 @@ import {
   View,
   Text,
   RefreshControl,
-  Button,
-  TextInput,
+  TouchableOpacity,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../../App";
-import {
-  getAllHistories,
-  History,
-  deleteHistory,
-  changeMeansuringTime,
-} from "@stores/history";
+import { getDailyHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { dateFormat } from "@utils/format";
-import ChangeInfo from "../ChangeInfo";
-import Modal from "react-native-modal";
+import { getPrimaries } from "@stores/categories";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { RootStackParamList } from "../../../App";
 
 type item = {
   label: string;
@@ -40,11 +35,14 @@ export default () => {
   const {
     user: { user },
     history: {
-      histories: { all },
+      histories: { daily },
     },
   } = useSelector((store: RootReducer) => store);
 
-  const allMap = all.reduce(
+  const navitaoin =
+    useNavigation<NavigationProp<RootStackParamList, "HomeTop">>();
+
+  const dailyMap = daily.reduce(
     (
       prev: {
         [key: string]: {
@@ -74,10 +72,7 @@ export default () => {
     {}
   );
 
-  const [modalType, setModalType] = useState<"initial" | "editTime" | null>(
-    null
-  );
-  const [pieData, setPieData] = useState<pie[]>(Object.values(allMap));
+  const [pieData, setPieData] = useState<pie[]>(Object.values(dailyMap));
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
@@ -85,82 +80,22 @@ export default () => {
   const [secondary, setSecondary] = useState(null);
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
-  const close = () => setModalType(null);
-
-  const InitialModal = ({
-    close,
-    editTime,
-    deleteItem,
-  }: {
-    close: () => void;
-    editTime: () => void;
-    deleteItem: () => void;
-  }) => {
-    const tailwind = useTailwind();
-    return (
-      <>
-        <View style={tailwind("bg-white p-2 m-1 rounded-2xl")}>
-          <Text style={tailwind("text-center text-base")}>
-            データの修正はこちらから
-          </Text>
-          <Button title="カテゴリ情報の修正" onPress={close} />
-          <Button title="計測時間の修正" onPress={editTime} />
-          <Button
-            title="データの削除"
-            onPress={() => {
-              close();
-              deleteItem();
-            }}
-          />
-        </View>
-      </>
-    );
-  };
-
-  const EditTimeModal = ({ id }: { id: string }) => {
-    const [time, setTime] = useState("");
-    const tailwind = useTailwind();
-    return (
-      <View style={tailwind("bg-white p-12 m-1 rounded-2xl")}>
-        <View>
-          <Text style={tailwind("font-bold text-center")}>計測時間を修正</Text>
-        </View>
-        <TextInput
-          style={tailwind("border rounded-md px-2 py-1 mt-1")}
-          value={time}
-          onChangeText={(text) => setTime(text)}
-          autoFocus
-        />
-        <Button
-          title="OK"
-          onPress={() => {
-            close;
-            dispatch(
-              changeMeansuringTime({
-                historyId: id,
-                measuringTime: time,
-              })
-            );
-          }}
-        />
-      </View>
-    );
-  };
-
   useEffect(() => {
-    if (user) dispatch(getAllHistories({ userId: user!.id }));
+    dispatch(getPrimaries({ userID: user!.id }));
+  });
+  useEffect(() => {
+    if (user) dispatch(getDailyHistories({ userId: user!.id }));
   }, [user]);
   useEffect(() => {
-    const primaryInfo = Object.values(allMap).map((item) => {
+    const primaryInfo = Object.values(dailyMap).map((item) => {
       return { label: item.x, value: item.id };
     });
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
-    setPieData(Object.values(allMap));
-  }, [all]);
-
+    setPieData(Object.values(dailyMap));
+  }, [daily]);
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondaryMap = allMap[primary].secondaries.reduce(
+      const secondaryMap = dailyMap[primary].secondaries.reduce(
         (
           pre: {
             [key: string]: {
@@ -202,8 +137,8 @@ export default () => {
     }
 
     if (primary === "all") {
-      setPieData(Object.values(allMap));
-      const newSecondaries = all
+      setPieData(Object.values(dailyMap));
+      const newSecondaries = daily
         .filter(
           (x, i, array) =>
             array.findIndex((y) => y.secondary_id === x.secondary_id) === i
@@ -221,40 +156,32 @@ export default () => {
   const renderItem = ({ item }: { item: History }) => {
     const timeinfo = Number(item.measuring_time) / 60;
     return (
-      <View style={tailwind("flex items-center")}>
-        <View style={tailwind("ml-2 pl-1 w-4/5")}>
-          <Text style={tailwind("text-base")}>
-            {dateFormat(item.created_at.toDate())}
-          </Text>
-        </View>
-        <View
-          style={tailwind(
-            "ml-2 pl-1 w-4/5 bg-yellow-200 border-2 border-black rounded-md"
-          )}
-        >
-          <View style={tailwind("flex flex-row ")}>
-            <Text style={tailwind("text-base font-bold")}>
-              {item.primary_name}
+      <TouchableOpacity
+        style={tailwind("flex items-center")}
+        onPress={() => navitaoin.navigate("HistoryDetail", { item: item })}
+      >
+        <View style={tailwind("flex items-center")}>
+          <View style={tailwind("ml-2 pl-1 w-4/5")}>
+            <Text style={tailwind("text-base")}>
+              {dateFormat(item.created_at.toDate())}
             </Text>
-            <ChangeInfo onPress={() => setModalType("initial")} />
-            <Modal isVisible={Boolean(modalType)} onBackdropPress={close}>
-              {modalType === "initial" && (
-                <InitialModal
-                  close={close}
-                  editTime={() => setModalType("editTime")}
-                  deleteItem={() =>
-                    dispatch(deleteHistory({ historyId: item.id }))
-                  }
-                />
-              )}
-              {modalType == "editTime" && <EditTimeModal id={item.id} />}
-            </Modal>
           </View>
-          <Text style={tailwind("text-base font-bold text-right mr-1 pr-1")}>
-            {timeinfo.toFixed(2)}min
-          </Text>
+          <View
+            style={tailwind(
+              "ml-2 pl-1 w-4/5 bg-yellow-200 border-2 border-black rounded-md"
+            )}
+          >
+            <View style={tailwind("flex flex-row ")}>
+              <Text style={tailwind("text-base font-bold")}>
+                {item.primary_name}
+              </Text>
+            </View>
+            <Text style={tailwind("text-base font-bold text-right mr-1 pr-1")}>
+              {timeinfo.toFixed(2)}min
+            </Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -298,13 +225,13 @@ export default () => {
         />
       </View>
       <FlatList
-        data={all}
+        data={daily}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => dispatch(getAllHistories({ userId: user!.id }))}
+            onRefresh={() => dispatch(getDailyHistories({ userId: user!.id }))}
           />
         }
       />
