@@ -25,7 +25,7 @@ type item = {
 
 type pie = {
   id: string;
-  y: string;
+  y: number;
   x: string;
 };
 
@@ -47,9 +47,9 @@ export default () => {
       prev: {
         [key: string]: {
           id: string;
-          y: string;
+          y: number;
           x: string;
-          secondaries: { id: string; name: string; time: string }[];
+          secondaries: { id: string; name: string; time: number }[];
         };
       },
       current
@@ -101,7 +101,7 @@ export default () => {
             [key: string]: {
               id: string;
               name: string;
-              time: string;
+              time: number;
             };
           },
           cur
