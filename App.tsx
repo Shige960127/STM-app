@@ -21,7 +21,7 @@ import store, { AppDispatch } from "@stores/index";
 import { AntDesign } from "@expo/vector-icons";
 import TertiaryCategoryScreen from "@screens/TertiaryCategoryScreen";
 
-type HomeStackParamList = {
+export type HomeStackParamList = {
   HomeTop: undefined;
   HistoryDetail: {
     item: History;

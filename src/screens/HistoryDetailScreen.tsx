@@ -7,14 +7,14 @@ import {
 } from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
+import { HomeStackParamList } from "../../App";
 import { useState } from "react";
 import Modal from "react-native-modal";
 import { useDispatch } from "react-redux";
 import { changeMeansuringTime, deleteHistory } from "@stores/history";
 import { AppDispatch } from "../stores/index";
 
-type Props = NativeStackScreenProps<RootStackParamList, "HistoryDetail">;
+type Props = NativeStackScreenProps<HomeStackParamList, "HistoryDetail">;
 
 export default ({ route, navigation }: Props) => {
   const { item } = route.params;
