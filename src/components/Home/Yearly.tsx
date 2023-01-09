@@ -5,12 +5,12 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../../App";
-import { getDailyHistories, History } from "@stores/history";
+import { getYearlyHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { dateFormat } from "@utils/format";
@@ -35,14 +35,14 @@ export default () => {
   const {
     user: { user },
     history: {
-      histories: { daily },
+      histories: { yearly },
     },
   } = useSelector((store: RootReducer) => store);
 
   const navitaoin =
     useNavigation<NavigationProp<RootStackParamList, "HomeTop">>();
 
-  const dailyMap = daily.reduce(
+  const yearlyMap = yearly.reduce(
     (
       prev: {
         [key: string]: {
@@ -71,11 +71,17 @@ export default () => {
     },
     {}
   );
-  const [pieData, setPieData] = useState<pie[]>(Object.values(dailyMap));
-  const [open, setOpen] = useState(false);
+  const [pieData, setPieData] = useState<pie[]>(Object.values(yearlyMap));
+  const [primaryOption, openPrimaryOption] = useReducer(
+    (state) => !state,
+    false
+  );
   const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
-  const [open1, setOpen1] = useState(false);
+  const [secondaryOption, setSecondaryOption] = useReducer(
+    (state) => !state,
+    false
+  );
   const [secondary, setSecondary] = useState(null);
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
@@ -84,19 +90,19 @@ export default () => {
   }, [user]);
 
   useEffect(() => {
-    if (user) dispatch(getDailyHistories({ userId: user!.id }));
+    if (user) dispatch(getYearlyHistories({ userId: user!.id }));
   }, [user]);
   useEffect(() => {
-    const primaryInfo = Object.values(dailyMap).map((item) => {
+    const primaryInfo = Object.values(yearlyMap).map((item) => {
       return { label: item.x, value: item.id };
     });
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
-    setPieData(Object.values(dailyMap));
-  }, [daily]);
+    setPieData(Object.values(yearlyMap));
+  }, [yearly]);
 
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondaryMap = dailyMap[primary].secondaries.reduce(
+      const secondaryMap = yearlyMap[primary].secondaries.reduce(
         (
           pre: {
             [key: string]: {
@@ -138,8 +144,8 @@ export default () => {
     }
 
     if (primary === "all") {
-      setPieData(Object.values(dailyMap));
-      const newSecondaries = daily
+      setPieData(Object.values(yearlyMap));
+      const newSecondaries = yearly
         .filter(
           (x, i, array) =>
             array.findIndex((y) => y.secondary_id === x.secondary_id) === i
@@ -189,10 +195,10 @@ export default () => {
       <View style={{ zIndex: 1, ...tailwind("flex flex-row m-1") }}>
         <View style={tailwind("w-1/2")}>
           <DropDownPicker
-            open={open}
+            open={primaryOption}
             value={primary}
             items={primaries}
-            setOpen={setOpen}
+            setOpen={openPrimaryOption}
             setValue={setPrimary}
             setItems={setPrimaries}
             maxHeight={100}
@@ -201,10 +207,10 @@ export default () => {
         </View>
         <View style={tailwind("flex w-1/2")}>
           <DropDownPicker
-            open={open1}
+            open={secondaryOption}
             value={secondary}
             items={secondaries}
-            setOpen={setOpen1}
+            setOpen={setSecondaryOption}
             setValue={setSecondary}
             setItems={setSecondaries}
             maxHeight={100}
@@ -224,13 +230,13 @@ export default () => {
         />
       </View>
       <FlatList
-        data={daily}
+        data={yearly}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => dispatch(getDailyHistories({ userId: user!.id }))}
+            onRefresh={() => dispatch(getYearlyHistories({ userId: user!.id }))}
           />
         }
       />

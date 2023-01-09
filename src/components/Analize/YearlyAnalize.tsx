@@ -26,7 +26,8 @@ const chartConfig = {
 
 const labels: string[] = [];
 const dataContainer: number[][] = [];
-
+console.log("label----------", labels);
+console.log("data----------", dataContainer);
 const data = {
   labels: labels,
   data: dataContainer,

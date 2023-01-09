@@ -5,7 +5,7 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
@@ -42,7 +42,7 @@ export default () => {
   const navitaoin =
     useNavigation<NavigationProp<RootStackParamList, "HomeTop">>();
 
-  const AllMap = all.reduce(
+  const allMap = all.reduce(
     (
       prev: {
         [key: string]: {
@@ -71,11 +71,17 @@ export default () => {
     },
     {}
   );
-  const [pieData, setPieData] = useState<pie[]>(Object.values(AllMap));
-  const [open, setOpen] = useState(false);
+  const [pieData, setPieData] = useState<pie[]>(Object.values(allMap));
+  const [primaryOption, openPrimaryOption] = useReducer(
+    (state) => !state,
+    false
+  );
   const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
-  const [open1, setOpen1] = useState(false);
+  const [secondaryOption, setSecondaryOption] = useReducer(
+    (state) => !state,
+    false
+  );
   const [secondary, setSecondary] = useState(null);
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
@@ -87,16 +93,16 @@ export default () => {
     if (user) dispatch(getAllHistories({ userId: user!.id }));
   }, [user]);
   useEffect(() => {
-    const primaryInfo = Object.values(AllMap).map((item) => {
+    const primaryInfo = Object.values(allMap).map((item) => {
       return { label: item.x, value: item.id };
     });
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
-    setPieData(Object.values(AllMap));
+    setPieData(Object.values(allMap));
   }, [all]);
 
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondaryMap = AllMap[primary].secondaries.reduce(
+      const secondaryMap = allMap[primary].secondaries.reduce(
         (
           pre: {
             [key: string]: {
@@ -138,7 +144,7 @@ export default () => {
     }
 
     if (primary === "all") {
-      setPieData(Object.values(AllMap));
+      setPieData(Object.values(allMap));
       const newSecondaries = all
         .filter(
           (x, i, array) =>
@@ -189,10 +195,10 @@ export default () => {
       <View style={{ zIndex: 1, ...tailwind("flex flex-row m-1") }}>
         <View style={tailwind("w-1/2")}>
           <DropDownPicker
-            open={open}
+            open={primaryOption}
             value={primary}
             items={primaries}
-            setOpen={setOpen}
+            setOpen={openPrimaryOption}
             setValue={setPrimary}
             setItems={setPrimaries}
             maxHeight={100}
@@ -201,10 +207,10 @@ export default () => {
         </View>
         <View style={tailwind("flex w-1/2")}>
           <DropDownPicker
-            open={open1}
+            open={secondaryOption}
             value={secondary}
             items={secondaries}
-            setOpen={setOpen1}
+            setOpen={setSecondaryOption}
             setValue={setSecondary}
             setItems={setSecondaries}
             maxHeight={100}

@@ -97,6 +97,10 @@
   margin-top: 1rem
 }
 
+.mt-2 {
+  margin-top: 0.5rem
+}
+
 .flex {
   display: flex
 }
@@ -255,6 +259,11 @@
 .bg-yellow-200 {
   --tw-bg-opacity: 1;
   background-color: rgb(254 240 138 / var(--tw-bg-opacity))
+}
+
+.bg-yellow-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(253 224 71 / var(--tw-bg-opacity))
 }
 
 .p-2 {
