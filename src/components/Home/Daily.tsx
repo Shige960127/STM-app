@@ -71,7 +71,6 @@ export default () => {
     },
     {}
   );
-
   const [pieData, setPieData] = useState<pie[]>(Object.values(dailyMap));
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
@@ -82,7 +81,8 @@ export default () => {
 
   useEffect(() => {
     dispatch(getPrimaries({ userID: user!.id }));
-  });
+  }, [user]);
+
   useEffect(() => {
     if (user) dispatch(getDailyHistories({ userId: user!.id }));
   }, [user]);
@@ -93,6 +93,7 @@ export default () => {
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
     setPieData(Object.values(dailyMap));
   }, [daily]);
+
   useEffect(() => {
     if (primary && primary !== "all") {
       const secondaryMap = dailyMap[primary].secondaries.reduce(
@@ -160,26 +161,24 @@ export default () => {
         style={tailwind("flex items-center")}
         onPress={() => navitaoin.navigate("HistoryDetail", { item: item })}
       >
-        <View style={tailwind("flex items-center")}>
-          <View style={tailwind("ml-2 pl-1 w-4/5")}>
-            <Text style={tailwind("text-base")}>
-              {dateFormat(item.created_at.toDate())}
+        <View style={tailwind("ml-2 pl-1 w-4/5")}>
+          <Text style={tailwind("text-base")}>
+            {dateFormat(item.created_at.toDate())}
+          </Text>
+        </View>
+        <View
+          style={tailwind(
+            "ml-2 pl-1 w-4/5 bg-yellow-200 border-2 border-black rounded-md"
+          )}
+        >
+          <View style={tailwind("flex flex-row ")}>
+            <Text style={tailwind("text-base font-bold")}>
+              {item.primary_name}
             </Text>
           </View>
-          <View
-            style={tailwind(
-              "ml-2 pl-1 w-4/5 bg-yellow-200 border-2 border-black rounded-md"
-            )}
-          >
-            <View style={tailwind("flex flex-row ")}>
-              <Text style={tailwind("text-base font-bold")}>
-                {item.primary_name}
-              </Text>
-            </View>
-            <Text style={tailwind("text-base font-bold text-right mr-1 pr-1")}>
-              {timeinfo.toFixed(2)}min
-            </Text>
-          </View>
+          <Text style={tailwind("text-base font-bold text-right mr-1 pr-1")}>
+            {timeinfo.toFixed(2)}min
+          </Text>
         </View>
       </TouchableOpacity>
     );

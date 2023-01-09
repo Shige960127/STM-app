@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useTailwind } from "tailwind-rn/dist";
 import { useSelector } from "react-redux";
-import { RootReducer } from "../../App";
+import { RootReducer } from "../../../App";
 
 export default () => {
   const tailwind = useTailwind();

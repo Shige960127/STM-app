@@ -20,7 +20,9 @@ export default ({ route, navigation }: Props) => {
   const { item } = route.params;
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
+
   const [modal, setModal] = useState<"delete" | "edit" | null>(null);
+
   const close = () => setModal(null);
 
   const deleteItem = () => {
@@ -39,6 +41,7 @@ export default ({ route, navigation }: Props) => {
     close();
     navigation.goBack();
   };
+
   return (
     <SafeAreaView style={tailwind("flex-1")}>
       <View style={tailwind("p-4")}>
@@ -97,6 +100,7 @@ export default ({ route, navigation }: Props) => {
     </SafeAreaView>
   );
 };
+
 const DeleteModal = ({
   isVisible,
   close,
@@ -107,6 +111,7 @@ const DeleteModal = ({
   deleteItem: () => void;
 }) => {
   const tailwind = useTailwind();
+
   return (
     <Modal isVisible={isVisible} onBackdropPress={close}>
       <View style={tailwind("bg-white p-8 rounded-xl")}>

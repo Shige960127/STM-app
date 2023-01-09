@@ -71,7 +71,6 @@ export default () => {
     },
     {}
   );
-
   const [pieData, setPieData] = useState<pie[]>(Object.values(dailyMap));
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
@@ -82,7 +81,8 @@ export default () => {
 
   useEffect(() => {
     dispatch(getPrimaries({ userID: user!.id }));
-  });
+  }, [user]);
+
   useEffect(() => {
     if (user) dispatch(getDailyHistories({ userId: user!.id }));
   }, [user]);
@@ -93,6 +93,7 @@ export default () => {
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
     setPieData(Object.values(dailyMap));
   }, [daily]);
+
   useEffect(() => {
     if (primary && primary !== "all") {
       const secondaryMap = dailyMap[primary].secondaries.reduce(

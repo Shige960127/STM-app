@@ -4,7 +4,7 @@ export default ({ config }) => ({
   ...config,
   extra: {
     eas: {
-      projectId: "cf0f86d7-6b3e-4f9f-b72f-410b33743bf6",
+      projectId: "cf0f86d7-6b3e-4f9f-b72f-410b33743bf6", //自分のexpoのprojectIDを指定
     },
     FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
     FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,

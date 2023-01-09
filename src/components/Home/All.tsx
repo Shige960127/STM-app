@@ -10,7 +10,7 @@ import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../../App";
-import { getDailyHistories, History } from "@stores/history";
+import { getAllHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { dateFormat } from "@utils/format";
@@ -35,14 +35,14 @@ export default () => {
   const {
     user: { user },
     history: {
-      histories: { daily },
+      histories: { all },
     },
   } = useSelector((store: RootReducer) => store);
 
   const navitaoin =
     useNavigation<NavigationProp<RootStackParamList, "HomeTop">>();
 
-  const dailyMap = daily.reduce(
+  const AllMap = all.reduce(
     (
       prev: {
         [key: string]: {
@@ -71,8 +71,7 @@ export default () => {
     },
     {}
   );
-
-  const [pieData, setPieData] = useState<pie[]>(Object.values(dailyMap));
+  const [pieData, setPieData] = useState<pie[]>(Object.values(AllMap));
   const [open, setOpen] = useState(false);
   const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
@@ -82,20 +81,22 @@ export default () => {
 
   useEffect(() => {
     dispatch(getPrimaries({ userID: user!.id }));
-  });
+  }, [user]);
+
   useEffect(() => {
-    if (user) dispatch(getDailyHistories({ userId: user!.id }));
+    if (user) dispatch(getAllHistories({ userId: user!.id }));
   }, [user]);
   useEffect(() => {
-    const primaryInfo = Object.values(dailyMap).map((item) => {
+    const primaryInfo = Object.values(AllMap).map((item) => {
       return { label: item.x, value: item.id };
     });
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
-    setPieData(Object.values(dailyMap));
-  }, [daily]);
+    setPieData(Object.values(AllMap));
+  }, [all]);
+
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondaryMap = dailyMap[primary].secondaries.reduce(
+      const secondaryMap = AllMap[primary].secondaries.reduce(
         (
           pre: {
             [key: string]: {
@@ -137,8 +138,8 @@ export default () => {
     }
 
     if (primary === "all") {
-      setPieData(Object.values(dailyMap));
-      const newSecondaries = daily
+      setPieData(Object.values(AllMap));
+      const newSecondaries = all
         .filter(
           (x, i, array) =>
             array.findIndex((y) => y.secondary_id === x.secondary_id) === i
@@ -160,26 +161,24 @@ export default () => {
         style={tailwind("flex items-center")}
         onPress={() => navitaoin.navigate("HistoryDetail", { item: item })}
       >
-        <View style={tailwind("flex items-center")}>
-          <View style={tailwind("ml-2 pl-1 w-4/5")}>
-            <Text style={tailwind("text-base")}>
-              {dateFormat(item.created_at.toDate())}
+        <View style={tailwind("ml-2 pl-1 w-4/5")}>
+          <Text style={tailwind("text-base")}>
+            {dateFormat(item.created_at.toDate())}
+          </Text>
+        </View>
+        <View
+          style={tailwind(
+            "ml-2 pl-1 w-4/5 bg-yellow-200 border-2 border-black rounded-md"
+          )}
+        >
+          <View style={tailwind("flex flex-row ")}>
+            <Text style={tailwind("text-base font-bold")}>
+              {item.primary_name}
             </Text>
           </View>
-          <View
-            style={tailwind(
-              "ml-2 pl-1 w-4/5 bg-yellow-200 border-2 border-black rounded-md"
-            )}
-          >
-            <View style={tailwind("flex flex-row ")}>
-              <Text style={tailwind("text-base font-bold")}>
-                {item.primary_name}
-              </Text>
-            </View>
-            <Text style={tailwind("text-base font-bold text-right mr-1 pr-1")}>
-              {timeinfo.toFixed(2)}min
-            </Text>
-          </View>
+          <Text style={tailwind("text-base font-bold text-right mr-1 pr-1")}>
+            {timeinfo.toFixed(2)}min
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -225,13 +224,13 @@ export default () => {
         />
       </View>
       <FlatList
-        data={daily}
+        data={all}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => dispatch(getDailyHistories({ userId: user!.id }))}
+            onRefresh={() => dispatch(getAllHistories({ userId: user!.id }))}
           />
         }
       />
