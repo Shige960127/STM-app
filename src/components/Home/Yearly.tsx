@@ -3,17 +3,14 @@ import {
   View,
   Text,
   RefreshControl,
-  Button,
-  TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../../App";
-
-import { getMonthlyHistories, History } from "@stores/history";
+import { getYearlyHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { dateFormat } from "@utils/format";
@@ -28,7 +25,7 @@ type item = {
 
 type pie = {
   id: string;
-  y: string;
+  y: number;
   x: string;
 };
 
@@ -38,22 +35,21 @@ export default () => {
   const {
     user: { user },
     history: {
-      histories: { monthly },
+      histories: { yearly },
     },
-    categories: { primaryCategories },
   } = useSelector((store: RootReducer) => store);
 
   const navitaoin =
     useNavigation<NavigationProp<RootStackParamList, "HomeTop">>();
 
-  const monthlyMap = monthly.reduce(
+  const yearlyMap = yearly.reduce(
     (
       prev: {
         [key: string]: {
           id: string;
-          y: string;
+          y: number;
           x: string;
-          secondaries: { id: string; name: string; time: string }[];
+          secondaries: { id: string; name: string; time: number }[];
         };
       },
       current
@@ -75,13 +71,17 @@ export default () => {
     },
     {}
   );
-
-  const [selectPrimary, setSelectPrimary] = useState();
-  const [pieData, setPieData] = useState<pie[]>(Object.values(monthlyMap));
-  const [open, setOpen] = useState(false);
+  const [pieData, setPieData] = useState<pie[]>(Object.values(yearlyMap));
+  const [primaryOption, openPrimaryOption] = useReducer(
+    (state) => !state,
+    false
+  );
   const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
-  const [open1, setOpen1] = useState(false);
+  const [secondaryOption, setSecondaryOption] = useReducer(
+    (state) => !state,
+    false
+  );
   const [secondary, setSecondary] = useState(null);
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
@@ -90,25 +90,25 @@ export default () => {
   }, [user]);
 
   useEffect(() => {
-    if (user) dispatch(getMonthlyHistories({ userId: user!.id }));
+    if (user) dispatch(getYearlyHistories({ userId: user!.id }));
   }, [user]);
   useEffect(() => {
-    const primaryInfo = Object.values(monthlyMap).map((item) => {
+    const primaryInfo = Object.values(yearlyMap).map((item) => {
       return { label: item.x, value: item.id };
     });
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
-    setPieData(Object.values(monthlyMap));
-  }, [monthly]);
+    setPieData(Object.values(yearlyMap));
+  }, [yearly]);
 
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondaryMap = monthlyMap[primary].secondaries.reduce(
+      const secondaryMap = yearlyMap[primary].secondaries.reduce(
         (
           pre: {
             [key: string]: {
               id: string;
               name: string;
-              time: string;
+              time: number;
             };
           },
           cur
@@ -144,8 +144,8 @@ export default () => {
     }
 
     if (primary === "all") {
-      setPieData(Object.values(monthlyMap));
-      const newSecondaries = monthly
+      setPieData(Object.values(yearlyMap));
+      const newSecondaries = yearly
         .filter(
           (x, i, array) =>
             array.findIndex((y) => y.secondary_id === x.secondary_id) === i
@@ -195,10 +195,10 @@ export default () => {
       <View style={{ zIndex: 1, ...tailwind("flex flex-row m-1") }}>
         <View style={tailwind("w-1/2")}>
           <DropDownPicker
-            open={open}
+            open={primaryOption}
             value={primary}
             items={primaries}
-            setOpen={setOpen}
+            setOpen={openPrimaryOption}
             setValue={setPrimary}
             setItems={setPrimaries}
             maxHeight={100}
@@ -207,10 +207,10 @@ export default () => {
         </View>
         <View style={tailwind("flex w-1/2")}>
           <DropDownPicker
-            open={open1}
+            open={secondaryOption}
             value={secondary}
             items={secondaries}
-            setOpen={setOpen1}
+            setOpen={setSecondaryOption}
             setValue={setSecondary}
             setItems={setSecondaries}
             maxHeight={100}
@@ -230,15 +230,13 @@ export default () => {
         />
       </View>
       <FlatList
-        data={monthly}
+        data={yearly}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() =>
-              dispatch(getMonthlyHistories({ userId: user!.id }))
-            }
+            onRefresh={() => dispatch(getYearlyHistories({ userId: user!.id }))}
           />
         }
       />

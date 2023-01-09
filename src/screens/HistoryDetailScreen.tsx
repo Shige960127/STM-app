@@ -121,7 +121,7 @@ const DeleteModal = ({
           </Text>
         </View>
         <TouchableOpacity
-          style={tailwind("mt-5 bg-black p-4 rounded-xl")}
+          style={tailwind("mt-2 bg-black p-4 rounded-xl")}
           onPress={deleteItem}
         >
           <Text style={tailwind("font-bold text-center text-white")}>

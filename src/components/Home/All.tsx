@@ -3,29 +3,18 @@ import {
   View,
   Text,
   RefreshControl,
-  Button,
-  TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useReducer } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../../App";
-import {
-  getMonthlyHistories,
-  History,
-  deleteHistory,
-  changeMeansuringTime,
-  updatePrimary,
-} from "@stores/history";
+import { getAllHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { dateFormat } from "@utils/format";
-import Modal from "react-native-modal";
-
-import { Picker } from "@react-native-picker/picker";
-import { PrimaryCategory, getPrimaries } from "@stores/categories";
+import { getPrimaries } from "@stores/categories";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../../App";
 
@@ -36,7 +25,7 @@ type item = {
 
 type pie = {
   id: string;
-  y: string;
+  y: number;
   x: string;
 };
 
@@ -46,22 +35,21 @@ export default () => {
   const {
     user: { user },
     history: {
-      histories: { monthly },
+      histories: { all },
     },
-    categories: { primaryCategories },
   } = useSelector((store: RootReducer) => store);
 
   const navitaoin =
     useNavigation<NavigationProp<RootStackParamList, "HomeTop">>();
 
-  const monthlyMap = monthly.reduce(
+  const allMap = all.reduce(
     (
       prev: {
         [key: string]: {
           id: string;
-          y: string;
+          y: number;
           x: string;
-          secondaries: { id: string; name: string; time: string }[];
+          secondaries: { id: string; name: string; time: number }[];
         };
       },
       current
@@ -83,13 +71,17 @@ export default () => {
     },
     {}
   );
-
-  const [selectPrimary, setSelectPrimary] = useState();
-  const [pieData, setPieData] = useState<pie[]>(Object.values(monthlyMap));
-  const [open, setOpen] = useState(false);
+  const [pieData, setPieData] = useState<pie[]>(Object.values(allMap));
+  const [primaryOption, openPrimaryOption] = useReducer(
+    (state) => !state,
+    false
+  );
   const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
-  const [open1, setOpen1] = useState(false);
+  const [secondaryOption, setSecondaryOption] = useReducer(
+    (state) => !state,
+    false
+  );
   const [secondary, setSecondary] = useState(null);
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
@@ -97,102 +89,26 @@ export default () => {
     dispatch(getPrimaries({ userID: user!.id }));
   }, [user]);
 
-  // const close = () => setModalType(null);
-
-  const InitialModal = ({
-    close,
-    editTime,
-    deleteItem,
-    showPrimary,
-  }: {
-    close: () => void;
-    editTime: () => void;
-    deleteItem: () => void;
-    showPrimary: () => void;
-  }) => {
-    const tailwind = useTailwind();
-    return (
-      <>
-        <View style={tailwind("bg-white p-2 m-1 rounded-2xl")}>
-          <Text style={tailwind("text-center text-base")}>
-            データの修正はこちらから
-          </Text>
-          <Button title="カテゴリ情報の修正" onPress={showPrimary} />
-          <Button title="計測時間の修正" onPress={editTime} />
-          <Button
-            title="データの削除"
-            onPress={() => {
-              close();
-              deleteItem();
-            }}
-          />
-        </View>
-      </>
-    );
-  };
-  const ShowPrimaryPicker = ({ id }: { id: string }) => {
-    return (
-      <Picker
-        selectedValue={selectPrimary}
-        onValueChange={(item) => setSelectPrimary(item)}
-      >
-        {primaryCategories.map((data, index) => (
-          <Picker.Item key={index} label={data.name} value={data.name} />
-        ))}
-      </Picker>
-    );
-  };
-
-  const EditTimeModal = ({ id, close }: { id: string; close: () => void }) => {
-    const [time, setTime] = useState("");
-    const tailwind = useTailwind();
-    return (
-      <View style={tailwind("bg-white p-12 m-1 rounded-2xl")}>
-        <View>
-          <Text style={tailwind("font-bold text-center")}>計測時間を修正</Text>
-        </View>
-        <TextInput
-          style={tailwind("border rounded-md px-2 py-1 mt-1")}
-          value={time}
-          onChangeText={(text) => setTime(text)}
-          autoFocus
-        />
-        <Button
-          title="OK"
-          onPress={() => {
-            close;
-            dispatch(
-              changeMeansuringTime({
-                historyId: id,
-                measuringTime: time,
-              })
-            );
-          }}
-        />
-      </View>
-    );
-  };
-
   useEffect(() => {
-    if (user) dispatch(getMonthlyHistories({ userId: user!.id }));
+    if (user) dispatch(getAllHistories({ userId: user!.id }));
   }, [user]);
   useEffect(() => {
-    const primaryInfo = Object.values(monthlyMap).map((item) => {
+    const primaryInfo = Object.values(allMap).map((item) => {
       return { label: item.x, value: item.id };
     });
     setPrimaries([...primaryInfo, { label: "全て", value: "all" }]);
-    setPieData(Object.values(monthlyMap));
-  }, [monthly]);
+    setPieData(Object.values(allMap));
+  }, [all]);
 
   useEffect(() => {
     if (primary && primary !== "all") {
-      const secondaryMap = monthlyMap[primary].secondaries.reduce(
+      const secondaryMap = allMap[primary].secondaries.reduce(
         (
           pre: {
             [key: string]: {
               id: string;
               name: string;
-              time: string;
+              time: number;
             };
           },
           cur
@@ -228,8 +144,8 @@ export default () => {
     }
 
     if (primary === "all") {
-      setPieData(Object.values(monthlyMap));
-      const newSecondaries = monthly
+      setPieData(Object.values(allMap));
+      const newSecondaries = all
         .filter(
           (x, i, array) =>
             array.findIndex((y) => y.secondary_id === x.secondary_id) === i
@@ -279,10 +195,10 @@ export default () => {
       <View style={{ zIndex: 1, ...tailwind("flex flex-row m-1") }}>
         <View style={tailwind("w-1/2")}>
           <DropDownPicker
-            open={open}
+            open={primaryOption}
             value={primary}
             items={primaries}
-            setOpen={setOpen}
+            setOpen={openPrimaryOption}
             setValue={setPrimary}
             setItems={setPrimaries}
             maxHeight={100}
@@ -291,10 +207,10 @@ export default () => {
         </View>
         <View style={tailwind("flex w-1/2")}>
           <DropDownPicker
-            open={open1}
+            open={secondaryOption}
             value={secondary}
             items={secondaries}
-            setOpen={setOpen1}
+            setOpen={setSecondaryOption}
             setValue={setSecondary}
             setItems={setSecondaries}
             maxHeight={100}
@@ -314,15 +230,13 @@ export default () => {
         />
       </View>
       <FlatList
-        data={monthly}
+        data={all}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() =>
-              dispatch(getMonthlyHistories({ userId: user!.id }))
-            }
+            onRefresh={() => dispatch(getAllHistories({ userId: user!.id }))}
           />
         }
       />

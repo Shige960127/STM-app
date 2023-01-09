@@ -1,28 +1,37 @@
-import { View, Text, FlatList, RefreshControl } from "react-native";
-import { useState, useEffect } from "react";
+import { View, Text, FlatList, RefreshControl, Dimensions } from "react-native";
+import { useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
-import DropDownPicker from "react-native-dropdown-picker";
 import { RootReducer } from "../../../App";
-import { getAllHistories } from "@stores/history";
+import { getMonthlyHistories } from "@stores/history";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "@stores/index";
-import {
-  VictoryStack,
-  VictoryBar,
-  VictoryChart,
-  VictoryTheme,
-  VictoryAxis,
-} from "victory-native";
-import { dateFormat } from "../../utils/format";
+import { dateFormat } from "@utils/format";
+import { StackedBarChart } from "react-native-chart-kit";
 
 type categoryData = {
-  id: string;
+  id: number | string;
   name: string;
-  time: string;
-  history: {
-    date: string;
-    time: number;
-  }[];
+  date: string;
+  time: number;
+};
+
+const chartConfig = {
+  backgroundGradientFrom: "black",
+  backgroundGradientFromOpacity: 0,
+  backgroundGradientTo: "black",
+  backgroundGradientToOpacity: 0,
+  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+  barPercentage: 1,
+};
+
+const labels: string[] = [];
+const dataContainer: number[][] = [];
+console.log("label----------", labels);
+console.log("data----------", dataContainer);
+const data = {
+  labels: labels,
+  data: dataContainer,
+  barColors: ["#dfe4ea", "#ced6e0", "#a4b0be", "#FFFFFF", "#ffe4ea"],
 };
 
 export default () => {
@@ -32,45 +41,69 @@ export default () => {
   const {
     histories: { all },
   } = useSelector(({ history }: RootReducer) => history);
-
   useEffect(() => {
-    dispatch(getAllHistories({ userId: user!.id }));
+    dispatch(getMonthlyHistories({ userId: user!.id }));
   }, []);
-
-  const yearByYear = all.reduce(
+  const monthlyMap = all.reduce(
     (
       prev: {
-        [key: string]: categoryData;
+        [key: string]: { id: string; time: number; name: string };
       },
-      current
+      cureent
     ) => {
-      const prevHistories = prev[current.primary_id]
-        ? prev[current.primary_id].history
-        : [];
-      prev[current.primary_id] = {
-        id: current.primary_id,
-        time: (prev[current.primary_id]?.time || 0) + current.measuring_time,
-        name: current.primary_name,
-        history: [
-          ...prevHistories,
-          {
-            date: dateFormat(current.created_at.toDate(), "MM/dd"),
-            time: Number(current.measuring_time),
-          },
-        ],
+      prev[cureent.primary_id] = {
+        id: cureent.primary_id,
+        time:
+          (prev[cureent.primary_id]?.time || 0) +
+          Number(cureent.measuring_time),
+        name: cureent.primary_name,
       };
       return prev;
     },
     {}
   );
 
+  const graphData = all.reduce(
+    (
+      prev: {
+        [key: string]: categoryData;
+      },
+      current
+    ) => {
+      const createAt = dateFormat(current.created_at.toDate(), "yyyy/MM");
+      if (!labels.includes(createAt)) labels.push(createAt);
+      prev[current.primary_id + createAt] = {
+        id: current.primary_id,
+        name: current.primary_name,
+        date: createAt,
+        time:
+          (prev[current.primary_id + createAt]?.time || 0) +
+          current.measuring_time,
+      };
+      return prev;
+    },
+    {}
+  );
+
+  const graphDataArray = Object.values(graphData);
+
+  useEffect(() => {
+    graphDataArray.map((g) => {
+      const index = labels.indexOf(g.date);
+      if (dataContainer[index]) {
+        dataContainer[index].push(g.time);
+      } else {
+        dataContainer[index] = [g.time];
+      }
+    });
+  }, []);
   const renderItem = ({
     item,
   }: {
     item: {
       id: string;
       name: string;
-      time: string;
+      time: number;
     };
   }) => (
     <View style={tailwind("flex items-center")}>
@@ -87,65 +120,31 @@ export default () => {
     </View>
   );
 
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
-  ]);
-  const [open1, setOpen1] = useState(false);
-  const [value1, setValue1] = useState(null);
-  const [items1, setItems1] = useState([
-    { label: "Lemon", value: "lemon" },
-    { label: "Grape", value: "grape" },
-  ]);
-
   return (
     <>
       <View style={tailwind("flex flex-row m-1")}>
-        <View style={tailwind("w-1/2")}>
-          <DropDownPicker
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
+        <View style={tailwind("px-4")}>
+          <StackedBarChart
+            data={data}
+            height={Dimensions.get("window").height / 2}
+            width={Dimensions.get("window").width}
+            chartConfig={chartConfig}
           />
         </View>
-        <View style={tailwind("flex w-1/2")}>
-          <DropDownPicker
-            open={open1}
-            value={value1}
-            items={items1}
-            setOpen={setOpen1}
-            setValue={setValue1}
-            setItems={setItems1}
-          />
-        </View>
+        <FlatList
+          data={Object.values(monthlyMap)}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              onRefresh={() =>
+                dispatch(getMonthlyHistories({ userId: user!.id }))
+              }
+            />
+          }
+        />
       </View>
-      <View style={tailwind("px-4")}>
-        <VictoryChart domainPadding={20} theme={VictoryTheme.material}>
-          <VictoryAxis />
-          <VictoryAxis dependentAxis tickFormat={(x) => `${x}min`} />
-          <VictoryStack colorScale={["tomato", "orange", "gold"]}>
-            {Object.values(yearByYear).map((data) => (
-              <VictoryBar data={data.history} x="date" y="time" />
-            ))}
-          </VictoryStack>
-        </VictoryChart>
-      </View>
-      <FlatList
-        data={Object.values(yearByYear)}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={() => dispatch(getAllHistories({ userId: user!.id }))}
-          />
-        }
-      />
     </>
   );
 };

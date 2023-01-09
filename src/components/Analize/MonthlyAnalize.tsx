@@ -1,27 +1,36 @@
-import { View, Text, FlatList, RefreshControl, StyleSheet } from "react-native";
-import { useState, useEffect } from "react";
+import { View, Text, FlatList, RefreshControl, Dimensions } from "react-native";
+import { useEffect } from "react";
 import { useTailwind } from "tailwind-rn/dist";
-import DropDownPicker from "react-native-dropdown-picker";
 import { RootReducer } from "../../../App";
 import { getMonthlyHistories } from "@stores/history";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "@stores/index";
-import {
-  VictoryStack,
-  VictoryBar,
-  VictoryChart,
-  VictoryTheme,
-  VictoryAxis,
-} from "victory-native";
 import { dateFormat } from "@utils/format";
+import { StackedBarChart } from "react-native-chart-kit";
 
 type categoryData = {
   id: number | string;
   name: string;
-  history: {
-    date: string;
-    time: number;
-  }[];
+  date: string;
+  time: number;
+};
+
+const chartConfig = {
+  backgroundGradientFrom: "black",
+  backgroundGradientFromOpacity: 0,
+  backgroundGradientTo: "black",
+  backgroundGradientToOpacity: 0,
+  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+  barPercentage: 1,
+};
+
+const labels: string[] = [];
+const dataContainer: number[][] = [];
+
+const data = {
+  labels: labels,
+  data: dataContainer,
+  barColors: ["#dfe4ea", "#ced6e0", "#a4b0be", "#FFFFFF", "#ffe4ea"],
 };
 
 export default () => {
@@ -31,11 +40,9 @@ export default () => {
   const {
     histories: { all },
   } = useSelector(({ history }: RootReducer) => history);
-
   useEffect(() => {
     dispatch(getMonthlyHistories({ userId: user!.id }));
   }, []);
-
   const monthlyMap = all.reduce(
     (
       prev: {
@@ -54,6 +61,7 @@ export default () => {
     },
     {}
   );
+
   const graphData = all.reduce(
     (
       prev: {
@@ -62,25 +70,32 @@ export default () => {
       current
     ) => {
       const createAt = dateFormat(current.created_at.toDate(), "yyyy/MM");
-      const prevHistories = prev[current.primary_id]
-        ? prev[current.primary_id].history
-        : [];
-
+      if (!labels.includes(createAt)) labels.push(createAt);
       prev[current.primary_id + createAt] = {
         id: current.primary_id,
         name: current.primary_name,
-        history: [
-          ...prevHistories,
-          {
-            date: createAt,
-            time: Number(current.measuring_time),
-          },
-        ],
+        date: createAt,
+        time:
+          (prev[current.primary_id + createAt]?.time || 0) +
+          current.measuring_time,
       };
       return prev;
     },
     {}
   );
+
+  const graphDataArray = Object.values(graphData);
+
+  useEffect(() => {
+    graphDataArray.map((g) => {
+      const index = labels.indexOf(g.date);
+      if (dataContainer[index]) {
+        dataContainer[index].push(g.time);
+      } else {
+        dataContainer[index] = [g.time];
+      }
+    });
+  }, []);
   const renderItem = ({
     item,
   }: {
@@ -104,67 +119,31 @@ export default () => {
     </View>
   );
 
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    { label: "Apple", value: "apple" },
-    { label: "Banana", value: "banana" },
-  ]);
-  const [open1, setOpen1] = useState(false);
-  const [value1, setValue1] = useState(null);
-  const [items1, setItems1] = useState([
-    { label: "Lemon", value: "lemon" },
-    { label: "Grape", value: "grape" },
-  ]);
-
   return (
     <>
       <View style={tailwind("flex flex-row m-1")}>
-        <View style={tailwind("w-1/2")}>
-          <DropDownPicker
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
+        <View style={tailwind("px-4")}>
+          <StackedBarChart
+            data={data}
+            height={Dimensions.get("window").height / 2}
+            width={Dimensions.get("window").width}
+            chartConfig={chartConfig}
           />
         </View>
-        <View style={tailwind("flex w-1/2")}>
-          <DropDownPicker
-            open={open1}
-            value={value1}
-            items={items1}
-            setOpen={setOpen1}
-            setValue={setValue1}
-            setItems={setItems1}
-          />
-        </View>
+        <FlatList
+          data={Object.values(monthlyMap)}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              onRefresh={() =>
+                dispatch(getMonthlyHistories({ userId: user!.id }))
+              }
+            />
+          }
+        />
       </View>
-      <View style={tailwind("px-4")}>
-        <VictoryChart domainPadding={20} theme={VictoryTheme.material}>
-          <VictoryAxis />
-          <VictoryAxis dependentAxis tickFormat={(x) => `${x}min`} />
-          <VictoryStack colorScale={["tomato", "orange", "gold"]}>
-            {Object.values(graphData).map((data) => (
-              <VictoryBar data={data.history} x="date" y="time" />
-            ))}
-          </VictoryStack>
-        </VictoryChart>
-      </View>
-      <FlatList
-        data={Object.values(monthlyMap)}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={() =>
-              dispatch(getMonthlyHistories({ userId: user!.id }))
-            }
-          />
-        }
-      />
     </>
   );
 };

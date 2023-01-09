@@ -10,13 +10,13 @@ import { useTailwind } from "tailwind-rn/dist";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { RootReducer } from "../../../App";
+import { getMonthlyHistories, History } from "@stores/history";
 import { VictoryPie } from "victory-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { dateFormat } from "@utils/format";
 import { getPrimaries } from "@stores/categories";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../../App";
-import { getMonthlyHistories, History } from "@stores/history";
 
 type item = {
   label: string;
@@ -79,7 +79,7 @@ export default () => {
   );
   const [primary, setPrimary] = useState(null);
   const [primaries, setPrimaries] = useState<item[]>([]);
-  const [openSecondary, setSecondaryOption] = useReducer(
+  const [secondaryOption, setSecondaryOption] = useReducer(
     (state) => !state,
     false
   );
@@ -208,7 +208,7 @@ export default () => {
         </View>
         <View style={tailwind("flex w-1/2")}>
           <DropDownPicker
-            open={openSecondary}
+            open={secondaryOption}
             value={secondary}
             items={secondaries}
             setOpen={setSecondaryOption}
