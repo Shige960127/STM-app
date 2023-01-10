@@ -21,22 +21,36 @@ import store, { AppDispatch } from "@stores/index";
 import { AntDesign } from "@expo/vector-icons";
 import TertiaryCategoryScreen from "@screens/TertiaryCategoryScreen";
 
-export type RootStackParamList = {
-  Initial: undefined;
-  SignUp: undefined;
-  SignIn: undefined;
-  Main: undefined;
+export type HomeStackParamList = {
   HomeTop: undefined;
   HistoryDetail: {
     item: History;
   };
-  TimerTop: undefined;
+};
+type AnalizeStackParamList = {
   AnalizeTop: undefined;
-  AccountTop: undefined;
+};
+type TimerStackParamList = {
+  TimerTop: undefined;
   Primary: undefined;
   Secondary: undefined;
   Tertiary: undefined;
 };
+type AccountStackParamList = {
+  AccountTop: undefined;
+};
+
+type InitialScreenParamList = {
+  Initial: undefined;
+  SignUp: undefined;
+  SignIn: undefined;
+};
+type MainScreenParamList = {
+  Main: undefined;
+} & HomeStackParamList &
+  AnalizeStackParamList &
+  TimerStackParamList;
+export type RootStackParamList = MainScreenParamList & InitialScreenParamList;
 
 export type TabParamList = {
   Home: undefined;
@@ -51,10 +65,7 @@ export type RootReducer = {
   history: HistoryState;
 };
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tab = createBottomTabNavigator();
-
-const HomeStack = createNativeStackNavigator();
+const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 const HomeStackScreen = () => {
   return (
     <HomeStack.Navigator>
@@ -67,7 +78,7 @@ const HomeStackScreen = () => {
     </HomeStack.Navigator>
   );
 };
-const AnalizeStack = createNativeStackNavigator();
+const AnalizeStack = createNativeStackNavigator<AnalizeStackParamList>();
 const AnalizeStackScreen = () => {
   return (
     <AnalizeStack.Navigator>
@@ -79,7 +90,7 @@ const AnalizeStackScreen = () => {
     </AnalizeStack.Navigator>
   );
 };
-const TimerStack = createNativeStackNavigator();
+const TimerStack = createNativeStackNavigator<TimerStackParamList>();
 const TimerStackScreen = () => {
   return (
     <TimerStack.Navigator>
@@ -95,7 +106,7 @@ const TimerStackScreen = () => {
   );
 };
 
-const AccountStack = createNativeStackNavigator();
+const AccountStack = createNativeStackNavigator<AccountStackParamList>();
 const AccountStackScreen = () => {
   return (
     <AccountStack.Navigator>
@@ -115,6 +126,8 @@ const screenNameIcon: { [key: string]: tabScreenIcon } = {
   Timer: "clockcircleo",
   Account: "user",
 };
+
+const Tab = createBottomTabNavigator<TabParamList>();
 const MainScreen = () => (
   <Tab.Navigator
     initialRouteName="Home"
@@ -153,21 +166,22 @@ const MainScreen = () => (
   </Tab.Navigator>
 );
 
+const InitialStack = createNativeStackNavigator<InitialScreenParamList>();
 const InitialScreen = () => (
-  <Stack.Navigator initialRouteName="SignIn">
-    <Stack.Screen
+  <InitialStack.Navigator initialRouteName="SignIn">
+    <InitialStack.Screen
       options={{ headerShown: false }}
       name="SignUp"
       component={SignUpScreen}
     />
-    <Stack.Screen
+    <InitialStack.Screen
       options={{ headerShown: false }}
       name="SignIn"
       component={SignInScreen}
     />
-  </Stack.Navigator>
+  </InitialStack.Navigator>
 );
-
+const Stack = createNativeStackNavigator<RootStackParamList>();
 const RootScreen = () => {
   const { status, isLogined } = useSelector(({ user }: RootReducer) => user);
   const dispatch = useDispatch<AppDispatch>();
