@@ -4,6 +4,7 @@ import {
   Text,
   RefreshControl,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { useState, useEffect, useReducer } from "react";
 import { useTailwind } from "tailwind-rn/dist";
@@ -36,6 +37,10 @@ export const ListEmptyComponent = () => {
       <Text style={tailwind("text-center")}>
         データがありません。計測しに行きましょう！
       </Text>
+      <Image
+        source={require("../../../assets/nodata.png")}
+        style={tailwind("w-8 h-8")}
+      />
     </View>
   );
 };

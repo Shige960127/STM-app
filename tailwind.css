@@ -125,6 +125,10 @@
   height: 2rem
 }
 
+.h-4 {
+  height: 1rem
+}
+
 .w-full {
   width: 100%
 }
@@ -147,6 +151,14 @@
 
 .w-1\/2 {
   width: 50%
+}
+
+.w-4 {
+  width: 1rem
+}
+
+.w-8 {
+  width: 2rem
 }
 
 .flex-1 {
