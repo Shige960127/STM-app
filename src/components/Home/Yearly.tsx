@@ -86,12 +86,12 @@ export default () => {
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
   useEffect(() => {
-    dispatch(getPrimaries({ userID: user!.id }));
+    if (user) {
+      dispatch(getPrimaries({ userID: user.id }));
+      dispatch(getYearlyHistories({ userId: user.id }));
+    }
   }, [user]);
 
-  useEffect(() => {
-    if (user) dispatch(getYearlyHistories({ userId: user!.id }));
-  }, [user]);
   useEffect(() => {
     const primaryInfo = Object.values(yearlyMap).map((item) => {
       return { label: item.x, value: item.id };
