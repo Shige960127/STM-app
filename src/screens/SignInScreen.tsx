@@ -14,6 +14,7 @@ import { handleSignIn } from "../stores/user";
 import { AppDispatch } from "../stores/index";
 import { AntDesign } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
+import GoogleLogin from "@components/GoogleLogin";
 
 type Props = NativeStackScreenProps<RootStackParamList, "SignIn">;
 
@@ -109,6 +110,7 @@ const SignInScreen = ({ navigation }: Props) => {
                 アカウント作成画面へ
               </Text>
             </TouchableOpacity>
+            <GoogleLogin />
           </View>
         </View>
       </SafeAreaView>

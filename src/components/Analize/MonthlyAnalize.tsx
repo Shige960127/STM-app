@@ -2,7 +2,7 @@ import { View, Text, Dimensions } from "react-native";
 import { useEffect, useState } from "react";
 import { useTailwind } from "tailwind-rn/dist";
 import { RootReducer } from "../../../App";
-import { getYearlyHistories } from "@stores/history";
+import { getAllHistories } from "@stores/history";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from "@stores/index";
 import { dateFormat } from "@utils/format";
@@ -29,14 +29,14 @@ export default () => {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector(({ user }: RootReducer) => user);
   const {
-    histories: { yearly },
+    histories: { all },
   } = useSelector(({ history }: RootReducer) => history);
   useEffect(() => {
-    dispatch(getYearlyHistories({ userId: user!.id }));
+    dispatch(getAllHistories({ userId: user!.id }));
   }, []);
 
   const [chartData, setChartData] = useState<ChartData | null>(null);
-  const graphData = yearly.reduce(
+  const graphData = all.reduce(
     (
       prev: {
         [key: string]: CategoryData;
@@ -68,13 +68,13 @@ export default () => {
 
   return (
     <>
-      <View style={tailwind("flex flex-row m-1")}>
+      <View style={tailwind("flex flex-row ")}>
         <StackedBarChart
           data={chartData}
           height={(Dimensions.get("window").height * 4) / 5}
           width={Dimensions.get("window").width}
           chartConfig={chartConfig}
-          hideLegend={false}
+          hideLegend={true}
         />
       </View>
     </>

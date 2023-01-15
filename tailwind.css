@@ -69,12 +69,16 @@
   margin-top: 3rem
 }
 
-.mt-5 {
-  margin-top: 1.25rem
+.mt-2 {
+  margin-top: 0.5rem
 }
 
 .mt-1 {
   margin-top: 0.25rem
+}
+
+.mt-5 {
+  margin-top: 1.25rem
 }
 
 .mt-6 {
@@ -85,20 +89,16 @@
   margin-top: 2rem
 }
 
-.mr-1 {
-  margin-right: 0.25rem
-}
-
 .ml-2 {
   margin-left: 0.5rem
 }
 
-.mt-4 {
-  margin-top: 1rem
+.mr-1 {
+  margin-right: 0.25rem
 }
 
-.mt-2 {
-  margin-top: 0.5rem
+.mt-4 {
+  margin-top: 1rem
 }
 
 .flex {
@@ -155,6 +155,10 @@
 
 .flex-row {
   flex-direction: row
+}
+
+.flex-col {
+  flex-direction: column
 }
 
 .items-center {
@@ -261,21 +265,6 @@
   background-color: rgb(254 240 138 / var(--tw-bg-opacity))
 }
 
-.bg-yellow-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(253 224 71 / var(--tw-bg-opacity))
-}
-
-.bg-gray-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(229 231 235 / var(--tw-bg-opacity))
-}
-
-.bg-lime-200 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(217 249 157 / var(--tw-bg-opacity))
-}
-
 .p-2 {
   padding: 0.5rem
 }
@@ -315,17 +304,12 @@
   padding-bottom: 1rem
 }
 
-.px-4 {
-  padding-left: 1rem;
-  padding-right: 1rem
+.pl-1 {
+  padding-left: 0.25rem
 }
 
 .pr-1 {
   padding-right: 0.25rem
-}
-
-.pl-1 {
-  padding-left: 0.25rem
 }
 
 .pt-2 {
@@ -358,6 +342,11 @@
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem
 }
 
 .text-base {
