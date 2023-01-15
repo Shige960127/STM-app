@@ -29,6 +29,17 @@ type pie = {
   x: string;
 };
 
+export const ListEmptyComponent = () => {
+  const tailwind = useTailwind();
+  return (
+    <View style={tailwind("flex flex-1")}>
+      <Text style={tailwind("text-center")}>
+        データがありません。計測しに行きましょう！
+      </Text>
+    </View>
+  );
+};
+
 export default () => {
   const tailwind = useTailwind();
   const dispatch = useDispatch<AppDispatch>();
@@ -239,6 +250,8 @@ export default () => {
             onRefresh={() => dispatch(getDailyHistories({ userId: user!.id }))}
           />
         }
+        // データがないときに表示させるコンポーネント
+        ListEmptyComponent={ListEmptyComponent}
       />
     </>
   );

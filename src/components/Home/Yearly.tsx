@@ -17,6 +17,7 @@ import { dateFormat } from "@utils/format";
 import { getPrimaries } from "@stores/categories";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../../App";
+import { ListEmptyComponent } from "./Daily";
 
 type item = {
   label: string;
@@ -239,6 +240,7 @@ export default () => {
             onRefresh={() => dispatch(getYearlyHistories({ userId: user!.id }))}
           />
         }
+        ListEmptyComponent={ListEmptyComponent}
       />
     </>
   );
