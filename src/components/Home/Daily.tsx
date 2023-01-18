@@ -4,6 +4,7 @@ import {
   Text,
   RefreshControl,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import { useState, useEffect, useReducer } from "react";
 import { useTailwind } from "tailwind-rn/dist";
@@ -27,6 +28,21 @@ type pie = {
   id: string;
   y: number;
   x: string;
+};
+
+export const ListEmptyComponent = () => {
+  const tailwind = useTailwind();
+  return (
+    <View style={tailwind("flex flex-1")}>
+      <Text style={tailwind("text-center")}>
+        データがありません。計測しに行きましょう！
+      </Text>
+      <Image
+        source={require("../../../assets/nodata.png")}
+        style={tailwind("w-8 h-8")}
+      />
+    </View>
+  );
 };
 
 export default () => {
@@ -86,12 +102,12 @@ export default () => {
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
   useEffect(() => {
-    dispatch(getPrimaries({ userID: user!.id }));
+    if (user) {
+      dispatch(getPrimaries({ userID: user!.id }));
+      dispatch(getDailyHistories({ userId: user!.id }));
+    }
   }, [user]);
 
-  useEffect(() => {
-    if (user) dispatch(getDailyHistories({ userId: user!.id }));
-  }, [user]);
   useEffect(() => {
     const primaryInfo = Object.values(dailyMap).map((item) => {
       return { label: item.x, value: item.id };
@@ -239,6 +255,8 @@ export default () => {
             onRefresh={() => dispatch(getDailyHistories({ userId: user!.id }))}
           />
         }
+        // データがないときに表示させるコンポーネント
+        ListEmptyComponent={ListEmptyComponent}
       />
     </>
   );

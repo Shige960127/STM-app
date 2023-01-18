@@ -17,6 +17,8 @@ import { dateFormat } from "@utils/format";
 import { getPrimaries } from "@stores/categories";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../../App";
+import { ListEmptyComponent } from "./Daily";
+import { listenerCancelled } from "@reduxjs/toolkit/dist/listenerMiddleware/exceptions";
 
 type item = {
   label: string;
@@ -86,12 +88,12 @@ export default () => {
   const [secondaries, setSecondaries] = useState<item[]>([]);
 
   useEffect(() => {
-    dispatch(getPrimaries({ userID: user!.id }));
+    if (user) {
+      dispatch(getPrimaries({ userID: user!.id }));
+      dispatch(getMonthlyHistories({ userId: user!.id }));
+    }
   }, [user]);
 
-  useEffect(() => {
-    if (user) dispatch(getMonthlyHistories({ userId: user!.id }));
-  }, [user]);
   useEffect(() => {
     const primaryInfo = Object.values(monthlyMap).map((item) => {
       return { label: item.x, value: item.id };
@@ -241,6 +243,7 @@ export default () => {
             }
           />
         }
+        ListEmptyComponent={ListEmptyComponent}
       />
     </>
   );
