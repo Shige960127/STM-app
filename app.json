@@ -16,6 +16,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "bundleIdentifier": "com.stm.stm",
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true
     },
@@ -24,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.stm.stm"
     },
     "web": {
       "favicon": "./assets/favicon.png"
