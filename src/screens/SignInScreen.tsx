@@ -110,7 +110,7 @@ const SignInScreen = ({ navigation }: Props) => {
                 アカウント作成画面へ
               </Text>
             </TouchableOpacity>
-            <GoogleLogin />
+            {/* <GoogleLogin /> */}
           </View>
         </View>
       </SafeAreaView>
